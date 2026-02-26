@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root {
+      --template-accent: #2e7dff;
+      --mail-bg: #f7f8fa;
+      --mail-card-bg: #ffffff;
+      --mail-border: #dbe2ea;
+      --mail-text: #1f2933;
+      --mail-muted: #506172;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--mail-bg);
+      color: var(--mail-text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .mail-wrap {
+      padding: 24px 14px;
+      background: var(--mail-bg);
+    }
+
+    .mail-card {
+      max-width: 680px;
+      margin: 0 auto;
+      border: 1px solid var(--mail-border);
+      border-radius: 12px;
+      background: var(--mail-card-bg);
+      overflow: hidden;
+    }
+
+    .mail-accent {
+      height: 4px;
+      background: var(--template-accent);
+    }
+
+    .mail-content {
+      padding: 24px;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .mail-content p {
+      margin: 0 0 12px;
+    }
+
+    .mail-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .greeting {
+      margin: 0 0 18px;
+      font-weight: 600;
+    }
+
+    .signature {
+      margin-top: 22px;
+      color: var(--mail-muted);
+    }
+
+    .signature:empty {
+      display: none;
+    }
+
+    .signature-name {
+      color: var(--mail-text);
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --mail-bg: #0f1620;
+        --mail-card-bg: #182230;
+        --mail-border: #2d3f52;
+        --mail-text: #e8eef5;
+        --mail-muted: #a7bacd;
+      }
+    }
+
+    html.forced-light {
+      --mail-bg: #f7f8fa;
+      --mail-card-bg: #ffffff;
+      --mail-border: #dbe2ea;
+      --mail-text: #1f2933;
+      --mail-muted: #506172;
+    }
+
+    html.forced-dark {
+      --mail-bg: #0f1620;
+      --mail-card-bg: #182230;
+      --mail-border: #2d3f52;
+      --mail-text: #e8eef5;
+      --mail-muted: #a7bacd;
+    }
+  </style>
+</head>
+<body>
+  <div class="mail-wrap" style="background:#f7f8fa;padding:24px 14px;">
+    <article class="mail-card" style="max-width:680px;margin:0 auto;border:1px solid #dbe2ea;border-radius:12px;background:#ffffff;overflow:hidden;">
+      <div class="mail-accent" aria-hidden="true"></div>
+      <section class="mail-content" style="padding:24px;line-height:1.6;font-size:16px;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+        {{content_block}}
+        <div class="signature" data-optional-signature>
+          {{signature_block}}
+        </div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

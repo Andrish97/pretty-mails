@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root {--template-accent:#2368b5;--bg:#f2f6fb;--card:#fff;--border:#d8e2ee;--txt:#1f2c38;--muted:#61778b;}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:"Source Sans 3","Segoe UI",sans-serif}
+    .wrap{padding:26px 14px}.mail{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .top{padding:16px 22px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--template-accent) 10%,white)}
+    .top h1{margin:0;font-size:18px}.top small{display:block;margin-top:6px;color:var(--muted)}
+    .body{padding:24px;font-size:16px;line-height:1.67}.body p{margin:0 0 12px}.greeting{margin:0 0 14px;font-weight:600}
+    .signature{margin-top:22px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted)}.signature-name{margin-top:6px;color:var(--txt);font-weight:700}
+    @media (prefers-color-scheme:dark){:root{--bg:#131a22;--card:#1d2834;--border:#334657;--txt:#e7eff6;--muted:#a6bbcb}}
+    html.forced-light{--bg:#f2f6fb;--card:#fff;--border:#d8e2ee;--txt:#1f2c38;--muted:#61778b}
+    html.forced-dark{--bg:#131a22;--card:#1d2834;--border:#334657;--txt:#e7eff6;--muted:#a6bbcb}
+  </style>
+</head>
+<body>
+  <div class="wrap" style="padding:26px 14px;background:#f2f6fb;">
+    <article class="mail" style="max-width:700px;margin:0 auto;background:#fff;border:1px solid #d8e2ee;border-radius:14px;overflow:hidden;">
+      <header class="top" style="padding:16px 22px;border-bottom:1px solid #d8e2ee;background:#edf4fc;">
+        <h1 style="margin:0;font-size:18px;">{{template_title}}</h1>
+        <small>{{date}}</small>
+      </header>
+      <section class="body" style="padding:24px;font-size:16px;line-height:1.67;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+        {{content_block}}
+        <div class="signature" data-optional-signature>{{signature_block}}</div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

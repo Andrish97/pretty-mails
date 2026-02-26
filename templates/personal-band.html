@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{--template-accent:#c63f54;--bg:#fff1f3;--card:#fff;--border:#efd3d8;--txt:#351d22;--muted:#7d5660}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:"DM Sans","Segoe UI",sans-serif}
+    .wrap{padding:26px 14px}.mail{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .band{height:8px;background:linear-gradient(90deg,var(--template-accent),#ea6d80,#f5a4b3)}
+    .head{padding:16px 24px;border-bottom:1px solid var(--border)}.head h1{margin:0;font-size:18px}.head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .body{padding:24px;line-height:1.66}.body p{margin:0 0 12px}.greeting{margin:0 0 14px;font-weight:600}
+    .signature{margin-top:22px;color:var(--muted)}.signature-name{margin-top:6px;color:var(--txt);font-weight:700}
+    @media (prefers-color-scheme:dark){:root{--bg:#241319;--card:#311d24;--border:#53323b;--txt:#f4e4e8;--muted:#c6a2ab}}
+    html.forced-light{--bg:#fff1f3;--card:#fff;--border:#efd3d8;--txt:#351d22;--muted:#7d5660}
+    html.forced-dark{--bg:#241319;--card:#311d24;--border:#53323b;--txt:#f4e4e8;--muted:#c6a2ab}
+  </style>
+</head>
+<body>
+  <div class="wrap" style="padding:26px 14px;background:#fff1f3;">
+    <article class="mail" style="max-width:700px;margin:0 auto;background:#fff;border:1px solid #efd3d8;border-radius:16px;overflow:hidden;">
+      <div class="band"></div>
+      <header class="head" style="padding:16px 24px;border-bottom:1px solid #efd3d8;">
+        <h1 style="margin:0;font-size:18px;">{{template_title}}</h1>
+        <p style="margin:6px 0 0;color:#7d5660;font-size:13px;">{{date}}</p>
+      </header>
+      <section class="body" style="padding:24px;line-height:1.66;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+        {{content_block}}
+        <div class="signature" data-optional-signature>{{signature_block}}</div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

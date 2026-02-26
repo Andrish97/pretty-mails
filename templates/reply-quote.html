@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root {
+      --template-accent: #b85d20;
+      --mail-bg: #f8f6f2;
+      --mail-card: #ffffff;
+      --mail-border: #e5ddd4;
+      --mail-text: #2c261f;
+      --mail-muted: #74695d;
+      --quote-bg: #f6f2eb;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--mail-bg);
+      color: var(--mail-text);
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    }
+
+    .wrapper {
+      padding: 24px 14px;
+      background: var(--mail-bg);
+    }
+
+    .mail {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--mail-card);
+      border: 1px solid var(--mail-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .mail-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--mail-border);
+      background: color-mix(in srgb, var(--template-accent) 8%, var(--mail-card));
+      font-size: 14px;
+      color: var(--mail-muted);
+    }
+
+    .mail-head strong {
+      color: var(--mail-text);
+    }
+
+    .section {
+      padding: 22px;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .section p {
+      margin: 0 0 12px;
+    }
+
+    .quote-box {
+      margin-top: 20px;
+      border: 1px solid var(--mail-border);
+      border-left: 4px solid var(--template-accent);
+      border-radius: 8px;
+      background: var(--quote-bg);
+      padding: 12px 14px;
+    }
+
+    .quote-label {
+      margin: 0 0 8px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--mail-muted);
+    }
+
+    blockquote {
+      margin: 0;
+      padding-left: 10px;
+      border-left: 2px solid color-mix(in srgb, var(--template-accent) 60%, transparent);
+      color: var(--mail-muted);
+      font-style: italic;
+    }
+
+    .signature {
+      margin-top: 20px;
+      color: var(--mail-muted);
+    }
+
+    .signature-name {
+      color: var(--mail-text);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .signature:empty {
+      display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --mail-bg: #15120f;
+        --mail-card: #221d18;
+        --mail-border: #3c332b;
+        --mail-text: #f1e8de;
+        --mail-muted: #c3b09c;
+        --quote-bg: #2b241d;
+      }
+    }
+
+    html.forced-light {
+      --mail-bg: #f8f6f2;
+      --mail-card: #ffffff;
+      --mail-border: #e5ddd4;
+      --mail-text: #2c261f;
+      --mail-muted: #74695d;
+      --quote-bg: #f6f2eb;
+    }
+
+    html.forced-dark {
+      --mail-bg: #15120f;
+      --mail-card: #221d18;
+      --mail-border: #3c332b;
+      --mail-text: #f1e8de;
+      --mail-muted: #c3b09c;
+      --quote-bg: #2b241d;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper" style="padding:24px 14px;background:#f8f6f2;">
+    <article class="mail" style="max-width:700px;margin:0 auto;background:#ffffff;border:1px solid #e5ddd4;border-radius:12px;overflow:hidden;">
+      <header class="mail-head" style="padding:18px 22px;border-bottom:1px solid #e5ddd4;background:#faf4ed;color:#74695d;">
+        <strong>{{reply_header}}</strong>
+      </header>
+
+      <section class="section" style="padding:22px;line-height:1.6;font-size:16px;">
+        <h1 class="section-title" data-optional-content style="margin:0 0 14px;font-size:17px;">{{greeting}}</h1>
+        {{content_block}}
+
+        <div class="quote-box" style="margin-top:20px;border:1px solid #e5ddd4;border-left:4px solid #b85d20;border-radius:8px;background:#f6f2eb;padding:12px 14px;">
+          <p class="quote-label" style="margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;color:#74695d;">{{quote_label}}</p>
+          <blockquote style="margin:0;padding-left:10px;border-left:2px solid #d29361;color:#74695d;font-style:italic;">
+            {{quote_placeholder}}
+          </blockquote>
+        </div>
+
+        <div class="signature" data-optional-signature style="margin-top:20px;color:#74695d;">
+          {{signature_block}}
+        </div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

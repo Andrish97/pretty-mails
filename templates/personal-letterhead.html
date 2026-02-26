@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root {
+      --template-accent: #1f6f5f;
+      --mail-bg: #eef4f1;
+      --sheet-bg: #ffffff;
+      --sheet-border: #d8e3dd;
+      --text-main: #20312c;
+      --text-muted: #607771;
+      --rule: #bfd1c9;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--mail-bg);
+      color: var(--text-main);
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    .page {
+      padding: 28px 14px;
+      background: var(--mail-bg);
+    }
+
+    .sheet {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--sheet-bg);
+      border: 1px solid var(--sheet-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .letterhead {
+      padding: 20px 24px 14px;
+      border-bottom: 1px solid var(--sheet-border);
+      background: color-mix(in srgb, var(--template-accent) 8%, var(--sheet-bg));
+    }
+
+    .letterhead h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.01em;
+      color: var(--text-main);
+    }
+
+    .head-row {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .rule {
+      height: 2px;
+      margin-top: 10px;
+      background: var(--rule);
+    }
+
+    .body {
+      padding: 24px;
+      font-size: 16px;
+      line-height: 1.72;
+    }
+
+    .body p {
+      margin: 0 0 12px;
+    }
+
+    .greeting {
+      margin: 0 0 14px;
+      font-style: italic;
+    }
+
+    .signature {
+      margin-top: 24px;
+      color: var(--text-muted);
+    }
+
+    .signature-name {
+      margin-top: 8px;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --mail-bg: #16211e;
+        --sheet-bg: #202f2b;
+        --sheet-border: #344843;
+        --text-main: #e8f2ee;
+        --text-muted: #adc3bb;
+        --rule: #4b675e;
+      }
+    }
+
+    html.forced-light {
+      --mail-bg: #eef4f1;
+      --sheet-bg: #ffffff;
+      --sheet-border: #d8e3dd;
+      --text-main: #20312c;
+      --text-muted: #607771;
+      --rule: #bfd1c9;
+    }
+
+    html.forced-dark {
+      --mail-bg: #16211e;
+      --sheet-bg: #202f2b;
+      --sheet-border: #344843;
+      --text-main: #e8f2ee;
+      --text-muted: #adc3bb;
+      --rule: #4b675e;
+    }
+  </style>
+</head>
+<body>
+  <div class="page" style="padding:28px 14px;background:#eef4f1;">
+    <article class="sheet" style="max-width:700px;margin:0 auto;background:#ffffff;border:1px solid #d8e3dd;border-radius:14px;overflow:hidden;">
+      <header class="letterhead" style="padding:20px 24px 14px;border-bottom:1px solid #d8e3dd;background:#f1f8f4;">
+        <h1 style="margin:0;font-size:20px;">{{template_title}}</h1>
+        <div class="head-row">
+          <span>{{date}}</span>
+          <span>{{reply_header}}</span>
+        </div>
+        <div class="rule"></div>
+      </header>
+
+      <section class="body" style="padding:24px;font-size:16px;line-height:1.72;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+
+        {{content_block}}
+
+        <div class="signature" data-optional-signature>
+          {{signature_block}}
+        </div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

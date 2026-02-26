@@ -1,0 +1,587 @@
+[
+  {
+    "id": "personal-minimal",
+    "name": "Prywatny — minimalistyczny",
+    "description": "Lekki, neutralny, dobry do codziennych maili.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny — minimalistyczny",
+        "description": "Lekki, neutralny, dobry do codziennych maili."
+      },
+      "en": {
+        "name": "Private — minimal",
+        "description": "Light and neutral, good for everyday messages."
+      },
+      "uk": {
+        "name": "Приватний — мінімалістичний",
+        "description": "Легкий нейтральний стиль для щоденних листів."
+      }
+    },
+    "templateUrl": "./personal-minimal.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#2e7dff"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}"
+    ]
+  },
+  {
+    "id": "personal-card",
+    "name": "Prywatny — karta",
+    "description": "Lekko elegancki, kartowy układ z akcentem.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny — karta",
+        "description": "Lekko elegancki, kartowy układ z akcentem."
+      },
+      "en": {
+        "name": "Private — card",
+        "description": "Slightly elegant card layout with accent."
+      },
+      "uk": {
+        "name": "Приватний — картка",
+        "description": "Трохи елегантний картковий макет з акцентом."
+      }
+    },
+    "templateUrl": "./personal-card.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#0f766e"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "reply-quote",
+    "name": "Odpowiedź — cytat",
+    "description": "Sekcja odpowiedzi z miejscem na cytowany fragment.",
+    "i18n": {
+      "pl": {
+        "name": "Odpowiedź — cytat",
+        "description": "Sekcja odpowiedzi z miejscem na cytowany fragment."
+      },
+      "en": {
+        "name": "Reply — quote",
+        "description": "Reply section with space for quoted text."
+      },
+      "uk": {
+        "name": "Відповідь — цитата",
+        "description": "Секція відповіді з місцем для цитати."
+      }
+    },
+    "templateUrl": "./reply-quote.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#b85d20"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{reply_header}}",
+      "{{quote_label}}",
+      "{{quote_placeholder}}"
+    ]
+  },
+  {
+    "id": "personal-sunset",
+    "name": "Prywatny — sunset",
+    "description": "Miękki, ciepły gradient z przyjaznym tonem.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny — sunset",
+        "description": "Miękki, ciepły gradient z przyjaznym tonem."
+      },
+      "en": {
+        "name": "Private — sunset",
+        "description": "Warm gradient style with a friendly vibe."
+      },
+      "uk": {
+        "name": "Приватний — sunset",
+        "description": "Теплий градієнтний стиль із дружнім настроєм."
+      }
+    },
+    "templateUrl": "./personal-sunset.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#d86a2e"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-outline",
+    "name": "Prywatny — kontur",
+    "description": "Nowoczesny układ z pionowym paskiem akcentu.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny — kontur",
+        "description": "Nowoczesny układ z pionowym paskiem akcentu."
+      },
+      "en": {
+        "name": "Private — outline",
+        "description": "Modern layout with a vertical accent stripe."
+      },
+      "uk": {
+        "name": "Приватний — контур",
+        "description": "Сучасний макет із вертикальною акцентною смугою."
+      }
+    },
+    "templateUrl": "./personal-outline.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#2f7bbf"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-ribbon",
+    "name": "Prywatny — wstążka",
+    "description": "Subtelnie dekoracyjny styl z etykietą daty.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny — wstążka",
+        "description": "Subtelnie dekoracyjny styl z etykietą daty."
+      },
+      "en": {
+        "name": "Private — ribbon",
+        "description": "Soft decorative style with a date ribbon."
+      },
+      "uk": {
+        "name": "Приватний — стрічка",
+        "description": "Легкий декоративний стиль зі стрічкою дати."
+      }
+    },
+    "templateUrl": "./personal-ribbon.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#8f4de8"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-letterhead",
+    "name": "Prywatny — letterhead",
+    "description": "Formalny układ w stylu papieru firmowego.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny — letterhead",
+        "description": "Formalny układ w stylu papieru firmowego."
+      },
+      "en": {
+        "name": "Private — letterhead",
+        "description": "Formal composition inspired by letterhead style."
+      },
+      "uk": {
+        "name": "Приватний — бланк",
+        "description": "Формальний макет у стилі фірмового бланка."
+      }
+    },
+    "templateUrl": "./personal-letterhead.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#1f6f5f"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}",
+      "{{reply_header}}"
+    ]
+  },
+  {
+    "id": "personal-cleanlines",
+    "name": "Prywatny - clean lines",
+    "description": "Czysty, nowoczesny uklad z delikatnym akcentem.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - clean lines",
+        "description": "Czysty, nowoczesny uklad z delikatnym akcentem."
+      },
+      "en": {
+        "name": "Private - clean lines",
+        "description": "Clean modern layout with subtle accent details."
+      },
+      "uk": {
+        "name": "Приватний - clean lines",
+        "description": "Чистий сучасний макет з м’яким акцентом."
+      }
+    },
+    "templateUrl": "./personal-cleanlines.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#2368b5"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-glass",
+    "name": "Prywatny - glass",
+    "description": "Lekki, szklany styl na gradientowym tle.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - glass",
+        "description": "Lekki, szklany styl na gradientowym tle."
+      },
+      "en": {
+        "name": "Private - glass",
+        "description": "Light glassmorphism style on a soft gradient."
+      },
+      "uk": {
+        "name": "Приватний - glass",
+        "description": "Легкий “скляний” стиль на м’якому градієнті."
+      }
+    },
+    "templateUrl": "./personal-glass.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#0f8d83"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-journal",
+    "name": "Prywatny - journal",
+    "description": "Styl dziennika, cieple tony i klasyczna typografia.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - journal",
+        "description": "Styl dziennika, cieple tony i klasyczna typografia."
+      },
+      "en": {
+        "name": "Private - journal",
+        "description": "Journal-inspired style with warm tones and classic typography."
+      },
+      "uk": {
+        "name": "Приватний - journal",
+        "description": "Стиль щоденника з теплими тонами та класичною типографікою."
+      }
+    },
+    "templateUrl": "./personal-journal.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#7b5c3b"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-band",
+    "name": "Prywatny - band",
+    "description": "Energiczny pasek akcentu i prosty uklad tresci.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - band",
+        "description": "Energiczny pasek akcentu i prosty uklad tresci."
+      },
+      "en": {
+        "name": "Private - band",
+        "description": "Energetic accent band with straightforward content flow."
+      },
+      "uk": {
+        "name": "Приватний - band",
+        "description": "Динамічна акцентна смуга та простий порядок контенту."
+      }
+    },
+    "templateUrl": "./personal-band.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#c63f54"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-note",
+    "name": "Prywatny - note",
+    "description": "Przyjazny, notatkowy wyglad z cieplym kolorem.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - note",
+        "description": "Przyjazny, notatkowy wyglad z cieplym kolorem."
+      },
+      "en": {
+        "name": "Private - note",
+        "description": "Friendly note-like layout with warm color accents."
+      },
+      "uk": {
+        "name": "Приватний - note",
+        "description": "Дружній “нотатковий” стиль з теплими акцентами."
+      }
+    },
+    "templateUrl": "./personal-note.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#d39f1f"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-mono",
+    "name": "Prywatny - mono",
+    "description": "Monochromatyczny, bardzo czytelny szablon.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - mono",
+        "description": "Monochromatyczny, bardzo czytelny szablon."
+      },
+      "en": {
+        "name": "Private - mono",
+        "description": "Monochrome style focused on clarity and structure."
+      },
+      "uk": {
+        "name": "Приватний - mono",
+        "description": "Монохромний стиль з акцентом на читабельність."
+      }
+    },
+    "templateUrl": "./personal-mono.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#2f2f2f"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-midnight",
+    "name": "Prywatny - midnight",
+    "description": "Nocny klimat z wysokim kontrastem tekstu.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - midnight",
+        "description": "Nocny klimat z wysokim kontrastem tekstu."
+      },
+      "en": {
+        "name": "Private - midnight",
+        "description": "Night-mode inspired style with strong text contrast."
+      },
+      "uk": {
+        "name": "Приватний - midnight",
+        "description": "Нічний стиль з виразним контрастом тексту."
+      }
+    },
+    "templateUrl": "./personal-midnight.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#3ab7ff"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}"
+    ]
+  },
+  {
+    "id": "personal-postcard",
+    "name": "Prywatny - postcard",
+    "description": "Lekki styl pocztowki z etykieta naglowka.",
+    "i18n": {
+      "pl": {
+        "name": "Prywatny - postcard",
+        "description": "Lekki styl pocztowki z etykieta naglowka."
+      },
+      "en": {
+        "name": "Private - postcard",
+        "description": "Postcard-like style with a compact top label."
+      },
+      "uk": {
+        "name": "Приватний - postcard",
+        "description": "Стиль листівки з компактною верхньою міткою."
+      }
+    },
+    "templateUrl": "./personal-postcard.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#0e9f6e"
+    },
+    "fields": {
+      "subject": true,
+      "to": true,
+      "cc": true,
+      "bcc": true,
+      "replyTo": true,
+      "signatureName": true
+    },
+    "placeholders": [
+      "{{content_block}}",
+      "{{signature_block}}",
+      "{{greeting}}",
+      "{{date}}",
+      "{{template_title}}",
+      "{{reply_header}}"
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{--template-accent:#0f8d83;--bg1:#e8fbf8;--bg2:#eef2ff;--card:rgba(255,255,255,.88);--border:#d7e6e4;--txt:#183336;--muted:#5a7677}
+    html,body{margin:0;padding:0;color:var(--txt);font-family:"Manrope","Segoe UI",sans-serif;background:linear-gradient(140deg,var(--bg1),var(--bg2))}
+    .pad{padding:28px 14px}.mail{max-width:700px;margin:0 auto;background:var(--card);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+    .head{padding:18px 24px;border-bottom:1px solid var(--border)}.badge{display:inline-block;background:color-mix(in srgb,var(--template-accent) 20%,white);color:#0f5f57;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+    .head h1{margin:10px 0 0;font-size:19px}.body{padding:24px;line-height:1.68}.body p{margin:0 0 12px}.greeting{margin:0 0 14px;font-weight:600}
+    .signature{margin-top:22px;color:var(--muted)}.signature-name{color:var(--txt);margin-top:6px;font-weight:700}
+    @media (prefers-color-scheme:dark){:root{--bg1:#132a2c;--bg2:#1e1e34;--card:rgba(31,39,49,.8);--border:#3a4b54;--txt:#e6f0f1;--muted:#a8bdc0}}
+    html.forced-light{--bg1:#e8fbf8;--bg2:#eef2ff;--card:rgba(255,255,255,.88);--border:#d7e6e4;--txt:#183336;--muted:#5a7677}
+    html.forced-dark{--bg1:#132a2c;--bg2:#1e1e34;--card:rgba(31,39,49,.8);--border:#3a4b54;--txt:#e6f0f1;--muted:#a8bdc0}
+  </style>
+</head>
+<body>
+  <div class="pad" style="padding:28px 14px;background:#e8fbf8;">
+    <article class="mail" style="max-width:700px;margin:0 auto;background:#ffffffde;border:1px solid #d7e6e4;border-radius:18px;overflow:hidden;">
+      <header class="head" style="padding:18px 24px;border-bottom:1px solid #d7e6e4;">
+        <span class="badge">{{date}}</span>
+        <h1 style="margin:10px 0 0;font-size:19px;">{{template_title}}</h1>
+      </header>
+      <section class="body" style="padding:24px;line-height:1.68;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+        {{content_block}}
+        <div class="signature" data-optional-signature>{{signature_block}}</div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

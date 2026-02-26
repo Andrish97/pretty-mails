@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pl" data-theme-mode="auto" data-resolved-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f766e">
+  <title>Mail Templates PWA</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon-192.svg">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Mail Templates PWA</h1>
+      <p id="appSubtitle">Szablony, podgląd, załączniki i eksport wiadomości do pliku <code>.eml</code>.</p>
+    </div>
+    <div class="header-actions">
+      <label class="theme-picker" id="languageModeLabel" for="languageMode">Język</label>
+      <select id="languageMode" aria-label="Język interfejsu">
+        <option value="pl">Polski</option>
+        <option value="en">English</option>
+        <option value="uk">Українська</option>
+      </select>
+      <label class="theme-picker" id="themeModeLabel" for="themeMode">Motyw aplikacji</label>
+      <select id="themeMode" aria-label="Motyw aplikacji">
+        <option value="auto">Auto</option>
+        <option value="light">Jasny</option>
+        <option value="dark">Ciemny</option>
+      </select>
+      <button id="exportBtn" class="button button-primary" type="button">Export .eml</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="card templates-panel">
+      <div class="panel-head">
+        <h2 id="templatesTitle">Szablony</h2>
+        <input id="templateSearch" type="search" placeholder="Szukaj po nazwie lub opisie" autocomplete="off">
+      </div>
+      <ul id="templateList" class="template-list" aria-label="Lista szablonów"></ul>
+    </aside>
+
+    <section class="workspace">
+      <div class="editor-preview-grid">
+        <section class="card editor-panel">
+          <h2 id="editorTitle">Edycja</h2>
+
+          <label class="field" data-field="to">
+            <span id="fieldToLabel">Do (opcjonalnie)</span>
+            <input id="fieldTo" type="text" placeholder="adres@example.com" autocomplete="email">
+          </label>
+
+          <label class="field" data-field="cc">
+            <span id="fieldCcLabel">DW (opcjonalnie)</span>
+            <input id="fieldCc" type="text" placeholder="adres@example.com, drugi@example.com" autocomplete="email">
+          </label>
+
+          <label class="field" data-field="bcc">
+            <span id="fieldBccLabel">UDW (opcjonalnie)</span>
+            <input id="fieldBcc" type="text" placeholder="adres@example.com" autocomplete="email">
+          </label>
+
+          <label class="field" data-field="replyTo">
+            <span id="fieldReplyToLabel">Reply-To (opcjonalnie)</span>
+            <input id="fieldReplyTo" type="text" placeholder="adres@example.com" autocomplete="email">
+          </label>
+
+          <label class="field" data-field="subject">
+            <span id="fieldSubjectLabel">Temat (opcjonalnie)</span>
+            <input id="fieldSubject" type="text" placeholder="Temat wiadomości" autocomplete="off">
+          </label>
+
+          <label class="field" data-field="content">
+            <span id="fieldContentLabel">Treść</span>
+            <textarea id="fieldContent" rows="10" placeholder="Wpisz treść wiadomości..."></textarea>
+          </label>
+
+          <label class="field" data-field="signatureName">
+            <span id="fieldSignatureLabel">Imię w stopce</span>
+            <input id="fieldSignatureName" type="text" placeholder="Twoje imię" autocomplete="name">
+          </label>
+
+          <label class="remember-draft">
+            <input id="rememberDraft" type="checkbox">
+            <span id="rememberDraftLabel">Zapamiętaj draft lokalnie (bez załączników)</span>
+          </label>
+
+          <div id="addressValidation" class="form-validation" aria-live="polite"></div>
+
+          <p class="muted-note" id="mutedNote">Treść jest escapowana i bezpiecznie konwertowana z tekstu na HTML (<code>&lt;p&gt;</code> / <code>&lt;br&gt;</code>).</p>
+        </section>
+
+        <section class="card preview-panel">
+          <div class="preview-head">
+            <h2 id="previewTitle">Podgląd</h2>
+            <span id="previewTemplateName" class="preview-template-name"></span>
+          </div>
+          <div class="mail-canvas" id="mailCanvas">
+            <iframe id="previewFrame" title="Podgląd wiadomości" loading="eager"></iframe>
+          </div>
+        </section>
+      </div>
+
+      <section class="card attachments-panel">
+        <div class="attachments-head">
+          <h2 id="attachmentsTitle">Załączniki</h2>
+          <button id="addFilesBtn" class="button" type="button">Dodaj pliki</button>
+          <input id="fileInput" type="file" multiple hidden>
+        </div>
+
+        <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Przeciągnij i upuść pliki">
+          Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.
+        </div>
+
+        <ul id="attachmentList" class="attachment-grid" aria-live="polite"></ul>
+
+        <div class="attachment-summary">
+          <span id="attachmentCount">0 plików</span>
+          <span id="attachmentTotal">Suma: 0 B</span>
+          <span id="attachmentEstimated">Szacowany rozmiar wiadomości: 0 B</span>
+          <span id="attachmentWarning" class="warning-text"></span>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p id="footerNote"><strong>Uwaga:</strong> <code>mailto:</code> nie wspiera HTML i załączników, dlatego użyj eksportu <code>.eml</code>.</p>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

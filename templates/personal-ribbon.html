@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root {
+      --template-accent: #8f4de8;
+      --mail-bg: #f6f3ff;
+      --card-bg: #ffffff;
+      --card-border: #ddd1f1;
+      --text-main: #2d2442;
+      --text-muted: #6f6490;
+      --chip-bg: #8f4de8;
+      --chip-text: #f7f2ff;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--mail-bg);
+      color: var(--text-main);
+      font-family: "Nunito Sans", "Segoe UI", sans-serif;
+    }
+
+    .canvas {
+      padding: 28px 14px;
+      background: var(--mail-bg);
+    }
+
+    .card {
+      max-width: 700px;
+      margin: 0 auto;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--card-bg);
+      position: relative;
+    }
+
+    .ribbon {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      border-radius: 999px;
+      padding: 7px 10px;
+    }
+
+    .head {
+      padding: 22px 24px 14px;
+      border-bottom: 1px solid var(--card-border);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--template-accent) 12%, white), transparent 78%);
+    }
+
+    .head h1 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0.01em;
+    }
+
+    .body {
+      padding: 22px 24px 24px;
+      font-size: 16px;
+      line-height: 1.66;
+    }
+
+    .body p {
+      margin: 0 0 12px;
+    }
+
+    .greeting {
+      margin: 0 0 14px;
+      font-weight: 600;
+    }
+
+    .signature {
+      margin-top: 22px;
+      color: var(--text-muted);
+    }
+
+    .signature-name {
+      color: var(--text-main);
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --mail-bg: #171225;
+        --card-bg: #221c34;
+        --card-border: #3d3359;
+        --text-main: #ebe7fa;
+        --text-muted: #b6adcf;
+        --chip-bg: #a16cff;
+        --chip-text: #1f1239;
+      }
+    }
+
+    html.forced-light {
+      --mail-bg: #f6f3ff;
+      --card-bg: #ffffff;
+      --card-border: #ddd1f1;
+      --text-main: #2d2442;
+      --text-muted: #6f6490;
+      --chip-bg: #8f4de8;
+      --chip-text: #f7f2ff;
+    }
+
+    html.forced-dark {
+      --mail-bg: #171225;
+      --card-bg: #221c34;
+      --card-border: #3d3359;
+      --text-main: #ebe7fa;
+      --text-muted: #b6adcf;
+      --chip-bg: #a16cff;
+      --chip-text: #1f1239;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas" style="padding:28px 14px;background:#f6f3ff;">
+    <article class="card" style="max-width:700px;margin:0 auto;border:1px solid #ddd1f1;border-radius:18px;overflow:hidden;background:#ffffff;">
+      <div class="ribbon">{{date}}</div>
+
+      <header class="head" style="padding:22px 24px 14px;border-bottom:1px solid #ddd1f1;background:#f6efff;">
+        <h1 style="margin:0;font-size:19px;">{{template_title}}</h1>
+      </header>
+
+      <section class="body" style="padding:22px 24px 24px;font-size:16px;line-height:1.66;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+
+        {{content_block}}
+
+        <div class="signature" data-optional-signature>
+          {{signature_block}}
+        </div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

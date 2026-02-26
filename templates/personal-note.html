@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{--template-accent:#d39f1f;--bg:#fff9e9;--card:#fffef8;--border:#efdcae;--txt:#382f18;--muted:#7a6b40}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:"Nunito","Segoe UI",sans-serif}
+    .page{padding:26px 14px}.note{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .head{padding:16px 24px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--template-accent) 14%,white)}
+    .head h1{margin:0;font-size:18px}.head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .body{padding:24px;line-height:1.68}.body p{margin:0 0 12px}.greeting{margin:0 0 14px;font-weight:700}
+    .signature{margin-top:22px;padding:10px 12px;background:color-mix(in srgb,var(--template-accent) 8%,white);border-radius:10px;color:var(--muted)}.signature-name{margin-top:6px;color:var(--txt);font-weight:700}
+    @media (prefers-color-scheme:dark){:root{--bg:#241f11;--card:#312b18;--border:#524830;--txt:#f4ecd4;--muted:#d0bf8f}}
+    html.forced-light{--bg:#fff9e9;--card:#fffef8;--border:#efdcae;--txt:#382f18;--muted:#7a6b40}
+    html.forced-dark{--bg:#241f11;--card:#312b18;--border:#524830;--txt:#f4ecd4;--muted:#d0bf8f}
+  </style>
+</head>
+<body>
+  <div class="page" style="padding:26px 14px;background:#fff9e9;">
+    <article class="note" style="max-width:700px;margin:0 auto;background:#fffef8;border:1px solid #efdcae;border-radius:12px;overflow:hidden;">
+      <header class="head" style="padding:16px 24px;border-bottom:1px solid #efdcae;background:#fff4cf;">
+        <h1 style="margin:0;font-size:18px;">{{template_title}}</h1>
+        <p style="margin:6px 0 0;color:#7a6b40;font-size:13px;">{{date}}</p>
+      </header>
+      <section class="body" style="padding:24px;line-height:1.68;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+        {{content_block}}
+        <div class="signature" data-optional-signature>{{signature_block}}</div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

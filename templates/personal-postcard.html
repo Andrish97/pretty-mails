@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{--template-accent:#0e9f6e;--bg:#ecfaf4;--card:#fff;--border:#cde7dc;--txt:#17372b;--muted:#5f8577}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:"Poppins","Segoe UI",sans-serif}
+    .canvas{padding:28px 14px}.post{max-width:700px;margin:0 auto;border:1px solid var(--border);border-radius:18px;overflow:hidden;background:var(--card)}
+    .top{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .stamp{font-size:11px;text-transform:uppercase;letter-spacing:.07em;background:color-mix(in srgb,var(--template-accent) 20%,white);padding:7px 10px;border-radius:999px;color:#0a5f44;font-weight:700}
+    .top h1{margin:0;font-size:18px}.top p{margin:5px 0 0;color:var(--muted);font-size:13px}
+    .body{padding:24px;line-height:1.66}.body p{margin:0 0 12px}.greeting{margin:0 0 14px;font-weight:600}
+    .signature{margin-top:22px;color:var(--muted)}.signature-name{margin-top:6px;color:var(--txt);font-weight:700}
+    @media (prefers-color-scheme:dark){:root{--bg:#13231c;--card:#1c3028;--border:#345447;--txt:#e5f3ec;--muted:#a8c3b7}}
+    html.forced-light{--bg:#ecfaf4;--card:#fff;--border:#cde7dc;--txt:#17372b;--muted:#5f8577}
+    html.forced-dark{--bg:#13231c;--card:#1c3028;--border:#345447;--txt:#e5f3ec;--muted:#a8c3b7}
+  </style>
+</head>
+<body>
+  <div class="canvas" style="padding:28px 14px;background:#ecfaf4;">
+    <article class="post" style="max-width:700px;margin:0 auto;border:1px solid #cde7dc;border-radius:18px;overflow:hidden;background:#fff;">
+      <header class="top" style="padding:16px 22px;border-bottom:1px solid #cde7dc;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
+        <div>
+          <h1 style="margin:0;font-size:18px;">{{template_title}}</h1>
+          <p style="margin:5px 0 0;color:#5f8577;font-size:13px;">{{date}}</p>
+        </div>
+        <span class="stamp">{{reply_header}}</span>
+      </header>
+      <section class="body" style="padding:24px;line-height:1.66;">
+        <p class="greeting" data-optional-content>{{greeting}}</p>
+        {{content_block}}
+        <div class="signature" data-optional-signature>{{signature_block}}</div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root {
+      --template-accent: #0f766e;
+      --page-bg: #eef3f7;
+      --card-bg: #ffffff;
+      --card-muted-bg: #f5f8fb;
+      --card-border: #d9e5ef;
+      --txt-main: #1d2a36;
+      --txt-muted: #61788e;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--page-bg);
+      color: var(--txt-main);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .page {
+      padding: 26px 14px;
+      background: radial-gradient(circle at top right, color-mix(in srgb, var(--template-accent) 11%, transparent), transparent 60%), var(--page-bg);
+    }
+
+    .mail {
+      max-width: 700px;
+      margin: 0 auto;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .head {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--card-border);
+      background: color-mix(in srgb, var(--template-accent) 10%, var(--card-bg));
+    }
+
+    .head-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .head-meta {
+      margin-top: 6px;
+      color: var(--txt-muted);
+      font-size: 13px;
+    }
+
+    .body {
+      padding: 24px;
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    .body p {
+      margin: 0 0 12px;
+    }
+
+    .body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .signature-box {
+      margin-top: 22px;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--card-muted-bg);
+    }
+
+    .signature-box:empty {
+      display: none;
+    }
+
+    .signature-name {
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page-bg: #121a24;
+        --card-bg: #1a2532;
+        --card-muted-bg: #202d3b;
+        --card-border: #304356;
+        --txt-main: #e6eef7;
+        --txt-muted: #a8bdd0;
+      }
+    }
+
+    html.forced-light {
+      --page-bg: #eef3f7;
+      --card-bg: #ffffff;
+      --card-muted-bg: #f5f8fb;
+      --card-border: #d9e5ef;
+      --txt-main: #1d2a36;
+      --txt-muted: #61788e;
+    }
+
+    html.forced-dark {
+      --page-bg: #121a24;
+      --card-bg: #1a2532;
+      --card-muted-bg: #202d3b;
+      --card-border: #304356;
+      --txt-main: #e6eef7;
+      --txt-muted: #a8bdd0;
+    }
+  </style>
+</head>
+<body>
+  <div class="page" style="padding:26px 14px;background:#eef3f7;">
+    <article class="mail" style="max-width:700px;margin:0 auto;border:1px solid #d9e5ef;border-radius:16px;background:#ffffff;overflow:hidden;">
+      <header class="head" style="padding:18px 24px;border-bottom:1px solid #d9e5ef;background:#f5faf9;">
+        <h1 class="head-title" style="margin:0;font-size:18px;">{{template_title}}</h1>
+        <div class="head-meta">{{date}}</div>
+      </header>
+
+      <section class="body" style="padding:24px;line-height:1.65;font-size:16px;">
+        <p data-optional-content><strong>{{greeting}}</strong></p>
+        {{content_block}}
+
+        <div class="signature-box" data-optional-signature style="margin-top:22px;border:1px solid #d9e5ef;border-radius:10px;padding:14px;background:#f5f8fb;">
+          {{signature_block}}
+        </div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>
