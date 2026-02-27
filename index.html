@@ -171,6 +171,12 @@
           </label>
           <p class="auto-field-note" id="toggleDateHint">Data jest automatyczna i nie ma pola edycji.</p>
 
+          <label class="field-toggle">
+            <input id="toggleTime" type="checkbox">
+            <span id="toggleTimeLabel">Pokaż godzinę (automatycznie)</span>
+          </label>
+          <p class="auto-field-note" id="toggleTimeHint">Godzina jest automatyczna i nie ma pola edycji.</p>
+
           <label class="remember-draft">
             <input id="rememberDraft" type="checkbox">
             <span id="rememberDraftLabel">Zapamiętaj brudnopis lokalnie (bez załączników)</span>
@@ -259,7 +265,7 @@
     <section class="modal-card preview-modal-card" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
       <div class="modal-head">
         <h2 id="previewModalTitle">Podgląd</h2>
-        <button id="previewModalClose" class="button" type="button" aria-label="Zamknij">✕</button>
+        <button id="previewModalClose" class="button" type="button" data-preview-close aria-label="Zamknij">✕</button>
       </div>
       <div class="mail-canvas" id="previewModalCanvas">
         <iframe id="previewModalFrame" title="Podgląd wiadomości" loading="eager"></iframe>

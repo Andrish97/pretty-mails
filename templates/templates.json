@@ -31,12 +31,14 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
-      "{{greeting}}"
+      "{{greeting}}",
+      "{{time}}"
     ],
     "editorFonts": {
       "body": "\"Helvetica Neue\", Helvetica, Arial, sans-serif",
@@ -75,13 +77,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -121,13 +125,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -167,13 +173,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
-      "{{template_title}}"
+      "{{template_title}}",
+      "{{time}}"
     ],
     "editorFonts": {
       "body": "\"Inter\", \"Avenir Next\", sans-serif",
@@ -212,13 +220,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -258,13 +268,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}",
       "{{reply_header}}"
     ],
@@ -305,13 +317,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -351,13 +365,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -397,13 +413,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -443,13 +461,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -489,13 +509,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -535,13 +557,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -581,13 +605,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}"
     ],
     "editorFonts": {
@@ -627,13 +653,15 @@
       "content": true,
       "quote": true,
       "signatureName": true,
-      "date": true
+      "date": true,
+      "time": true
     },
     "placeholders": [
       "{{content_block}}",
       "{{signature_block}}",
       "{{greeting}}",
       "{{date}}",
+      "{{time}}",
       "{{template_title}}",
       "{{reply_header}}"
     ],

@@ -23,6 +23,7 @@ const OPTIONAL_FIELD_DEFAULTS = {
   quote: false,
   signatureName: true,
   date: true,
+  time: false,
 };
 
 const I18N = {
@@ -82,6 +83,8 @@ const I18N = {
     toggleSignatureLabel: "Pokaż podpis (opcjonalny)",
     toggleDateLabel: "Pokaż datę (automatycznie)",
     toggleDateHint: "Data jest automatyczna i nie ma pola edycji.",
+    toggleTimeLabel: "Pokaż godzinę (automatycznie)",
+    toggleTimeHint: "Godzina jest automatyczna i nie ma pola edycji.",
     replyModeLabel: "Pokaż pole cytatu odpowiedzi (opcjonalne)",
     fieldQuoteLabel: "Cytat odpowiedzi (opcjonalnie)",
     fieldQuoteShort: "Cytat",
@@ -90,6 +93,7 @@ const I18N = {
     fieldSignatureShort: "Podpis",
     fieldSignaturePlaceholder: "Twoje imię",
     fieldDateShort: "Data",
+    fieldTimeShort: "Godzina",
     rememberDraftLabel: "Zapamiętaj brudnopis lokalnie (bez załączników)",
     mutedNoteHtml:
       "Pola opcjonalne włączasz checkboxami. Aktywne puste pola pokazują placeholder tylko w podglądzie; eksport używa wyłącznie wpisanych wartości.",
@@ -195,6 +199,8 @@ const I18N = {
     toggleSignatureLabel: "Show signature (optional)",
     toggleDateLabel: "Show date (automatic)",
     toggleDateHint: "Date is generated automatically and cannot be edited.",
+    toggleTimeLabel: "Show time (automatic)",
+    toggleTimeHint: "Time is generated automatically and cannot be edited.",
     replyModeLabel: "Show reply quote field (optional)",
     fieldQuoteLabel: "Reply quote (optional)",
     fieldQuoteShort: "Quote",
@@ -203,6 +209,7 @@ const I18N = {
     fieldSignatureShort: "Signature",
     fieldSignaturePlaceholder: "Your name",
     fieldDateShort: "Date",
+    fieldTimeShort: "Time",
     rememberDraftLabel: "Remember draft locally (without attachments)",
     mutedNoteHtml:
       "Optional fields are controlled with checkboxes. Active empty fields show placeholders only in preview; export uses only entered values.",
@@ -306,6 +313,8 @@ const I18N = {
     toggleSignatureLabel: "Показати підпис (необов'язково)",
     toggleDateLabel: "Показати дату (автоматично)",
     toggleDateHint: "Дата генерується автоматично й не редагується.",
+    toggleTimeLabel: "Показати час (автоматично)",
+    toggleTimeHint: "Час генерується автоматично й не редагується.",
     replyModeLabel: "Показати поле цитати відповіді (необов'язково)",
     fieldQuoteLabel: "Цитата відповіді (необов'язково)",
     fieldQuoteShort: "Цитата",
@@ -314,6 +323,7 @@ const I18N = {
     fieldSignatureShort: "Підпис",
     fieldSignaturePlaceholder: "Ваше ім'я",
     fieldDateShort: "Дата",
+    fieldTimeShort: "Час",
     rememberDraftLabel: "Зберігати чернетку локально (без вкладень)",
     mutedNoteHtml:
       "Необов'язкові поля вмикаються чекбоксами. Активні порожні поля показують плейсхолдер тільки в перегляді; експорт бере лише введені значення.",
@@ -427,6 +437,8 @@ const ui = {
   toggleSignatureNameLabel: document.querySelector("#toggleSignatureNameLabel"),
   toggleDateLabel: document.querySelector("#toggleDateLabel"),
   toggleDateHint: document.querySelector("#toggleDateHint"),
+  toggleTimeLabel: document.querySelector("#toggleTimeLabel"),
+  toggleTimeHint: document.querySelector("#toggleTimeHint"),
   fieldQuoteLabel: document.querySelector("#fieldQuoteLabel"),
   fieldSignatureLabel: document.querySelector("#fieldSignatureLabel"),
   toggleTo: document.querySelector("#toggleTo"),
@@ -445,6 +457,7 @@ const ui = {
   toggleSignatureName: document.querySelector("#toggleSignatureName"),
   fieldSignatureName: document.querySelector("#fieldSignatureName"),
   toggleDate: document.querySelector("#toggleDate"),
+  toggleTime: document.querySelector("#toggleTime"),
   rememberDraft: document.querySelector("#rememberDraft"),
   rememberDraftLabel: document.querySelector("#rememberDraftLabel"),
   addressValidation: document.querySelector("#addressValidation"),
@@ -709,6 +722,13 @@ function bindEvents() {
     renderAttachments();
   });
 
+  ui.toggleTime.addEventListener("change", () => {
+    state.enabled.time = ui.toggleTime.checked;
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
   ui.previewMode.addEventListener("change", () => {
     applyPreviewMode(ui.previewMode.value);
     maybeSaveDraft();
@@ -726,12 +746,11 @@ function bindEvents() {
     openPreviewModal();
   });
 
-  ui.previewModalClose.addEventListener("click", () => {
-    closePreviewModal();
-  });
-
   ui.previewModal.addEventListener("click", (event) => {
-    if (event.target instanceof HTMLElement && event.target.dataset.previewClose !== undefined) {
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.closest("[data-preview-close]") !== null
+    ) {
       closePreviewModal();
     }
   });
@@ -1170,6 +1189,8 @@ function applyLanguage(language) {
   ui.toggleSignatureNameLabel.textContent = t("toggleSignatureLabel");
   ui.toggleDateLabel.textContent = t("toggleDateLabel");
   ui.toggleDateHint.textContent = t("toggleDateHint");
+  ui.toggleTimeLabel.textContent = t("toggleTimeLabel");
+  ui.toggleTimeHint.textContent = t("toggleTimeHint");
   ui.fieldQuoteLabel.textContent = t("fieldQuoteLabel");
   ui.fieldQuote.placeholder = t("fieldQuotePlaceholder");
   ui.fieldSignatureLabel.textContent = t("fieldSignatureLabel");
@@ -1309,18 +1330,28 @@ function syncTemplateThemeSwitch() {
 
 function openInfoModal() {
   ui.infoModal.hidden = false;
+  syncBodyModalState();
 }
 
 function closeInfoModal() {
   ui.infoModal.hidden = true;
+  syncBodyModalState();
 }
 
 function openPreviewModal() {
   ui.previewModal.hidden = false;
+  syncBodyModalState();
+  ui.previewModalClose?.focus();
 }
 
 function closePreviewModal() {
   ui.previewModal.hidden = true;
+  syncBodyModalState();
+}
+
+function syncBodyModalState() {
+  const modalOpen = !ui.infoModal.hidden || !ui.previewModal.hidden;
+  document.body.classList.toggle("modal-open", modalOpen);
 }
 
 function restoreDraft() {
@@ -1396,6 +1427,7 @@ function syncFieldInputs() {
   ui.replyMode.checked = Boolean(state.enabled.quote);
   ui.toggleSignatureName.checked = Boolean(state.enabled.signatureName);
   ui.toggleDate.checked = Boolean(state.enabled.date);
+  ui.toggleTime.checked = Boolean(state.enabled.time);
   ui.fieldTo.value = state.fields.to;
   ui.fieldCc.value = state.fields.cc;
   ui.fieldBcc.value = state.fields.bcc;
@@ -1643,9 +1675,18 @@ function renderPreview() {
   ui.previewTemplateName.textContent = localizedTemplateName(template);
 }
 
+function formatCurrentDateValue() {
+  return new Intl.DateTimeFormat(t("dateLocale"), { dateStyle: "long" }).format(new Date());
+}
+
+function formatCurrentTimeValue() {
+  return new Intl.DateTimeFormat(t("dateLocale"), { timeStyle: "short" }).format(new Date());
+}
+
 function buildPreviewRows(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-  const dateValue = new Intl.DateTimeFormat(t("dateLocale"), { dateStyle: "long" }).format(new Date());
+  const dateValue = formatCurrentDateValue();
+  const timeValue = formatCurrentTimeValue();
   const contentText = richHtmlToPlainText(state.fields.content);
   const quoteText = normalizeMultilineText(state.fields.quote);
   const signatureText = normalizeInlineText(state.fields.signatureName);
@@ -1714,6 +1755,13 @@ function buildPreviewRows(options = {}) {
       value: dateValue,
       placeholder: dateValue,
     },
+    {
+      key: "time",
+      visible: state.enabled.time,
+      label: t("fieldTimeShort"),
+      value: timeValue,
+      placeholder: timeValue,
+    },
   ];
 
   return rows.map((row) => {
@@ -1729,7 +1777,7 @@ function buildPreviewRows(options = {}) {
 function buildEnvelopeRows(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
   const previewRows = buildPreviewRows({ showPlaceholders });
-  const envelopeKeys = new Set(["to", "cc", "bcc", "replyTo", "subject", "date"]);
+  const envelopeKeys = new Set(["to", "cc", "bcc", "replyTo", "subject", "date", "time"]);
   return previewRows.filter((row) => envelopeKeys.has(row.key));
 }
 
@@ -1783,13 +1831,21 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   const quotePreviewHtml =
     quoteHtml || (showPlaceholders ? escapeHtml(ui.fieldQuote.placeholder).replace(/\n/g, "<br>") : "");
   const hasQuote = state.enabled.quote && Boolean(quoteHtml || showPlaceholders);
-  const date = new Intl.DateTimeFormat(t("dateLocale"), { dateStyle: "long" }).format(new Date());
+  const dateValue = formatCurrentDateValue();
+  const timeValue = formatCurrentTimeValue();
+  const templateUsesTimeToken = /\{\{\s*time\s*\}\}/.test(rawMarkup);
+  const dateTokenValue = state.enabled.date ? dateValue : "";
+  const timeTokenValue = state.enabled.time ? timeValue : "";
+  const dateFallbackWithTime = templateUsesTimeToken
+    ? dateTokenValue
+    : [dateTokenValue, timeTokenValue].filter(Boolean).join(" · ");
 
   const replacements = {
     content_block: contentHtml,
     signature_block: signatureHtml,
     greeting: escapeHtml(t("greeting")),
-    date: state.enabled.date ? escapeHtml(date) : "",
+    date: escapeHtml(dateFallbackWithTime),
+    time: escapeHtml(timeTokenValue),
     template_title: escapeHtml(t("templateHeader")),
     reply_header: escapeHtml(state.enabled.quote ? t("replyHeader") : t("templateHeader")),
     quote_label: escapeHtml(t("quoteLabel")),
