@@ -10,12 +10,15 @@
   <link rel="apple-touch-icon" href="./assets/icon-192.svg">
   <script src="https://cdn.tiny.cloud/1/rvwao9ib8mj0j8bfxbp4dml22na1rnlbgwu4wvfkitbd7dr3/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="./oauth-config.js"></script>
   <script>
-    // Ustaw swoje wartości:
-    // window.PRETTY_MAILS_GOOGLE_CLIENT_ID = "xxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com";
-    // window.PRETTY_MAILS_ALLOWED_EMAIL = "twoj-adres@gmail.com";
+    // Wartości domyślne, jeśli nie ustawisz ich w oauth-config.js
     window.PRETTY_MAILS_GOOGLE_CLIENT_ID = window.PRETTY_MAILS_GOOGLE_CLIENT_ID || "";
     window.PRETTY_MAILS_ALLOWED_EMAIL = window.PRETTY_MAILS_ALLOWED_EMAIL || "";
+    window.PRETTY_MAILS_OUTLOOK_CLIENT_ID = window.PRETTY_MAILS_OUTLOOK_CLIENT_ID || "";
+    window.PRETTY_MAILS_OUTLOOK_TENANT_ID = window.PRETTY_MAILS_OUTLOOK_TENANT_ID || "common";
+    window.PRETTY_MAILS_OUTLOOK_ALLOWED_EMAIL = window.PRETTY_MAILS_OUTLOOK_ALLOWED_EMAIL || "";
+    window.PRETTY_MAILS_OUTLOOK_REDIRECT_URI = window.PRETTY_MAILS_OUTLOOK_REDIRECT_URI || "";
   </script>
   <link rel="stylesheet" href="./app.css">
 </head>
@@ -29,6 +32,7 @@
       <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
       <button id="exportBtn" class="button button-primary" type="button" aria-label="Zapisz plik .eml">💾</button>
       <button id="gmailSendBtn" class="button" type="button" aria-label="Wyślij przez Gmail">📨</button>
+      <button id="outlookSendBtn" class="button" type="button" aria-label="Wyślij przez Outlook">Ⓜ️</button>
       <button id="shareBtn" class="button" type="button" aria-label="Udostępnij plik .eml">📤</button>
     </div>
 
@@ -407,6 +411,23 @@
       <div class="modal-actions">
         <button id="googleAuthModalConfirm" class="button button-primary" type="button">Zaloguj się z Google</button>
         <button id="googleAuthModalCancel" class="button" type="button">Anuluj</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="outlookAuthModal" class="modal" hidden>
+    <div class="modal-backdrop" data-outlook-auth-close></div>
+    <section class="modal-card modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="outlookAuthModalTitle">
+      <div class="modal-head">
+        <h2 id="outlookAuthModalTitle">🔐 Zaloguj się do Outlook</h2>
+        <button id="outlookAuthModalClose" class="button" type="button" aria-label="Zamknij okno logowania Outlook">✕</button>
+      </div>
+      <p id="outlookAuthModalText" class="modal-text">
+        Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Microsoft.
+      </p>
+      <div class="modal-actions">
+        <button id="outlookAuthModalConfirm" class="button button-primary" type="button">Zaloguj się do Outlook</button>
+        <button id="outlookAuthModalCancel" class="button" type="button">Anuluj</button>
       </div>
     </section>
   </div>
