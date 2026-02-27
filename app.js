@@ -174,15 +174,16 @@ const I18N = {
     shareBusy: "📋…",
     exportButtonAria: "Zapisz plik .eml",
     gmailSendButtonAria: "Wyślij przez Gmail",
-    shareButtonAria: "Kopiuj treść wiadomości",
+    shareButtonAria: "Kopiuj całą treść wiadomości",
 
     infoButtonAria: "Pokaż wskazówki",
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
     infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
     infoLine2: "💾 „Zapisz” pobiera plik na urządzenie.",
-    infoLine3: "📨 „Wyślij Gmail” wysyła wiadomość przez konto Google po zalogowaniu.",
-    infoLine4: "📋 „Kopiuj” kopiuje samą treść wiadomości.",
+    infoLine3:
+      "📨 „Wyślij Gmail” używa Google OAuth, a gdy OAuth nie jest skonfigurowany otwiera szkic Gmail.",
+    infoLine4: "📋 „Kopiuj” kopiuje cały podgląd wiadomości (HTML + style).",
 
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
@@ -241,6 +242,16 @@ const I18N = {
     copyEmptyAlert: "Brak treści do skopiowania.",
     gmailConfigMissing:
       "Brak konfiguracji Google OAuth. Ustaw window.PRETTY_MAILS_GOOGLE_CLIENT_ID w index.html.",
+    gmailComposeFallbackTitle: "Otwórz szkic Gmail",
+    gmailComposePopupBlocked: "Przeglądarka zablokowała okno Gmail. Zezwól na popupy i spróbuj ponownie.",
+    googleAuthModalTitle: "🔐 Zaloguj się z Google",
+    googleAuthModalTextOauth: "Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Google.",
+    googleAuthModalTextFallback:
+      "Google OAuth nie jest skonfigurowany. Otworzymy Gmail, gdzie zalogujesz się i wyślesz wiadomość.",
+    googleAuthModalConfirmOauth: "Zaloguj się z Google",
+    googleAuthModalConfirmFallback: "Otwórz Gmail",
+    googleAuthModalCancel: "Anuluj",
+    googleAuthModalCloseAria: "Zamknij okno logowania Google",
     gmailAuthFailed: "Logowanie Google nie powiodło się.",
     gmailWrongAccount: "To konto Google nie jest dozwolone dla tej aplikacji.",
 
@@ -375,15 +386,16 @@ const I18N = {
     shareBusy: "📋…",
     exportButtonAria: "Save .eml file",
     gmailSendButtonAria: "Send via Gmail",
-    shareButtonAria: "Copy message body",
+    shareButtonAria: "Copy full message content",
 
     infoButtonAria: "Show tips",
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
     infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
     infoLine2: "💾 “Save” downloads the file to your device.",
-    infoLine3: "📨 “Send Gmail” sends the message through your Google account after sign-in.",
-    infoLine4: "📋 “Copy” copies only the message body.",
+    infoLine3:
+      "📨 “Send Gmail” uses Google OAuth, and when OAuth is not configured it opens a Gmail draft.",
+    infoLine4: "📋 “Copy” copies the full message preview (HTML + styles).",
 
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
@@ -442,6 +454,16 @@ const I18N = {
     copyEmptyAlert: "There is no content to copy.",
     gmailConfigMissing:
       "Google OAuth is not configured. Set window.PRETTY_MAILS_GOOGLE_CLIENT_ID in index.html.",
+    gmailComposeFallbackTitle: "Open Gmail draft",
+    gmailComposePopupBlocked: "The browser blocked the Gmail window. Allow popups and try again.",
+    googleAuthModalTitle: "🔐 Sign in with Google",
+    googleAuthModalTextOauth: "To send directly from this app, sign in to your Google account.",
+    googleAuthModalTextFallback:
+      "Google OAuth is not configured. We will open Gmail where you can sign in and send the message.",
+    googleAuthModalConfirmOauth: "Sign in with Google",
+    googleAuthModalConfirmFallback: "Open Gmail",
+    googleAuthModalCancel: "Cancel",
+    googleAuthModalCloseAria: "Close Google sign-in dialog",
     gmailAuthFailed: "Google sign-in failed.",
     gmailWrongAccount: "This Google account is not allowed for this app.",
 
@@ -574,15 +596,16 @@ const I18N = {
     shareBusy: "📋…",
     exportButtonAria: "Зберегти файл .eml",
     gmailSendButtonAria: "Надіслати через Gmail",
-    shareButtonAria: "Скопіювати вміст листа",
+    shareButtonAria: "Скопіювати весь вміст листа",
 
     infoButtonAria: "Показати підказки",
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
     infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
     infoLine2: "💾 «Зберегти» завантажує файл на пристрій.",
-    infoLine3: "📨 «Надіслати Gmail» надсилає лист через Google-акаунт після входу.",
-    infoLine4: "📋 «Копіювати» копіює лише текст листа.",
+    infoLine3:
+      "📨 «Надіслати Gmail» використовує Google OAuth, а без OAuth відкриває чернетку Gmail.",
+    infoLine4: "📋 «Копіювати» копіює весь перегляд листа (HTML + стилі).",
 
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
@@ -641,6 +664,16 @@ const I18N = {
     copyEmptyAlert: "Немає вмісту для копіювання.",
     gmailConfigMissing:
       "Google OAuth не налаштовано. Вкажіть window.PRETTY_MAILS_GOOGLE_CLIENT_ID у index.html.",
+    gmailComposeFallbackTitle: "Відкрити чернетку Gmail",
+    gmailComposePopupBlocked: "Браузер заблокував вікно Gmail. Дозвольте pop-up і спробуйте ще раз.",
+    googleAuthModalTitle: "🔐 Увійти через Google",
+    googleAuthModalTextOauth: "Щоб надіслати лист безпосередньо із застосунку, увійдіть у Google-акаунт.",
+    googleAuthModalTextFallback:
+      "Google OAuth не налаштовано. Ми відкриємо Gmail, де ви увійдете й надішлете лист.",
+    googleAuthModalConfirmOauth: "Увійти через Google",
+    googleAuthModalConfirmFallback: "Відкрити Gmail",
+    googleAuthModalCancel: "Скасувати",
+    googleAuthModalCloseAria: "Закрити вікно входу Google",
     gmailAuthFailed: "Вхід через Google не вдався.",
     gmailWrongAccount: "Цей Google-акаунт не дозволено для цього застосунку.",
 
@@ -734,6 +767,12 @@ const ui = {
   infoModalClose: document.querySelector("#infoModalClose"),
   infoModalTitle: document.querySelector("#infoModalTitle"),
   infoModalList: document.querySelector("#infoModalList"),
+  googleAuthModal: document.querySelector("#googleAuthModal"),
+  googleAuthModalClose: document.querySelector("#googleAuthModalClose"),
+  googleAuthModalTitle: document.querySelector("#googleAuthModalTitle"),
+  googleAuthModalText: document.querySelector("#googleAuthModalText"),
+  googleAuthModalConfirm: document.querySelector("#googleAuthModalConfirm"),
+  googleAuthModalCancel: document.querySelector("#googleAuthModalCancel"),
 
   editorTitle: document.querySelector("#editorTitle"),
   sectionEnvelopeTitle: document.querySelector("#sectionEnvelopeTitle"),
@@ -976,6 +1015,7 @@ function bindEvents() {
     closeLanguageMenu();
     closeAllCustomSelects();
     closeInfoModal();
+    closeGoogleAuthModal();
     if (state.mobilePreviewOpen) {
       state.mobilePreviewOpen = false;
       syncMobilePreviewMode();
@@ -1165,20 +1205,15 @@ function bindEvents() {
 
   ui.gmailSendBtn.addEventListener("click", async () => {
     if (!validateAddressFields()) return;
-
-    try {
-      state.isExporting = true;
-      state.exportAction = "gmail";
-      updateActionButtons();
-      await sendViaGmail();
-    } catch (error) {
-      console.error(error);
-      alert(error?.message || t("gmailSendFailedAlert"));
-    } finally {
-      state.isExporting = false;
-      state.exportAction = "save";
-      updateActionButtons();
+    if (!hasAnyRecipient()) {
+      await runGmailSendAction();
+      return;
     }
+    if (shouldPromptGoogleAuthModal()) {
+      openGoogleAuthModal();
+      return;
+    }
+    await runGmailSendAction();
   });
 
   ui.shareBtn.addEventListener("click", async () => {
@@ -1210,6 +1245,27 @@ function bindEvents() {
     if (event.target.closest("[data-modal-close]")) {
       closeInfoModal();
     }
+  });
+
+  ui.googleAuthModalClose.addEventListener("click", () => {
+    closeGoogleAuthModal();
+  });
+
+  ui.googleAuthModalCancel.addEventListener("click", () => {
+    closeGoogleAuthModal();
+  });
+
+  ui.googleAuthModal.addEventListener("click", (event) => {
+    if (!(event.target instanceof HTMLElement)) return;
+    if (event.target.closest("[data-google-auth-close]")) {
+      closeGoogleAuthModal();
+    }
+  });
+
+  ui.googleAuthModalConfirm.addEventListener("click", async () => {
+    closeGoogleAuthModal();
+    if (!validateAddressFields()) return;
+    await runGmailSendAction();
   });
 }
 
@@ -1773,6 +1829,7 @@ function applyLanguage(language) {
     item.textContent = t(key);
     ui.infoModalList.append(item);
   });
+  updateGoogleAuthModalCopy();
 
   buildPresetOptions();
   renderTemplateSelectOptions();
@@ -2279,6 +2336,7 @@ function renderPreviewFields() {
 
 function buildTemplateHtml(rawMarkup, template, options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
+  const attachmentLinkMode = options.attachmentLinkMode || (showPlaceholders ? "preview" : "cid");
 
   const replacements = {
     greeting_block: buildGreetingBlockHtml({ showPlaceholders }),
@@ -2286,7 +2344,7 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     quote_block: buildQuoteBlockHtml({ showPlaceholders }),
     attachments_block: buildAttachmentsBlockHtml({
       showPlaceholders,
-      linkMode: showPlaceholders ? "preview" : "cid",
+      linkMode: attachmentLinkMode,
     }),
     signature_block: buildSignatureBlockHtml({ showPlaceholders }),
   };
@@ -2336,6 +2394,39 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     .mail-attachments,
     .mail-signature-block{
       margin: 0 !important;
+    }
+    .mail-signature-block{
+      gap: 0 !important;
+      row-gap: 0 !important;
+    }
+    .mail-greeting{
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      color: inherit !important;
+      font-size: 1em !important;
+      font-weight: inherit !important;
+      letter-spacing: normal !important;
+      text-transform: none !important;
+      line-height: inherit !important;
+    }
+    .mail-greeting::before,
+    .mail-greeting::after{
+      content: none !important;
+      display: none !important;
+    }
+    .mail-signature-block > *{
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+    .mail-signature-block > .mail-sender{
+      margin-top: 4px !important;
+    }
+    .mail-signature-block > .mail-contact-block,
+    .mail-signature-block > .mail-sent-block{
+      margin-top: 8px !important;
     }
     .mail-attachments-list{
       margin: 0;
@@ -2506,11 +2597,10 @@ function buildSignatureBlockHtml(options = {}) {
   const senderName = normalizeInlineText(state.fields.senderName);
   const hasClosing = state.enabled.closing && Boolean(closingText || showPlaceholders);
   const hasSender = state.enabled.senderName && Boolean(senderName || showPlaceholders);
+  const closingLineText = appendClosingComma(closingText || t("closingPresetRegards"));
 
   const closingLine = hasClosing
-    ? `<p class="mail-closing${closingText ? "" : " app-placeholder"}">${escapeHtml(
-        closingText || t("closingPresetRegards")
-      )}</p>`
+    ? `<p class="mail-closing${closingText ? "" : " app-placeholder"}">${escapeHtml(closingLineText)}</p>`
     : "";
 
   const senderLine = hasSender
@@ -2553,6 +2643,13 @@ function resolveClosingText() {
   };
 
   return map[state.fields.closingPreset] || "";
+}
+
+function appendClosingComma(value) {
+  const normalized = normalizeInlineText(value);
+  if (!normalized) return "";
+  if (/[,:;.!?]$/.test(normalized)) return normalized;
+  return `${normalized},`;
 }
 
 function buildContactBlockHtml(options = {}) {
@@ -2847,14 +2944,43 @@ function updateActionButtons() {
   const canExport = !hasValidationErrors && hasAnyExportData();
   const canGmailSend = !hasValidationErrors && hasAnyExportData() && hasAnyRecipient();
   const canCopy = hasCopyContentData();
-  ui.gmailSendBtn.title = isGoogleAuthConfigured() ? t("gmailSendButtonAria") : t("gmailConfigMissing");
+  ui.gmailSendBtn.title = isGoogleAuthConfigured() ? t("gmailSendButtonAria") : t("gmailComposeFallbackTitle");
   ui.exportBtn.disabled = !canExport;
-  ui.gmailSendBtn.disabled = !canGmailSend || !isGoogleAuthConfigured();
+  ui.gmailSendBtn.disabled = !canGmailSend;
   ui.shareBtn.disabled = !canCopy;
 }
 
 function hasCopyContentData() {
-  return Boolean(normalizeMultilineText(richHtmlToPlainText(state.fields.content)));
+  if (normalizeMultilineText(buildPlainTextBody())) return true;
+  if (state.enabled.content && normalizeInlineText(normalizeEditorHtml(state.fields.content))) return true;
+  if (state.enabled.quote && normalizeInlineText(normalizeEditorHtml(state.fields.quote))) return true;
+  if (state.enabled.contactLogo && state.logoAttachment?.dataUrl) return true;
+  return false;
+}
+
+function hasActiveGoogleAccessToken() {
+  return Boolean(state.googleAuth.accessToken) && Date.now() < state.googleAuth.expiresAt - 30_000;
+}
+
+function shouldPromptGoogleAuthModal() {
+  if (!isGoogleAuthConfigured()) return true;
+  return !hasActiveGoogleAccessToken();
+}
+
+async function runGmailSendAction() {
+  try {
+    state.isExporting = true;
+    state.exportAction = "gmail";
+    updateActionButtons();
+    await sendViaGmail();
+  } catch (error) {
+    console.error(error);
+    alert(error?.message || t("gmailSendFailedAlert"));
+  } finally {
+    state.isExporting = false;
+    state.exportAction = "save";
+    updateActionButtons();
+  }
 }
 
 function hasAnyRecipient() {
@@ -3250,12 +3376,39 @@ function fileKindLabel(kind) {
 
 function openInfoModal() {
   ui.infoModal.hidden = false;
-  document.body.classList.add("modal-open");
+  syncModalBodyState();
 }
 
 function closeInfoModal() {
   ui.infoModal.hidden = true;
-  document.body.classList.remove("modal-open");
+  syncModalBodyState();
+}
+
+function openGoogleAuthModal() {
+  updateGoogleAuthModalCopy();
+  ui.googleAuthModal.hidden = false;
+  syncModalBodyState();
+}
+
+function closeGoogleAuthModal() {
+  ui.googleAuthModal.hidden = true;
+  syncModalBodyState();
+}
+
+function syncModalBodyState() {
+  const anyModalOpen = !ui.infoModal.hidden || !ui.googleAuthModal.hidden;
+  document.body.classList.toggle("modal-open", anyModalOpen);
+}
+
+function updateGoogleAuthModalCopy() {
+  const oauthConfigured = isGoogleAuthConfigured();
+  ui.googleAuthModalTitle.textContent = t("googleAuthModalTitle");
+  ui.googleAuthModalText.textContent = oauthConfigured ? t("googleAuthModalTextOauth") : t("googleAuthModalTextFallback");
+  ui.googleAuthModalConfirm.textContent = oauthConfigured
+    ? t("googleAuthModalConfirmOauth")
+    : t("googleAuthModalConfirmFallback");
+  ui.googleAuthModalCancel.textContent = t("googleAuthModalCancel");
+  ui.googleAuthModalClose.setAttribute("aria-label", t("googleAuthModalCloseAria"));
 }
 
 function buildPlainTextBody() {
@@ -3306,7 +3459,7 @@ function buildSignaturePlainText() {
 
   const closing = resolveClosingText();
   if (state.enabled.closing && closing) {
-    lines.push(closing);
+    lines.push(appendClosingComma(closing));
   }
 
   const sender = normalizeInlineText(state.fields.senderName);
@@ -3369,24 +3522,28 @@ async function saveEmlFile() {
 }
 
 async function copyMessageContent() {
-  const html = normalizeEditorHtml(state.fields.content);
-  const plain = richHtmlToPlainText(state.fields.content);
+  const htmlDocument = await buildExportBodyHtml({ showPlaceholders: false, attachmentLinkMode: "preview" });
+  const html = buildClipboardHtml(htmlDocument);
+  const plain = buildPlainTextBody();
 
   if (!normalizeMultilineText(plain) && !normalizeInlineText(html)) {
     throw new Error(t("copyEmptyAlert"));
   }
 
   if (navigator.clipboard && window.ClipboardItem) {
-    const clipboardItem = new ClipboardItem({
-      "text/plain": new Blob([plain || ""], { type: "text/plain" }),
-      "text/html": new Blob([html || `<p>${escapeHtml(plain || "")}</p>`], { type: "text/html" }),
-    });
-    await navigator.clipboard.write([clipboardItem]);
-    return;
+    try {
+      const clipboardItem = new ClipboardItem({
+        "text/plain": new Blob([plain || ""], { type: "text/plain" }),
+        "text/html": new Blob([html || `<p>${escapeHtml(plain || "")}</p>`], { type: "text/html" }),
+      });
+      await navigator.clipboard.write([clipboardItem]);
+      return;
+    } catch (error) {
+      console.warn("ClipboardItem write failed, using legacy fallback.", error);
+    }
   }
 
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(plain || "");
+  if (copyHtmlWithExecCommand(html, plain)) {
     return;
   }
 
@@ -3406,12 +3563,13 @@ async function copyMessageContent() {
 }
 
 async function sendViaGmail() {
-  if (!isGoogleAuthConfigured()) {
-    throw new Error(t("gmailConfigMissing"));
-  }
-
   if (!hasAnyRecipient()) {
     throw new Error(t("requiredRecipientMissing"));
+  }
+
+  if (!isGoogleAuthConfigured()) {
+    openGmailComposeWindow();
+    return;
   }
 
   const rawMessage = await buildMimeMessage({ draftMode: false });
@@ -3434,8 +3592,7 @@ async function buildMimeMessage(options = {}) {
     throw new Error(t("noTemplateSelected"));
   }
 
-  const rawMarkup = await ensureTemplateMarkup(template);
-  const htmlBody = buildTemplateHtml(rawMarkup, template, { forceMode: null, showPlaceholders: false });
+  const htmlBody = await buildExportBodyHtml({ forceMode: null, showPlaceholders: false, attachmentLinkMode: "cid" });
   const plainTextBody = buildPlainTextBody();
 
   const mixedBoundary = `----=_PrettyMailsMixed_${Date.now().toString(16)}_${Math.random()
@@ -3520,6 +3677,51 @@ async function buildMimeMessage(options = {}) {
   lines.push("");
 
   return lines.join("\r\n");
+}
+
+function buildClipboardHtml(htmlDocument) {
+  const source = String(htmlDocument || "").trim();
+  if (!source) return "";
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(source, "text/html");
+  const styleMarkup = Array.from(doc.querySelectorAll("style"))
+    .map((node) => node.outerHTML)
+    .join("");
+  const bodyMarkup = doc.body?.innerHTML || "";
+
+  return `${styleMarkup}${bodyMarkup}`.trim();
+}
+
+function copyHtmlWithExecCommand(html, plainText) {
+  const selection = window.getSelection();
+  if (!selection) return false;
+
+  const container = document.createElement("div");
+  container.setAttribute("contenteditable", "true");
+  container.setAttribute("aria-hidden", "true");
+  container.style.position = "fixed";
+  container.style.left = "-9999px";
+  container.style.top = "0";
+  container.style.opacity = "0";
+  container.style.pointerEvents = "none";
+  container.innerHTML = html || `<p>${escapeHtml(plainText || "")}</p>`;
+  document.body.append(container);
+
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } finally {
+    selection.removeAllRanges();
+    container.remove();
+  }
+
+  return copied;
 }
 
 function buildExportFilename() {
@@ -3652,6 +3854,30 @@ async function fetchGoogleUserEmail(accessToken) {
     throw new Error(t("gmailAuthFailed"));
   }
   return email;
+}
+
+function openGmailComposeWindow() {
+  const to = parseAddressList(state.fields.to).join(",");
+  const cc = state.enabled.cc ? parseAddressList(state.fields.cc).join(",") : "";
+  const bcc = state.enabled.bcc ? parseAddressList(state.fields.bcc).join(",") : "";
+  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
+  const body = buildPlainTextBody();
+
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    tf: "1",
+  });
+  if (to) params.set("to", to);
+  if (cc) params.set("cc", cc);
+  if (bcc) params.set("bcc", bcc);
+  if (subject) params.set("su", subject);
+  if (body) params.set("body", body);
+
+  const popup = window.open(`https://mail.google.com/mail/?${params.toString()}`, "_blank", "noopener,noreferrer");
+  if (!popup) {
+    throw new Error(t("gmailComposePopupBlocked"));
+  }
 }
 
 async function sendGmailRawMessage(rawMessage, accessToken, allowRetry = true) {
@@ -4128,11 +4354,15 @@ async function initSingleTinyEditor(config) {
   tinyEditors[config.key] = instance;
 }
 
-function buildExportBodyHtml() {
+async function buildExportBodyHtml(options = {}) {
   const template = getTemplateById(state.selectedTemplateId);
-  const rawMarkup = template ? state.templateMarkup.get(template.id) : "";
-  if (!rawMarkup || !template) return "";
-  return buildTemplateHtml(rawMarkup, template, { forceMode: null, showPlaceholders: false });
+  if (!template) return "";
+  const rawMarkup = await ensureTemplateMarkup(template);
+  return buildTemplateHtml(rawMarkup, template, {
+    forceMode: options.forceMode ?? null,
+    showPlaceholders: Boolean(options.showPlaceholders),
+    attachmentLinkMode: options.attachmentLinkMode,
+  });
 }
 
 function registerServiceWorker() {

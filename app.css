@@ -920,6 +920,10 @@ textarea[aria-invalid="true"] {
   z-index: 1;
 }
 
+.modal-card-compact {
+  width: min(460px, 100%);
+}
+
 .modal-head {
   display: flex;
   align-items: center;
@@ -934,6 +938,20 @@ textarea[aria-invalid="true"] {
   display: grid;
   gap: 0.45rem;
   color: var(--text-main);
+}
+
+.modal-text {
+  margin: 0;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
 }
 
 .app-footer {

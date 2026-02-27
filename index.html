@@ -394,6 +394,23 @@
     </section>
   </div>
 
+  <div id="googleAuthModal" class="modal" hidden>
+    <div class="modal-backdrop" data-google-auth-close></div>
+    <section class="modal-card modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="googleAuthModalTitle">
+      <div class="modal-head">
+        <h2 id="googleAuthModalTitle">🔐 Zaloguj się z Google</h2>
+        <button id="googleAuthModalClose" class="button" type="button" aria-label="Zamknij okno logowania Google">✕</button>
+      </div>
+      <p id="googleAuthModalText" class="modal-text">
+        Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Google.
+      </p>
+      <div class="modal-actions">
+        <button id="googleAuthModalConfirm" class="button button-primary" type="button">Zaloguj się z Google</button>
+        <button id="googleAuthModalCancel" class="button" type="button">Anuluj</button>
+      </div>
+    </section>
+  </div>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>
