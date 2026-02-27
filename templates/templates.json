@@ -1,66 +1,57 @@
 [
   {
-    "id": "personal-minimal",
-    "name": "Prywatny — minimalistyczny",
-    "description": "Lekki, neutralny, dobry do codziennych maili.",
+    "id": "personal-clean",
+    "name": "Personal - clean",
+    "description": "Neutralny prywatny układ z miękką kartą.",
     "i18n": {
       "pl": {
-        "name": "Prywatny — minimalistyczny",
-        "description": "Lekki, neutralny, dobry do codziennych maili."
+        "name": "Prywatny - clean",
+        "description": "Neutralny prywatny układ z miękką kartą."
       },
       "en": {
-        "name": "Private — minimal",
-        "description": "Light and neutral, good for everyday messages."
+        "name": "Personal - clean",
+        "description": "Neutral personal layout with a soft card style."
       },
       "uk": {
-        "name": "Приватний — мінімалістичний",
-        "description": "Легкий нейтральний стиль для щоденних листів."
+        "name": "Приватний - clean",
+        "description": "Нейтральний приватний макет із м'якою карткою."
       }
     },
-    "templateUrl": "./personal-minimal.html",
+    "templateUrl": "./personal-clean.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#2e7dff"
     },
+    "editorFonts": {
+      "body": "\"Inter\", \"Avenir Next\", sans-serif",
+      "headings": "\"Inter\", \"Avenir Next\", sans-serif"
+    },
     "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
+      "allOptionalBodyFields": true
     },
     "placeholders": [
+      "{{greeting_block}}",
       "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{time}}"
-    ],
-    "editorFonts": {
-      "body": "\"Helvetica Neue\", Helvetica, Arial, sans-serif",
-      "headings": "\"Helvetica Neue\", Helvetica, Arial, sans-serif"
-    }
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
   },
   {
     "id": "personal-card",
-    "name": "Prywatny — karta",
-    "description": "Lekko elegancki, kartowy układ z akcentem.",
+    "name": "Personal - card",
+    "description": "Lekki styl kartowy z wyraźnym nagłówkiem.",
     "i18n": {
       "pl": {
-        "name": "Prywatny — karta",
-        "description": "Lekko elegancki, kartowy układ z akcentem."
+        "name": "Prywatny - card",
+        "description": "Lekki styl kartowy z wyraźnym nagłówkiem."
       },
       "en": {
-        "name": "Private — card",
-        "description": "Slightly elegant card layout with accent."
+        "name": "Personal - card",
+        "description": "Light card style with a clear header bar."
       },
       "uk": {
-        "name": "Приватний — картка",
-        "description": "Трохи елегантний картковий макет з акцентом."
+        "name": "Приватний - card",
+        "description": "Легкий картковий стиль із виразним заголовком."
       }
     },
     "templateUrl": "./personal-card.html",
@@ -68,606 +59,166 @@
       "defaultMode": "auto",
       "accent": "#0f766e"
     },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
-    "editorFonts": {
-      "body": "\"Avenir Next\", \"Segoe UI\", sans-serif",
-      "headings": "\"Avenir Next\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-sunset",
-    "name": "Prywatny — sunset",
-    "description": "Miękki, ciepły gradient z przyjaznym tonem.",
-    "i18n": {
-      "pl": {
-        "name": "Prywatny — sunset",
-        "description": "Miękki, ciepły gradient z przyjaznym tonem."
-      },
-      "en": {
-        "name": "Private — sunset",
-        "description": "Warm gradient style with a friendly vibe."
-      },
-      "uk": {
-        "name": "Приватний — sunset",
-        "description": "Теплий градієнтний стиль із дружнім настроєм."
-      }
-    },
-    "templateUrl": "./personal-sunset.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#d86a2e"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
-    "editorFonts": {
-      "body": "\"Avenir Next\", \"Segoe UI\", sans-serif",
-      "headings": "\"Avenir Next\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-outline",
-    "name": "Biznesowy — kontur",
-    "description": "Nowoczesny układ biznesowy z pionowym paskiem akcentu.",
-    "i18n": {
-      "pl": {
-        "name": "Biznesowy — kontur",
-        "description": "Nowoczesny układ biznesowy z pionowym paskiem akcentu."
-      },
-      "en": {
-        "name": "Business — outline",
-        "description": "Modern business layout with a vertical accent stripe."
-      },
-      "uk": {
-        "name": "Бізнес — контур",
-        "description": "Сучасний бізнес-макет із вертикальною акцентною смугою."
-      }
-    },
-    "templateUrl": "./personal-outline.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#2f7bbf"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{template_title}}",
-      "{{time}}"
-    ],
-    "editorFonts": {
-      "body": "\"Inter\", \"Avenir Next\", sans-serif",
-      "headings": "\"Inter\", \"Avenir Next\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-ribbon",
-    "name": "Prywatny — wstążka",
-    "description": "Subtelnie dekoracyjny styl z etykietą daty.",
-    "i18n": {
-      "pl": {
-        "name": "Prywatny — wstążka",
-        "description": "Subtelnie dekoracyjny styl z etykietą daty."
-      },
-      "en": {
-        "name": "Private — ribbon",
-        "description": "Soft decorative style with a date ribbon."
-      },
-      "uk": {
-        "name": "Приватний — стрічка",
-        "description": "Легкий декоративний стиль зі стрічкою дати."
-      }
-    },
-    "templateUrl": "./personal-ribbon.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#8f4de8"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
-    "editorFonts": {
-      "body": "\"Nunito Sans\", \"Segoe UI\", sans-serif",
-      "headings": "\"Nunito Sans\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-letterhead",
-    "name": "Biznesowy — letterhead",
-    "description": "Formalny biznesowy układ w stylu papieru firmowego.",
-    "i18n": {
-      "pl": {
-        "name": "Biznesowy — letterhead",
-        "description": "Formalny biznesowy układ w stylu papieru firmowego."
-      },
-      "en": {
-        "name": "Business — letterhead",
-        "description": "Formal business composition inspired by letterhead style."
-      },
-      "uk": {
-        "name": "Бізнес — бланк",
-        "description": "Формальний бізнес-макет у стилі фірмового бланка."
-      }
-    },
-    "templateUrl": "./personal-letterhead.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#1f6f5f"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}",
-      "{{reply_header}}"
-    ],
-    "editorFonts": {
-      "body": "\"Georgia\", \"Times New Roman\", serif",
-      "headings": "\"Georgia\", \"Times New Roman\", serif"
-    }
-  },
-  {
-    "id": "personal-cleanlines",
-    "name": "Biznesowy — clean lines",
-    "description": "Czysty, profesjonalny układ z delikatnym akcentem.",
-    "i18n": {
-      "pl": {
-        "name": "Biznesowy — clean lines",
-        "description": "Czysty, profesjonalny układ z delikatnym akcentem."
-      },
-      "en": {
-        "name": "Business — clean lines",
-        "description": "Clean professional layout with a subtle accent."
-      },
-      "uk": {
-        "name": "Бізнес — clean lines",
-        "description": "Чистий професійний макет із м’яким акцентом."
-      }
-    },
-    "templateUrl": "./personal-cleanlines.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#2368b5"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
-    "editorFonts": {
-      "body": "\"Source Sans 3\", \"Segoe UI\", sans-serif",
-      "headings": "\"Source Sans 3\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-glass",
-    "name": "Prywatny - glass",
-    "description": "Lekki, szklany styl na gradientowym tle.",
-    "i18n": {
-      "pl": {
-        "name": "Prywatny - glass",
-        "description": "Lekki, szklany styl na gradientowym tle."
-      },
-      "en": {
-        "name": "Private - glass",
-        "description": "Light glassmorphism style on a soft gradient."
-      },
-      "uk": {
-        "name": "Приватний - glass",
-        "description": "Легкий “скляний” стиль на м’якому градієнті."
-      }
-    },
-    "templateUrl": "./personal-glass.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#0f8d83"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
     "editorFonts": {
       "body": "\"Manrope\", \"Segoe UI\", sans-serif",
       "headings": "\"Manrope\", \"Segoe UI\", sans-serif"
-    }
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
   },
   {
     "id": "personal-journal",
-    "name": "Prywatny - journal",
-    "description": "Styl dziennika, cieple tony i klasyczna typografia.",
+    "name": "Personal - journal",
+    "description": "Ciepły, spokojny układ inspirowany notatnikiem.",
     "i18n": {
       "pl": {
         "name": "Prywatny - journal",
-        "description": "Styl dziennika, cieple tony i klasyczna typografia."
+        "description": "Ciepły, spokojny układ inspirowany notatnikiem."
       },
       "en": {
-        "name": "Private - journal",
-        "description": "Journal-inspired style with warm tones and classic typography."
+        "name": "Personal - journal",
+        "description": "Warm, calm layout inspired by a journal page."
       },
       "uk": {
         "name": "Приватний - journal",
-        "description": "Стиль щоденника з теплими тонами та класичною типографікою."
+        "description": "Теплий спокійний макет у стилі щоденника."
       }
     },
     "templateUrl": "./personal-journal.html",
     "theme": {
       "defaultMode": "auto",
-      "accent": "#7b5c3b"
+      "accent": "#8e5f3c"
     },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
     "editorFonts": {
       "body": "\"Lora\", \"Georgia\", serif",
       "headings": "\"Lora\", \"Georgia\", serif"
-    }
-  },
-  {
-    "id": "personal-band",
-    "name": "Prywatny - band",
-    "description": "Energiczny pasek akcentu i prosty uklad tresci.",
-    "i18n": {
-      "pl": {
-        "name": "Prywatny - band",
-        "description": "Energiczny pasek akcentu i prosty uklad tresci."
-      },
-      "en": {
-        "name": "Private - band",
-        "description": "Energetic accent band with straightforward content flow."
-      },
-      "uk": {
-        "name": "Приватний - band",
-        "description": "Динамічна акцентна смуга та простий порядок контенту."
-      }
-    },
-    "templateUrl": "./personal-band.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#c63f54"
     },
     "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
+      "allOptionalBodyFields": true
     },
     "placeholders": [
+      "{{greeting_block}}",
       "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "business-classic",
+    "name": "Business - classic",
+    "description": "Formalny układ biznesowy z wyważonym kontrastem.",
+    "i18n": {
+      "pl": {
+        "name": "Biznesowy - classic",
+        "description": "Formalny układ biznesowy z wyważonym kontrastem."
+      },
+      "en": {
+        "name": "Business - classic",
+        "description": "Formal business layout with balanced contrast."
+      },
+      "uk": {
+        "name": "Бізнесовий - classic",
+        "description": "Формальний бізнес-макет зі збалансованим контрастом."
+      }
+    },
+    "templateUrl": "./business-classic.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#245fbd"
+    },
     "editorFonts": {
-      "body": "\"DM Sans\", \"Segoe UI\", sans-serif",
-      "headings": "\"DM Sans\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-note",
-    "name": "Prywatny - note",
-    "description": "Przyjazny, notatkowy wyglad z cieplym kolorem.",
-    "i18n": {
-      "pl": {
-        "name": "Prywatny - note",
-        "description": "Przyjazny, notatkowy wyglad z cieplym kolorem."
-      },
-      "en": {
-        "name": "Private - note",
-        "description": "Friendly note-like layout with warm color accents."
-      },
-      "uk": {
-        "name": "Приватний - note",
-        "description": "Дружній “нотатковий” стиль з теплими акцентами."
-      }
-    },
-    "templateUrl": "./personal-note.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#d39f1f"
+      "body": "\"Source Sans 3\", \"Segoe UI\", sans-serif",
+      "headings": "\"Source Sans 3\", \"Segoe UI\", sans-serif"
     },
     "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
+      "allOptionalBodyFields": true
     },
     "placeholders": [
+      "{{greeting_block}}",
       "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
-    "editorFonts": {
-      "body": "\"Nunito\", \"Segoe UI\", sans-serif",
-      "headings": "\"Nunito\", \"Segoe UI\", sans-serif"
-    }
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
   },
   {
-    "id": "personal-mono",
-    "name": "Biznesowy — mono",
-    "description": "Monochromatyczny, formalny styl do komunikacji zawodowej.",
+    "id": "business-stripe",
+    "name": "Business - stripe",
+    "description": "Nowoczesny wariant z pionowym paskiem akcentu.",
     "i18n": {
       "pl": {
-        "name": "Biznesowy — mono",
-        "description": "Monochromatyczny, formalny styl do komunikacji zawodowej."
+        "name": "Biznesowy - stripe",
+        "description": "Nowoczesny wariant z pionowym paskiem akcentu."
       },
       "en": {
-        "name": "Business — mono",
-        "description": "Monochrome formal style for professional communication."
+        "name": "Business - stripe",
+        "description": "Modern variant with a vertical accent stripe."
       },
       "uk": {
-        "name": "Бізнес — mono",
-        "description": "Монохромний формальний стиль для робочої комунікації."
+        "name": "Бізнесовий - stripe",
+        "description": "Сучасний варіант із вертикальною акцентною смугою."
       }
     },
-    "templateUrl": "./personal-mono.html",
+    "templateUrl": "./business-stripe.html",
     "theme": {
       "defaultMode": "auto",
-      "accent": "#2f2f2f"
+      "accent": "#2a9d8f"
     },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
-    "editorFonts": {
-      "body": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif",
-      "headings": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-midnight",
-    "name": "Biznesowy — midnight",
-    "description": "Elegancki ciemny wariant do nowoczesnej komunikacji biznesowej.",
-    "i18n": {
-      "pl": {
-        "name": "Biznesowy — midnight",
-        "description": "Elegancki ciemny wariant do nowoczesnej komunikacji biznesowej."
-      },
-      "en": {
-        "name": "Business — midnight",
-        "description": "Elegant dark variant for modern business communication."
-      },
-      "uk": {
-        "name": "Бізнес — midnight",
-        "description": "Елегантний темний варіант для сучасної бізнес-комунікації."
-      }
-    },
-    "templateUrl": "./personal-midnight.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#3ab7ff"
-    },
-    "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
-    },
-    "placeholders": [
-      "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}"
-    ],
     "editorFonts": {
       "body": "\"Plus Jakarta Sans\", \"Segoe UI\", sans-serif",
       "headings": "\"Plus Jakarta Sans\", \"Segoe UI\", sans-serif"
-    }
-  },
-  {
-    "id": "personal-postcard",
-    "name": "Prywatny - postcard",
-    "description": "Lekki styl pocztowki z etykieta naglowka.",
-    "i18n": {
-      "pl": {
-        "name": "Prywatny - postcard",
-        "description": "Lekki styl pocztowki z etykieta naglowka."
-      },
-      "en": {
-        "name": "Private - postcard",
-        "description": "Postcard-like style with a compact top label."
-      },
-      "uk": {
-        "name": "Приватний - postcard",
-        "description": "Стиль листівки з компактною верхньою міткою."
-      }
-    },
-    "templateUrl": "./personal-postcard.html",
-    "theme": {
-      "defaultMode": "auto",
-      "accent": "#0e9f6e"
     },
     "fields": {
-      "to": true,
-      "cc": true,
-      "bcc": true,
-      "replyTo": true,
-      "subject": true,
-      "content": true,
-      "quote": true,
-      "signatureName": true,
-      "date": true,
-      "time": true
+      "allOptionalBodyFields": true
     },
     "placeholders": [
+      "{{greeting_block}}",
       "{{content_block}}",
-      "{{signature_block}}",
-      "{{greeting}}",
-      "{{date}}",
-      "{{time}}",
-      "{{template_title}}",
-      "{{reply_header}}"
-    ],
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "business-soft",
+    "name": "Business - soft",
+    "description": "Profesjonalny styl z łagodnym gradientem tła.",
+    "i18n": {
+      "pl": {
+        "name": "Biznesowy - soft",
+        "description": "Profesjonalny styl z łagodnym gradientem tła."
+      },
+      "en": {
+        "name": "Business - soft",
+        "description": "Professional style with a soft gradient background."
+      },
+      "uk": {
+        "name": "Бізнесовий - soft",
+        "description": "Професійний стиль із м'яким градієнтним фоном."
+      }
+    },
+    "templateUrl": "./business-soft.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#7057d6"
+    },
     "editorFonts": {
-      "body": "\"Poppins\", \"Segoe UI\", sans-serif",
-      "headings": "\"Poppins\", \"Segoe UI\", sans-serif"
-    }
+      "body": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif",
+      "headings": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
   }
 ]

@@ -1,29 +1,52 @@
 const STORAGE_KEYS = {
-  language: "mailTemplatesPwa.language",
-  draft: "mailTemplatesPwa.draft.v1",
+  language: "prettyMails.language",
+  themeMode: "prettyMails.themeMode",
+  previewMode: "prettyMails.previewMode",
+  draft: "prettyMails.draft.v2",
 };
 
 const TEMPLATE_INDEX_URL = new URL("./templates/templates.json", window.location.href).toString();
 const MB = 1024 * 1024;
 const WARN_MB = 15;
 const DANGER_MB = 22;
+
 const LANGUAGE_FLAGS = {
   pl: "🇵🇱",
   en: "🇬🇧",
   uk: "🇺🇦",
 };
-const OPTIONAL_FIELD_DEFAULTS = {
-  to: true,
+
+const OPTIONAL_DEFAULTS = {
   cc: false,
   bcc: false,
-  replyTo: false,
   subject: true,
-  content: true,
   quote: false,
-  signatureName: true,
-  date: true,
-  time: false,
+  greeting: true,
+  content: true,
+  closing: true,
+  contactName: false,
+  contactRole: false,
+  contactCompany: false,
+  contactLogo: false,
+  contactPhone: false,
+  contactEmail: false,
+  contactWebsite: false,
+  contactAddress: false,
+  socials: false,
+  sentAt: true,
+  sentFrom: false,
 };
+
+const SOCIAL_NETWORKS = [
+  { value: "linkedin", icon: "💼", labelKey: "socialLinkedin" },
+  { value: "facebook", icon: "📘", labelKey: "socialFacebook" },
+  { value: "instagram", icon: "📸", labelKey: "socialInstagram" },
+  { value: "x", icon: "𝕏", labelKey: "socialX" },
+  { value: "youtube", icon: "▶️", labelKey: "socialYoutube" },
+  { value: "tiktok", icon: "🎵", labelKey: "socialTiktok" },
+  { value: "github", icon: "🐙", labelKey: "socialGithub" },
+  { value: "website", icon: "🌐", labelKey: "socialWebsite" },
+];
 
 const I18N = {
   pl: {
@@ -32,89 +55,119 @@ const I18N = {
     languagePl: "Polski",
     languageEn: "English",
     languageUk: "Українська",
-    subtitleHtml:
-      "Szablony, podgląd, załączniki i eksport wiadomości do pliku <code>.eml</code>.",
-    themeLabel: "Motyw aplikacji",
+
+    themeModeLabel: "Motyw",
     themeAuto: "Auto",
     themeLight: "Jasny",
     themeDark: "Ciemny",
-    exportButton: "💾 Zapisz",
-    exportBusy: "💾 Zapis...",
-    shareButton: "📤 Udostępnij",
-    shareBusy: "📤 Wysyłanie...",
-    infoButtonAria: "Pokaż wskazówki",
-    infoModalTitle: "ℹ️ Jak to działa",
-    infoModalCloseAria: "Zamknij",
-    infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
-    infoLine2: "💾 „Zapisz .eml” pobiera plik na urządzenie.",
-    infoLine3: "📤 „Udostępnij .eml” otwiera systemowe udostępnianie.",
-    infoLine4: "📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.",
-    templatesTitle: "Szablony",
+
+    previewModeLabel: "Tryb podglądu",
+    previewModeApp: "Jak na stronie",
+    previewModeLight: "Jasny",
+    previewModeDark: "Ciemny",
+    previewModeBoth: "Oba",
+
     mobileTemplateLabel: "Szablon",
     mobileTemplateAria: "Wybierz szablon",
-    templateSearchPlaceholder: "Szukaj po nazwie lub opisie",
-    templateListAria: "Lista szablonów",
-    templateSearchEmpty: "Brak wyników wyszukiwania.",
-    editorTitle: "Edycja",
-    fieldToLabel: "Adresat",
+
+    editorTitle: "Edytor",
+    sectionEnvelopeTitle: "Informacje wysyłkowe",
+    sectionQuoteTitle: "Cytat",
+    sectionGreetingTitle: "Przywitanie",
+    sectionContentTitle: "Treść",
+    sectionClosingTitle: "Pozdrowienie",
+    sectionContactTitle: "Dane kontaktowe",
+    sectionSentTitle: "Wysłano",
+
+    fieldToLabel: "Do",
     fieldToShort: "Do",
-    fieldToPlaceholder: "adres@example.com",
+    fieldToPlaceholder: "adres@example.com adres2@example.com",
     fieldCcLabel: "DW",
     fieldCcShort: "DW",
     fieldCcPlaceholder: "adres@example.com, drugi@example.com",
     fieldBccLabel: "UDW",
     fieldBccShort: "UDW",
     fieldBccPlaceholder: "adres@example.com",
-    fieldReplyToLabel: "Adres odpowiedzi",
-    fieldReplyToShort: "Adres odpowiedzi",
-    fieldReplyToPlaceholder: "adres@example.com",
     fieldSubjectLabel: "Temat",
     fieldSubjectShort: "Temat",
     fieldSubjectPlaceholder: "Temat wiadomości",
-    fieldContentLabel: "Treść",
+
+    fieldQuoteLabel: "Cytat odpowiedzi",
+    fieldQuotePlaceholder: "Wklej cytowany fragment...",
+
+    fieldGreetingLabel: "Przywitanie",
+    fieldGreetingCustomLabel: "Własne przywitanie",
+    fieldGreetingCustomPlaceholder: "Np. Cześć wszystkim",
+    fieldGreetingRecipientLabel: "Adresat (w treści)",
+    fieldGreetingRecipientPlaceholder: "Np. Aniu / Zespole",
+
+    fieldContentLabel: "Treść wiadomości",
     fieldContentPlaceholder: "Wpisz treść wiadomości...",
-    toggleToLabel: "Pokaż",
-    toggleCcLabel: "Pokaż",
-    toggleBccLabel: "Pokaż",
-    toggleReplyToLabel: "Pokaż",
-    toggleSubjectLabel: "Pokaż",
-    toggleContentLabel: "Pokaż",
-    toggleQuoteLabel: "Pokaż",
-    toggleSignatureLabel: "Pokaż podpis (opcjonalny)",
-    toggleDateLabel: "Pokaż",
-    toggleDateHint: "Data jest automatyczna i nie ma pola edycji.",
-    toggleTimeLabel: "Pokaż",
-    toggleTimeHint: "Godzina jest automatyczna i nie ma pola edycji.",
-    replyModeLabel: "Pokaż",
-    fieldQuoteLabel: "Cytat",
-    fieldQuoteShort: "Cytat",
-    fieldQuotePlaceholder: "Wklej cytowany fragment, jeśli to odpowiedź...",
-    fieldSignatureLabel: "Nadawca",
-    fieldSignatureShort: "Nadawca",
-    fieldSignaturePlaceholder: "Twoje imię",
-    fieldDateShort: "Data",
-    fieldTimeShort: "Godzina",
-    fieldSentAtShort: "Wysłano",
-    sentAtPrefix: "Wysłano",
-    sentAtTimePrefix: "o",
+
+    fieldClosingLabel: "Pozdrowienie",
+    fieldClosingCustomLabel: "Własne pozdrowienie",
+    fieldClosingCustomPlaceholder: "Np. Dzięki i do usłyszenia",
+
+    fieldSenderNameLabel: "Nadawca",
+    fieldSenderNamePlaceholder: "Imię i nazwisko",
+
+    fieldContactNameLabel: "Imię i nazwisko",
+    fieldContactNamePlaceholder: "Imię i nazwisko",
+    fieldContactRoleLabel: "Stanowisko",
+    fieldContactRolePlaceholder: "Np. Project Manager",
+    fieldContactCompanyLabel: "Nazwa firmy",
+    fieldContactCompanyPlaceholder: "Nazwa firmy",
+    fieldContactLogoLabel: "Logo firmy (załącznik)",
+    fieldContactLogoHint: "Logo dodawane jest jako osobny załącznik.",
+    fieldContactPhoneLabel: "Numer telefonu",
+    fieldContactPhonePlaceholder: "+48 000 000 000",
+    fieldContactEmailLabel: "Adres e-mail",
+    fieldContactEmailPlaceholder: "kontakt@firma.pl",
+    fieldContactWebsiteLabel: "Strona WWW",
+    fieldContactWebsitePlaceholder: "https://twojafirma.pl",
+    fieldContactAddressLabel: "Adres fizyczny",
+    fieldContactAddressPlaceholder: "Ulica, kod, miasto",
+
+    fieldSocialsLabel: "Media społecznościowe",
+    socialAddButton: "+ Dodaj social",
+    socialRemoveButton: "Usuń",
+    socialUrlPlaceholder: "https://...",
+    socialsEmpty: "Brak dodanych profili.",
+
+    fieldSentAtLabel: "Wysłano o",
+    fieldSentAtHint: "Data i godzina są automatyczne.",
+    fieldSentFromLabel: "Wysłano z",
+    fieldSentFromHint: "Urządzenie rozpoznawane automatycznie.",
+
+    toggleShow: "Pokaż",
+
     rememberDraftLabel: "Zapamiętaj brudnopis lokalnie (bez załączników)",
-    mutedNoteHtml:
-      "Pola opcjonalne włączasz checkboxami. Aktywne puste pola pokazują placeholder tylko w podglądzie; eksport używa wyłącznie wpisanych wartości.",
-    addressValidationPrefix: "Uzupełnij lub popraw pola:",
-    requiredToMissing: "Adresat: wpisz poprawny adres e-mail.",
-    requiredSignatureMissing: "Nadawca: wpisz imię lub podpis.",
-    replyToSingleAddress: "Pole Adres do odpowiedzi może zawierać tylko jeden adres.",
+    mutedNoteHtml: "Odznaczone pola nie będą widoczne w podglądzie ani eksporcie.",
+
     previewTitle: "Podgląd",
+    previewEnvelopeTitle: "Informacje wysyłkowe",
+    previewContentTitle: "Treść maila",
     previewFrameTitle: "Podgląd wiadomości",
     previewFrameDarkTitle: "Podgląd wiadomości - ciemny",
-    templateThemeSwitchLabel: "Motyw szablonu",
-    previewModeLabel: "Tryb podglądu",
-    previewModeApp: "Jak w aplikacji",
-    previewModeLight: "Jasny",
-    previewModeDark: "Ciemny",
-    previewModeSplit: "Jasny + Ciemny",
+
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
+
+    exportButton: "💾",
+    exportBusy: "💾…",
+    shareButton: "📤",
+    shareBusy: "📤…",
+    exportButtonAria: "Zapisz plik .eml",
+    shareButtonAria: "Udostępnij plik .eml",
+
+    infoButtonAria: "Pokaż wskazówki",
+    infoModalTitle: "ℹ️ Jak to działa",
+    infoModalCloseAria: "Zamknij",
+    infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
+    infoLine2: "💾 „Zapisz” pobiera plik na urządzenie.",
+    infoLine3: "📤 „Udostępnij” otwiera systemowe udostępnianie.",
+    infoLine4: "📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.",
+
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
     dropZoneText: "Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.",
@@ -125,28 +178,61 @@ const I18N = {
     attachmentEstimated: "Szacowany rozmiar wiadomości: {size}",
     warningWarn: "Duża wiadomość. Wysyłka może potrwać dłużej.",
     warningDanger: "Bardzo duża wiadomość. Część skrzynek może ją odrzucić.",
-    footerNoteHtml:
-      "<strong>Uwaga:</strong> <code>mailto:</code> nie wspiera HTML i załączników, dlatego użyj eksportu <code>.eml</code>.",
-    bootFailed: "Nie udało się uruchomić aplikacji.",
-    exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
-    shareFailedAlert: "Nie udało się udostępnić pliku .eml. Zapisuję plik lokalnie.",
-    noTemplateSelected: "Brak wybranego szablonu",
-    greeting: "Cześć,",
-    closing: "Pozdrawiam,",
-    templateHeader: "Wiadomość prywatna",
-    replyHeader: "Odpowiedź na wiadomość",
-    quoteLabel: "Cytat poprzedniej wiadomości",
-    quotePlaceholder: "Tutaj możesz wkleić oryginalny fragment wiadomości, na który odpowiadasz.",
+
+    addressValidationPrefix: "Uzupełnij lub popraw pola:",
+    requiredToMissing: "Do: wpisz przynajmniej jeden poprawny adres e-mail.",
+    requiredSenderMissing: "Nadawca: wpisz imię i nazwisko.",
+    invalidAddressList: "{label}: {list}",
+    contactEmailInvalid: "Adres e-mail w danych kontaktowych jest niepoprawny.",
+    contactWebsiteInvalid: "Adres strony WWW jest niepoprawny (użyj pełnego URL).",
+
+    greetingPresetCasual: "Cześć",
+    greetingPresetFormal: "Dzień dobry",
+    greetingPresetNeutral: "Witam",
+    greetingPresetHey: "Hej",
+    closingPresetRegards: "Pozdrawiam",
+    closingPresetSincerely: "Z poważaniem",
+    closingPresetThanks: "Dziękuję",
+    closingPresetBest: "Serdecznie",
+    presetCustom: "Własne",
+
+    sentAtPrefix: "Wysłano",
+    sentAtTimePrefix: "o",
+    sentFromPrefix: "Wysłano z",
+
+    socialLinkedin: "LinkedIn",
+    socialFacebook: "Facebook",
+    socialInstagram: "Instagram",
+    socialX: "X",
+    socialYoutube: "YouTube",
+    socialTiktok: "TikTok",
+    socialGithub: "GitHub",
+    socialWebsite: "WWW",
+
+    logoPlaceholder: "logo-firmy.png",
+    socialPlaceholder: "profil społecznościowy",
+
     templatesFetchError: "Nie udało się pobrać listy szablonów ({status})",
     templatesInvalidFormat: "templates.json ma niepoprawny format",
     templateFileFetchError: "Nie udało się pobrać pliku szablonu: {path}",
+    noTemplateSelected: "Brak wybranego szablonu",
+    bootFailed: "Nie udało się uruchomić aplikacji.",
+    exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
+    shareFailedAlert: "Nie udało się udostępnić pliku .eml. Zapisuję plik lokalnie.",
+
     fileKindFile: "PLIK",
+    fileKindImage: "IMG",
+    fileKindPdf: "PDF",
+    fileKindAudio: "AUDIO",
+    fileKindVideo: "VIDEO",
+    fileKindLogo: "LOGO",
     fileWordForms: {
       one: "plik",
       few: "pliki",
       many: "plików",
       other: "pliku",
     },
+
     dateLocale: "pl-PL",
   },
   en: {
@@ -155,89 +241,119 @@ const I18N = {
     languagePl: "Polski",
     languageEn: "English",
     languageUk: "Українська",
-    subtitleHtml:
-      "Templates, preview, attachments, and message export to <code>.eml</code>.",
-    themeLabel: "App theme",
+
+    themeModeLabel: "Theme",
     themeAuto: "Auto",
     themeLight: "Light",
     themeDark: "Dark",
-    exportButton: "💾 Save",
-    exportBusy: "💾 Saving...",
-    shareButton: "📤 Share",
-    shareBusy: "📤 Sharing...",
-    infoButtonAria: "Show tips",
-    infoModalTitle: "ℹ️ How it works",
-    infoModalCloseAria: "Close",
-    infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
-    infoLine2: "💾 “Save .eml” downloads the file to your device.",
-    infoLine3: "📤 “Share .eml” opens the system share sheet.",
-    infoLine4: "📮 Sending is done by your mail app and your account.",
-    templatesTitle: "Templates",
+
+    previewModeLabel: "Preview mode",
+    previewModeApp: "As page",
+    previewModeLight: "Light",
+    previewModeDark: "Dark",
+    previewModeBoth: "Both",
+
     mobileTemplateLabel: "Template",
     mobileTemplateAria: "Choose template",
-    templateSearchPlaceholder: "Search by name or description",
-    templateListAria: "Template list",
-    templateSearchEmpty: "No matching templates.",
+
     editorTitle: "Editor",
-    fieldToLabel: "Recipient",
+    sectionEnvelopeTitle: "Sending info",
+    sectionQuoteTitle: "Quote",
+    sectionGreetingTitle: "Greeting",
+    sectionContentTitle: "Content",
+    sectionClosingTitle: "Closing",
+    sectionContactTitle: "Contact details",
+    sectionSentTitle: "Sent",
+
+    fieldToLabel: "To",
     fieldToShort: "To",
-    fieldToPlaceholder: "address@example.com",
+    fieldToPlaceholder: "address@example.com address2@example.com",
     fieldCcLabel: "CC",
     fieldCcShort: "CC",
     fieldCcPlaceholder: "address@example.com, second@example.com",
     fieldBccLabel: "BCC",
     fieldBccShort: "BCC",
     fieldBccPlaceholder: "address@example.com",
-    fieldReplyToLabel: "Reply address",
-    fieldReplyToShort: "Reply-To",
-    fieldReplyToPlaceholder: "address@example.com",
     fieldSubjectLabel: "Subject",
     fieldSubjectShort: "Subject",
     fieldSubjectPlaceholder: "Message subject",
-    fieldContentLabel: "Content",
+
+    fieldQuoteLabel: "Reply quote",
+    fieldQuotePlaceholder: "Paste quoted text...",
+
+    fieldGreetingLabel: "Greeting",
+    fieldGreetingCustomLabel: "Custom greeting",
+    fieldGreetingCustomPlaceholder: "e.g. Hello everyone",
+    fieldGreetingRecipientLabel: "Recipient (in body)",
+    fieldGreetingRecipientPlaceholder: "e.g. Anna / Team",
+
+    fieldContentLabel: "Message content",
     fieldContentPlaceholder: "Type message content...",
-    toggleToLabel: "Show",
-    toggleCcLabel: "Show",
-    toggleBccLabel: "Show",
-    toggleReplyToLabel: "Show",
-    toggleSubjectLabel: "Show",
-    toggleContentLabel: "Show",
-    toggleQuoteLabel: "Show",
-    toggleSignatureLabel: "Show signature (optional)",
-    toggleDateLabel: "Show",
-    toggleDateHint: "Date is generated automatically and cannot be edited.",
-    toggleTimeLabel: "Show",
-    toggleTimeHint: "Time is generated automatically and cannot be edited.",
-    replyModeLabel: "Show",
-    fieldQuoteLabel: "Quote",
-    fieldQuoteShort: "Quote",
-    fieldQuotePlaceholder: "Paste quoted message fragment for reply...",
-    fieldSignatureLabel: "Sender",
-    fieldSignatureShort: "Sender",
-    fieldSignaturePlaceholder: "Your name",
-    fieldDateShort: "Date",
-    fieldTimeShort: "Time",
-    fieldSentAtShort: "Sent",
-    sentAtPrefix: "Sent",
-    sentAtTimePrefix: "at",
+
+    fieldClosingLabel: "Closing",
+    fieldClosingCustomLabel: "Custom closing",
+    fieldClosingCustomPlaceholder: "e.g. Thanks and talk soon",
+
+    fieldSenderNameLabel: "Sender",
+    fieldSenderNamePlaceholder: "First and last name",
+
+    fieldContactNameLabel: "Full name",
+    fieldContactNamePlaceholder: "Full name",
+    fieldContactRoleLabel: "Job title",
+    fieldContactRolePlaceholder: "e.g. Project Manager",
+    fieldContactCompanyLabel: "Company",
+    fieldContactCompanyPlaceholder: "Company name",
+    fieldContactLogoLabel: "Company logo (attachment)",
+    fieldContactLogoHint: "Logo is added as a separate attachment.",
+    fieldContactPhoneLabel: "Phone number",
+    fieldContactPhonePlaceholder: "+1 000 000 000",
+    fieldContactEmailLabel: "Email address",
+    fieldContactEmailPlaceholder: "contact@company.com",
+    fieldContactWebsiteLabel: "Website",
+    fieldContactWebsitePlaceholder: "https://yourcompany.com",
+    fieldContactAddressLabel: "Physical address",
+    fieldContactAddressPlaceholder: "Street, ZIP, city",
+
+    fieldSocialsLabel: "Social media",
+    socialAddButton: "+ Add social",
+    socialRemoveButton: "Remove",
+    socialUrlPlaceholder: "https://...",
+    socialsEmpty: "No profiles added.",
+
+    fieldSentAtLabel: "Sent at",
+    fieldSentAtHint: "Date and time are generated automatically.",
+    fieldSentFromLabel: "Sent from",
+    fieldSentFromHint: "Device is detected automatically.",
+
+    toggleShow: "Show",
+
     rememberDraftLabel: "Remember draft locally (without attachments)",
-    mutedNoteHtml:
-      "Optional fields are controlled with checkboxes. Active empty fields show placeholders only in preview; export uses only entered values.",
-    addressValidationPrefix: "Complete or fix fields:",
-    requiredToMissing: "Recipient: enter a valid email address.",
-    requiredSignatureMissing: "Sender: enter a name or signature.",
-    replyToSingleAddress: "Reply-To can contain only one address.",
+    mutedNoteHtml: "Unchecked fields are hidden in preview and export.",
+
     previewTitle: "Preview",
+    previewEnvelopeTitle: "Sending info",
+    previewContentTitle: "Mail body",
     previewFrameTitle: "Message preview",
     previewFrameDarkTitle: "Message preview - dark",
-    templateThemeSwitchLabel: "Template theme",
-    previewModeLabel: "Preview mode",
-    previewModeApp: "As app",
-    previewModeLight: "Light",
-    previewModeDark: "Dark",
-    previewModeSplit: "Light + Dark",
+
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
+
+    exportButton: "💾",
+    exportBusy: "💾…",
+    shareButton: "📤",
+    shareBusy: "📤…",
+    exportButtonAria: "Save .eml file",
+    shareButtonAria: "Share .eml file",
+
+    infoButtonAria: "Show tips",
+    infoModalTitle: "ℹ️ How it works",
+    infoModalCloseAria: "Close",
+    infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
+    infoLine2: "💾 “Save” downloads the file to your device.",
+    infoLine3: "📤 “Share” opens the system share sheet.",
+    infoLine4: "📮 Sending happens in your mail app with your account.",
+
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
     dropZoneText: "Drag and drop files here or use the “Add files” button.",
@@ -248,26 +364,59 @@ const I18N = {
     attachmentEstimated: "Estimated message size: {size}",
     warningWarn: "Large message. Sending may take longer.",
     warningDanger: "Very large message. Some mailboxes may reject it.",
-    footerNoteHtml:
-      "<strong>Note:</strong> <code>mailto:</code> does not support HTML or attachments, so use <code>.eml</code> export.",
-    bootFailed: "Failed to start the application.",
-    exportFailedAlert: "Failed to export the .eml file",
-    shareFailedAlert: "Could not share the .eml file. Saving it locally instead.",
-    noTemplateSelected: "No template selected",
-    greeting: "Hi,",
-    closing: "Best regards,",
-    templateHeader: "Private message",
-    replyHeader: "Reply to message",
-    quoteLabel: "Quoted previous message",
-    quotePlaceholder: "You can paste the original message fragment you are replying to here.",
-    templatesFetchError: "Failed to fetch template list ({status})",
+
+    addressValidationPrefix: "Complete or fix fields:",
+    requiredToMissing: "To: enter at least one valid email address.",
+    requiredSenderMissing: "Sender: enter full name.",
+    invalidAddressList: "{label}: {list}",
+    contactEmailInvalid: "Contact email address is invalid.",
+    contactWebsiteInvalid: "Website URL is invalid (use full URL).",
+
+    greetingPresetCasual: "Hi",
+    greetingPresetFormal: "Good morning",
+    greetingPresetNeutral: "Hello",
+    greetingPresetHey: "Hey",
+    closingPresetRegards: "Best regards",
+    closingPresetSincerely: "Sincerely",
+    closingPresetThanks: "Thanks",
+    closingPresetBest: "Warm regards",
+    presetCustom: "Custom",
+
+    sentAtPrefix: "Sent",
+    sentAtTimePrefix: "at",
+    sentFromPrefix: "Sent from",
+
+    socialLinkedin: "LinkedIn",
+    socialFacebook: "Facebook",
+    socialInstagram: "Instagram",
+    socialX: "X",
+    socialYoutube: "YouTube",
+    socialTiktok: "TikTok",
+    socialGithub: "GitHub",
+    socialWebsite: "Website",
+
+    logoPlaceholder: "company-logo.png",
+    socialPlaceholder: "social profile",
+
+    templatesFetchError: "Failed to fetch templates list ({status})",
     templatesInvalidFormat: "templates.json has invalid format",
     templateFileFetchError: "Failed to fetch template file: {path}",
+    noTemplateSelected: "No template selected",
+    bootFailed: "Failed to start application.",
+    exportFailedAlert: "Failed to export .eml file",
+    shareFailedAlert: "Could not share .eml file. Saving locally instead.",
+
     fileKindFile: "FILE",
+    fileKindImage: "IMG",
+    fileKindPdf: "PDF",
+    fileKindAudio: "AUDIO",
+    fileKindVideo: "VIDEO",
+    fileKindLogo: "LOGO",
     fileWordForms: {
       one: "file",
       other: "files",
     },
+
     dateLocale: "en-US",
   },
   uk: {
@@ -276,89 +425,119 @@ const I18N = {
     languagePl: "Polski",
     languageEn: "English",
     languageUk: "Українська",
-    subtitleHtml:
-      "Шаблони, попередній перегляд, вкладення та експорт повідомлення у <code>.eml</code>.",
-    themeLabel: "Тема застосунку",
+
+    themeModeLabel: "Тема",
     themeAuto: "Авто",
     themeLight: "Світла",
     themeDark: "Темна",
-    exportButton: "💾 Зберегти",
-    exportBusy: "💾 Збереження...",
-    shareButton: "📤 Поділитися",
-    shareBusy: "📤 Поширення...",
-    infoButtonAria: "Показати підказки",
-    infoModalTitle: "ℹ️ Як це працює",
-    infoModalCloseAria: "Закрити",
-    infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
-    infoLine2: "💾 «Зберегти .eml» завантажує файл на пристрій.",
-    infoLine3: "📤 «Поділитися .eml» відкриває системне меню поширення.",
-    infoLine4: "📮 Надсилання виконує ваша поштова програма з вашого акаунта.",
-    templatesTitle: "Шаблони",
+
+    previewModeLabel: "Режим перегляду",
+    previewModeApp: "Як на сторінці",
+    previewModeLight: "Світлий",
+    previewModeDark: "Темний",
+    previewModeBoth: "Обидва",
+
     mobileTemplateLabel: "Шаблон",
     mobileTemplateAria: "Оберіть шаблон",
-    templateSearchPlaceholder: "Пошук за назвою або описом",
-    templateListAria: "Список шаблонів",
-    templateSearchEmpty: "Шаблони не знайдено.",
+
     editorTitle: "Редактор",
-    fieldToLabel: "Одержувач",
+    sectionEnvelopeTitle: "Дані відправлення",
+    sectionQuoteTitle: "Цитата",
+    sectionGreetingTitle: "Привітання",
+    sectionContentTitle: "Текст",
+    sectionClosingTitle: "Завершення",
+    sectionContactTitle: "Контактні дані",
+    sectionSentTitle: "Надіслано",
+
+    fieldToLabel: "Кому",
     fieldToShort: "Кому",
-    fieldToPlaceholder: "email@example.com",
+    fieldToPlaceholder: "email@example.com email2@example.com",
     fieldCcLabel: "Копія",
     fieldCcShort: "Копія",
     fieldCcPlaceholder: "email@example.com, second@example.com",
     fieldBccLabel: "Прих. копія",
     fieldBccShort: "Прих. копія",
     fieldBccPlaceholder: "email@example.com",
-    fieldReplyToLabel: "Адреса відповіді",
-    fieldReplyToShort: "Адреса відповіді",
-    fieldReplyToPlaceholder: "email@example.com",
     fieldSubjectLabel: "Тема",
     fieldSubjectShort: "Тема",
     fieldSubjectPlaceholder: "Тема листа",
-    fieldContentLabel: "Текст",
+
+    fieldQuoteLabel: "Цитата відповіді",
+    fieldQuotePlaceholder: "Вставте цитований фрагмент...",
+
+    fieldGreetingLabel: "Привітання",
+    fieldGreetingCustomLabel: "Власне привітання",
+    fieldGreetingCustomPlaceholder: "Напр. Вітаю всіх",
+    fieldGreetingRecipientLabel: "Одержувач (у тексті)",
+    fieldGreetingRecipientPlaceholder: "Напр. Анно / Командо",
+
+    fieldContentLabel: "Текст повідомлення",
     fieldContentPlaceholder: "Введіть текст повідомлення...",
-    toggleToLabel: "Показати",
-    toggleCcLabel: "Показати",
-    toggleBccLabel: "Показати",
-    toggleReplyToLabel: "Показати",
-    toggleSubjectLabel: "Показати",
-    toggleContentLabel: "Показати",
-    toggleQuoteLabel: "Показати",
-    toggleSignatureLabel: "Показати підпис (необов'язково)",
-    toggleDateLabel: "Показати",
-    toggleDateHint: "Дата генерується автоматично й не редагується.",
-    toggleTimeLabel: "Показати",
-    toggleTimeHint: "Час генерується автоматично й не редагується.",
-    replyModeLabel: "Показати",
-    fieldQuoteLabel: "Цитата",
-    fieldQuoteShort: "Цитата",
-    fieldQuotePlaceholder: "Вставте цитований фрагмент, якщо це відповідь...",
-    fieldSignatureLabel: "Відправник",
-    fieldSignatureShort: "Відправник",
-    fieldSignaturePlaceholder: "Ваше ім'я",
-    fieldDateShort: "Дата",
-    fieldTimeShort: "Час",
-    fieldSentAtShort: "Надіслано",
-    sentAtPrefix: "Надіслано",
-    sentAtTimePrefix: "о",
+
+    fieldClosingLabel: "Завершення",
+    fieldClosingCustomLabel: "Власне завершення",
+    fieldClosingCustomPlaceholder: "Напр. Дякую і до зв'язку",
+
+    fieldSenderNameLabel: "Відправник",
+    fieldSenderNamePlaceholder: "Ім'я та прізвище",
+
+    fieldContactNameLabel: "Ім'я та прізвище",
+    fieldContactNamePlaceholder: "Ім'я та прізвище",
+    fieldContactRoleLabel: "Посада",
+    fieldContactRolePlaceholder: "Напр. Project Manager",
+    fieldContactCompanyLabel: "Назва компанії",
+    fieldContactCompanyPlaceholder: "Назва компанії",
+    fieldContactLogoLabel: "Логотип компанії (вкладення)",
+    fieldContactLogoHint: "Логотип додається як окреме вкладення.",
+    fieldContactPhoneLabel: "Номер телефону",
+    fieldContactPhonePlaceholder: "+380 00 000 00 00",
+    fieldContactEmailLabel: "Електронна пошта",
+    fieldContactEmailPlaceholder: "contact@company.com",
+    fieldContactWebsiteLabel: "Сайт",
+    fieldContactWebsitePlaceholder: "https://yourcompany.com",
+    fieldContactAddressLabel: "Фізична адреса",
+    fieldContactAddressPlaceholder: "Вулиця, індекс, місто",
+
+    fieldSocialsLabel: "Соцмережі",
+    socialAddButton: "+ Додати соцмережу",
+    socialRemoveButton: "Видалити",
+    socialUrlPlaceholder: "https://...",
+    socialsEmpty: "Профілі не додано.",
+
+    fieldSentAtLabel: "Надіслано о",
+    fieldSentAtHint: "Дата й час генеруються автоматично.",
+    fieldSentFromLabel: "Надіслано з",
+    fieldSentFromHint: "Пристрій визначається автоматично.",
+
+    toggleShow: "Показати",
+
     rememberDraftLabel: "Зберігати чернетку локально (без вкладень)",
-    mutedNoteHtml:
-      "Необов'язкові поля вмикаються чекбоксами. Активні порожні поля показують плейсхолдер тільки в перегляді; експорт бере лише введені значення.",
-    addressValidationPrefix: "Заповніть або виправте поля:",
-    requiredToMissing: "Одержувач: введіть коректну email-адресу.",
-    requiredSignatureMissing: "Відправник: введіть ім'я або підпис.",
-    replyToSingleAddress: "Поле Адреса для відповіді може містити лише одну адресу.",
-    previewTitle: "Попередній перегляд",
-    previewFrameTitle: "Попередній перегляд листа",
-    previewFrameDarkTitle: "Попередній перегляд листа - темний",
-    templateThemeSwitchLabel: "Тема шаблону",
-    previewModeLabel: "Режим перегляду",
-    previewModeApp: "Як у застосунку",
-    previewModeLight: "Світлий",
-    previewModeDark: "Темний",
-    previewModeSplit: "Світлий + Темний",
+    mutedNoteHtml: "Вимкнені поля не потрапляють у перегляд і експорт.",
+
+    previewTitle: "Перегляд",
+    previewEnvelopeTitle: "Дані відправлення",
+    previewContentTitle: "Тіло листа",
+    previewFrameTitle: "Перегляд листа",
+    previewFrameDarkTitle: "Перегляд листа - темний",
+
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
+
+    exportButton: "💾",
+    exportBusy: "💾…",
+    shareButton: "📤",
+    shareBusy: "📤…",
+    exportButtonAria: "Зберегти файл .eml",
+    shareButtonAria: "Поділитися файлом .eml",
+
+    infoButtonAria: "Показати підказки",
+    infoModalTitle: "ℹ️ Як це працює",
+    infoModalCloseAria: "Закрити",
+    infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
+    infoLine2: "💾 «Зберегти» завантажує файл на пристрій.",
+    infoLine3: "📤 «Поділитися» відкриває системне меню поширення.",
+    infoLine4: "📮 Надсилання виконується у вашій поштовій програмі.",
+
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
     dropZoneText: "Перетягніть файли сюди або натисніть «Додати файли».",
@@ -368,29 +547,62 @@ const I18N = {
     attachmentTotal: "Сума файлів: {size}",
     attachmentEstimated: "Орієнтовний розмір листа: {size}",
     warningWarn: "Великий лист. Надсилання може тривати довше.",
-    warningDanger: "Дуже великий лист. Деякі скриньки можуть його відхилити.",
-    footerNoteHtml:
-      "<strong>Увага:</strong> <code>mailto:</code> не підтримує HTML і вкладення, тому використовуйте експорт <code>.eml</code>.",
-    bootFailed: "Не вдалося запустити застосунок.",
-    exportFailedAlert: "Не вдалося експортувати файл .eml",
-    shareFailedAlert: "Не вдалося поділитися файлом .eml. Зберігаю його локально.",
-    noTemplateSelected: "Шаблон не вибрано",
-    greeting: "Привіт,",
-    closing: "З повагою,",
-    templateHeader: "Приватне повідомлення",
-    replyHeader: "Відповідь на повідомлення",
-    quoteLabel: "Цитата попереднього повідомлення",
-    quotePlaceholder: "Тут можна вставити фрагмент оригінального повідомлення, на яке ви відповідаєте.",
+    warningDanger: "Дуже великий лист. Частина скриньок може відхилити.",
+
+    addressValidationPrefix: "Заповніть або виправте поля:",
+    requiredToMissing: "Кому: введіть хоча б одну коректну email-адресу.",
+    requiredSenderMissing: "Відправник: введіть ім'я та прізвище.",
+    invalidAddressList: "{label}: {list}",
+    contactEmailInvalid: "Контактна email-адреса некоректна.",
+    contactWebsiteInvalid: "URL сайту некоректний (використайте повний URL).",
+
+    greetingPresetCasual: "Привіт",
+    greetingPresetFormal: "Добрий день",
+    greetingPresetNeutral: "Вітаю",
+    greetingPresetHey: "Доброго дня",
+    closingPresetRegards: "З повагою",
+    closingPresetSincerely: "Щиро",
+    closingPresetThanks: "Дякую",
+    closingPresetBest: "З найкращими побажаннями",
+    presetCustom: "Власне",
+
+    sentAtPrefix: "Надіслано",
+    sentAtTimePrefix: "о",
+    sentFromPrefix: "Надіслано з",
+
+    socialLinkedin: "LinkedIn",
+    socialFacebook: "Facebook",
+    socialInstagram: "Instagram",
+    socialX: "X",
+    socialYoutube: "YouTube",
+    socialTiktok: "TikTok",
+    socialGithub: "GitHub",
+    socialWebsite: "Сайт",
+
+    logoPlaceholder: "logo-компанії.png",
+    socialPlaceholder: "соцпрофіль",
+
     templatesFetchError: "Не вдалося завантажити список шаблонів ({status})",
     templatesInvalidFormat: "templates.json має некоректний формат",
     templateFileFetchError: "Не вдалося завантажити файл шаблону: {path}",
+    noTemplateSelected: "Шаблон не вибрано",
+    bootFailed: "Не вдалося запустити застосунок.",
+    exportFailedAlert: "Не вдалося експортувати .eml файл",
+    shareFailedAlert: "Не вдалося поділитися .eml файлом. Зберігаю локально.",
+
     fileKindFile: "ФАЙЛ",
+    fileKindImage: "IMG",
+    fileKindPdf: "PDF",
+    fileKindAudio: "AUDIO",
+    fileKindVideo: "VIDEO",
+    fileKindLogo: "LOGO",
     fileWordForms: {
       one: "файл",
       few: "файли",
       many: "файлів",
       other: "файла",
     },
+
     dateLocale: "uk-UA",
   },
 };
@@ -399,24 +611,38 @@ const state = {
   templates: [],
   templateMarkup: new Map(),
   selectedTemplateId: null,
-  resolvedTheme: "light",
   language: detectInitialLanguage(),
+  themeMode: localStorage.getItem(STORAGE_KEYS.themeMode) || "auto",
+  previewMode: localStorage.getItem(STORAGE_KEYS.previewMode) || "app",
+  resolvedTheme: "light",
   rememberDraft: false,
-  enabled: { ...OPTIONAL_FIELD_DEFAULTS },
-  isExporting: false,
-  exportAction: "save",
+  enabled: { ...OPTIONAL_DEFAULTS },
   fields: {
     to: "",
     cc: "",
     bcc: "",
-    replyTo: "",
     subject: "",
-    content: "",
     quote: "",
-    signatureName: "",
+    greetingPreset: "casual",
+    greetingCustom: "",
+    greetingRecipient: "",
+    content: "",
+    closingPreset: "regards",
+    closingCustom: "",
+    senderName: "",
+    contactName: "",
+    contactRole: "",
+    contactCompany: "",
+    contactPhone: "",
+    contactEmail: "",
+    contactWebsite: "",
+    contactAddress: "",
   },
+  socials: [],
+  logoAttachment: null,
   attachments: [],
-  searchQuery: "",
+  isExporting: false,
+  exportAction: "save",
   mobilePreviewOpen: false,
 };
 
@@ -430,69 +656,135 @@ const ui = {
   languageOptionUk: document.querySelector("#languageOptionUk"),
   languageModeLabel: document.querySelector("#languageModeLabel"),
   languageMode: document.querySelector("#languageMode"),
-  templateSearch: document.querySelector("#templateSearch"),
+
+  themeModeLabel: document.querySelector("#themeModeLabel"),
+  themeMode: document.querySelector("#themeMode"),
+
   mobileTemplateLabel: document.querySelector("#mobileTemplateLabel"),
   mobileTemplateSelect: document.querySelector("#mobileTemplateSelect"),
-  templateList: document.querySelector("#templateList"),
-  templatesTitle: document.querySelector("#templatesTitle"),
-  editorTitle: document.querySelector("#editorTitle"),
-  fieldToLabel: document.querySelector("#fieldToLabel"),
-  fieldCcLabel: document.querySelector("#fieldCcLabel"),
-  fieldBccLabel: document.querySelector("#fieldBccLabel"),
-  fieldReplyToLabel: document.querySelector("#fieldReplyToLabel"),
-  fieldSubjectLabel: document.querySelector("#fieldSubjectLabel"),
-  fieldContentLabel: document.querySelector("#fieldContentLabel"),
-  toggleCcLabel: document.querySelector("#toggleCcLabel"),
-  toggleBccLabel: document.querySelector("#toggleBccLabel"),
-  toggleReplyToLabel: document.querySelector("#toggleReplyToLabel"),
-  toggleSubjectLabel: document.querySelector("#toggleSubjectLabel"),
-  toggleContentLabel: document.querySelector("#toggleContentLabel"),
-  replyModeLabel: document.querySelector("#replyModeLabel"),
-  toggleDateLabel: document.querySelector("#toggleDateLabel"),
-  toggleDateHint: document.querySelector("#toggleDateHint"),
-  toggleTimeLabel: document.querySelector("#toggleTimeLabel"),
-  toggleTimeHint: document.querySelector("#toggleTimeHint"),
-  fieldQuoteLabel: document.querySelector("#fieldQuoteLabel"),
-  fieldSignatureLabel: document.querySelector("#fieldSignatureLabel"),
-  toggleCc: document.querySelector("#toggleCc"),
-  toggleBcc: document.querySelector("#toggleBcc"),
-  toggleReplyTo: document.querySelector("#toggleReplyTo"),
-  toggleSubject: document.querySelector("#toggleSubject"),
-  toggleContent: document.querySelector("#toggleContent"),
-  fieldTo: document.querySelector("#fieldTo"),
-  fieldCc: document.querySelector("#fieldCc"),
-  fieldBcc: document.querySelector("#fieldBcc"),
-  fieldReplyTo: document.querySelector("#fieldReplyTo"),
-  fieldSubject: document.querySelector("#fieldSubject"),
-  fieldContent: document.querySelector("#fieldContent"),
-  replyMode: document.querySelector("#replyMode"),
-  fieldQuote: document.querySelector("#fieldQuote"),
-  fieldSignatureName: document.querySelector("#fieldSignatureName"),
-  toggleDate: document.querySelector("#toggleDate"),
-  toggleTime: document.querySelector("#toggleTime"),
-  rememberDraft: document.querySelector("#rememberDraft"),
-  rememberDraftLabel: document.querySelector("#rememberDraftLabel"),
-  addressValidation: document.querySelector("#addressValidation"),
-  mutedNote: document.querySelector("#mutedNote"),
-  previewTitle: document.querySelector("#previewTitle"),
-  openPreviewModalTopBtn: document.querySelector("#openPreviewModalTopBtn"),
-  openPreviewModalBtn: document.querySelector("#openPreviewModalBtn"),
-  previewFields: document.querySelector("#previewFields"),
-  previewTemplateName: document.querySelector("#previewTemplateName"),
-  mailCanvas: document.querySelector("#mailCanvas"),
-  previewFrame: document.querySelector("#previewFrame"),
-  previewModal: document.querySelector("#previewModal"),
-  previewModalClose: document.querySelector("#previewModalClose"),
-  previewModalTitle: document.querySelector("#previewModalTitle"),
-  previewModalCanvas: document.querySelector("#previewModalCanvas"),
-  previewModalFrame: document.querySelector("#previewModalFrame"),
-  shareBtn: document.querySelector("#shareBtn"),
+
+  mobilePreviewToggleBtn: document.querySelector("#mobilePreviewToggleBtn"),
   exportBtn: document.querySelector("#exportBtn"),
+  shareBtn: document.querySelector("#shareBtn"),
+
   infoBtn: document.querySelector("#infoBtn"),
   infoModal: document.querySelector("#infoModal"),
   infoModalClose: document.querySelector("#infoModalClose"),
   infoModalTitle: document.querySelector("#infoModalTitle"),
   infoModalList: document.querySelector("#infoModalList"),
+
+  editorTitle: document.querySelector("#editorTitle"),
+  sectionEnvelopeTitle: document.querySelector("#sectionEnvelopeTitle"),
+  sectionQuoteTitle: document.querySelector("#sectionQuoteTitle"),
+  sectionGreetingTitle: document.querySelector("#sectionGreetingTitle"),
+  sectionContentTitle: document.querySelector("#sectionContentTitle"),
+  sectionClosingTitle: document.querySelector("#sectionClosingTitle"),
+  sectionContactTitle: document.querySelector("#sectionContactTitle"),
+  sectionSentTitle: document.querySelector("#sectionSentTitle"),
+
+  fieldToLabel: document.querySelector("#fieldToLabel"),
+  fieldTo: document.querySelector("#fieldTo"),
+  fieldCcLabel: document.querySelector("#fieldCcLabel"),
+  fieldCc: document.querySelector("#fieldCc"),
+  fieldBccLabel: document.querySelector("#fieldBccLabel"),
+  fieldBcc: document.querySelector("#fieldBcc"),
+  fieldSubjectLabel: document.querySelector("#fieldSubjectLabel"),
+  fieldSubject: document.querySelector("#fieldSubject"),
+
+  fieldQuoteLabel: document.querySelector("#fieldQuoteLabel"),
+  fieldQuote: document.querySelector("#fieldQuote"),
+
+  fieldGreetingLabel: document.querySelector("#fieldGreetingLabel"),
+  fieldGreetingPreset: document.querySelector("#fieldGreetingPreset"),
+  fieldGreetingCustomLabel: document.querySelector("#fieldGreetingCustomLabel"),
+  fieldGreetingCustom: document.querySelector("#fieldGreetingCustom"),
+  greetingCustomWrap: document.querySelector("#greetingCustomWrap"),
+  fieldGreetingRecipientLabel: document.querySelector("#fieldGreetingRecipientLabel"),
+  fieldGreetingRecipient: document.querySelector("#fieldGreetingRecipient"),
+
+  fieldContentLabel: document.querySelector("#fieldContentLabel"),
+  fieldContent: document.querySelector("#fieldContent"),
+
+  fieldClosingLabel: document.querySelector("#fieldClosingLabel"),
+  fieldClosingPreset: document.querySelector("#fieldClosingPreset"),
+  fieldClosingCustomLabel: document.querySelector("#fieldClosingCustomLabel"),
+  fieldClosingCustom: document.querySelector("#fieldClosingCustom"),
+  closingCustomWrap: document.querySelector("#closingCustomWrap"),
+
+  fieldSenderNameLabel: document.querySelector("#fieldSenderNameLabel"),
+  fieldSenderName: document.querySelector("#fieldSenderName"),
+
+  fieldContactNameLabel: document.querySelector("#fieldContactNameLabel"),
+  fieldContactName: document.querySelector("#fieldContactName"),
+  fieldContactRoleLabel: document.querySelector("#fieldContactRoleLabel"),
+  fieldContactRole: document.querySelector("#fieldContactRole"),
+  fieldContactCompanyLabel: document.querySelector("#fieldContactCompanyLabel"),
+  fieldContactCompany: document.querySelector("#fieldContactCompany"),
+  fieldContactLogoLabel: document.querySelector("#fieldContactLogoLabel"),
+  contactLogoInput: document.querySelector("#contactLogoInput"),
+  contactLogoHint: document.querySelector("#contactLogoHint"),
+  fieldContactPhoneLabel: document.querySelector("#fieldContactPhoneLabel"),
+  fieldContactPhone: document.querySelector("#fieldContactPhone"),
+  fieldContactEmailLabel: document.querySelector("#fieldContactEmailLabel"),
+  fieldContactEmail: document.querySelector("#fieldContactEmail"),
+  fieldContactWebsiteLabel: document.querySelector("#fieldContactWebsiteLabel"),
+  fieldContactWebsite: document.querySelector("#fieldContactWebsite"),
+  fieldContactAddressLabel: document.querySelector("#fieldContactAddressLabel"),
+  fieldContactAddress: document.querySelector("#fieldContactAddress"),
+
+  fieldSocialsLabel: document.querySelector("#fieldSocialsLabel"),
+  socialsList: document.querySelector("#socialsList"),
+  addSocialBtn: document.querySelector("#addSocialBtn"),
+
+  fieldSentAtLabel: document.querySelector("#fieldSentAtLabel"),
+  fieldSentAtHint: document.querySelector("#fieldSentAtHint"),
+  fieldSentFromLabel: document.querySelector("#fieldSentFromLabel"),
+  fieldSentFromHint: document.querySelector("#fieldSentFromHint"),
+
+  toggleCc: document.querySelector("#toggleCc"),
+  toggleCcLabel: document.querySelector("#toggleCcLabel"),
+  toggleBcc: document.querySelector("#toggleBcc"),
+  toggleBccLabel: document.querySelector("#toggleBccLabel"),
+  toggleSubject: document.querySelector("#toggleSubject"),
+  toggleSubjectLabel: document.querySelector("#toggleSubjectLabel"),
+  toggleQuote: document.querySelector("#toggleQuote"),
+  toggleQuoteLabel: document.querySelector("#toggleQuoteLabel"),
+  toggleGreeting: document.querySelector("#toggleGreeting"),
+  toggleGreetingLabel: document.querySelector("#toggleGreetingLabel"),
+  toggleContent: document.querySelector("#toggleContent"),
+  toggleContentLabel: document.querySelector("#toggleContentLabel"),
+  toggleClosing: document.querySelector("#toggleClosing"),
+  toggleClosingLabel: document.querySelector("#toggleClosingLabel"),
+
+  toggleContactName: document.querySelector("#toggleContactName"),
+  toggleContactNameLabel: document.querySelector("#toggleContactNameLabel"),
+  toggleContactRole: document.querySelector("#toggleContactRole"),
+  toggleContactRoleLabel: document.querySelector("#toggleContactRoleLabel"),
+  toggleContactCompany: document.querySelector("#toggleContactCompany"),
+  toggleContactCompanyLabel: document.querySelector("#toggleContactCompanyLabel"),
+  toggleContactLogo: document.querySelector("#toggleContactLogo"),
+  toggleContactLogoLabel: document.querySelector("#toggleContactLogoLabel"),
+  toggleContactPhone: document.querySelector("#toggleContactPhone"),
+  toggleContactPhoneLabel: document.querySelector("#toggleContactPhoneLabel"),
+  toggleContactEmail: document.querySelector("#toggleContactEmail"),
+  toggleContactEmailLabel: document.querySelector("#toggleContactEmailLabel"),
+  toggleContactWebsite: document.querySelector("#toggleContactWebsite"),
+  toggleContactWebsiteLabel: document.querySelector("#toggleContactWebsiteLabel"),
+  toggleContactAddress: document.querySelector("#toggleContactAddress"),
+  toggleContactAddressLabel: document.querySelector("#toggleContactAddressLabel"),
+  toggleSocials: document.querySelector("#toggleSocials"),
+  toggleSocialsLabel: document.querySelector("#toggleSocialsLabel"),
+
+  toggleSentAt: document.querySelector("#toggleSentAt"),
+  toggleSentAtToggleLabel: document.querySelector("#toggleSentAtToggleLabel"),
+  toggleSentFrom: document.querySelector("#toggleSentFrom"),
+  toggleSentFromToggleLabel: document.querySelector("#toggleSentFromToggleLabel"),
+
+  rememberDraft: document.querySelector("#rememberDraft"),
+  rememberDraftLabel: document.querySelector("#rememberDraftLabel"),
+  addressValidation: document.querySelector("#addressValidation"),
+  mutedNote: document.querySelector("#mutedNote"),
+
   attachmentsTitle: document.querySelector("#attachmentsTitle"),
   addFilesBtn: document.querySelector("#addFilesBtn"),
   fileInput: document.querySelector("#fileInput"),
@@ -502,34 +794,76 @@ const ui = {
   attachmentTotal: document.querySelector("#attachmentTotal"),
   attachmentEstimated: document.querySelector("#attachmentEstimated"),
   attachmentWarning: document.querySelector("#attachmentWarning"),
+
+  previewTitle: document.querySelector("#previewTitle"),
+  previewTemplateName: document.querySelector("#previewTemplateName"),
+  previewModeLabel: document.querySelector("#previewModeLabel"),
+  previewMode: document.querySelector("#previewMode"),
+  previewEnvelopeTitle: document.querySelector("#previewEnvelopeTitle"),
+  previewContentTitle: document.querySelector("#previewContentTitle"),
+  previewFields: document.querySelector("#previewFields"),
+  mailCanvas: document.querySelector("#mailCanvas"),
+  previewFrame: document.querySelector("#previewFrame"),
+  previewFrameDark: document.querySelector("#previewFrameDark"),
+
   footerNote: document.querySelector("#footerNote"),
-  fields: [...document.querySelectorAll("[data-field]")],
 };
 
 const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-const mobileLayoutMedia = window.matchMedia("(max-width: 760px)");
-let richTextEditor = null;
-let richTextConfigSignature = null;
-let richTextReinitPromise = null;
+const mobileMedia = window.matchMedia("(max-width: 760px)");
 const frameSrcdocCache = new WeakMap();
+
+let tinyEditors = {
+  content: null,
+  quote: null,
+};
+let tinySignature = "";
+let tinyInitPromise = null;
+
+const OPTIONAL_BINDINGS = {
+  cc: { toggle: () => ui.toggleCc, controls: () => [ui.fieldCc] },
+  bcc: { toggle: () => ui.toggleBcc, controls: () => [ui.fieldBcc] },
+  subject: { toggle: () => ui.toggleSubject, controls: () => [ui.fieldSubject] },
+  quote: { toggle: () => ui.toggleQuote, controls: () => [ui.fieldQuote] },
+  greeting: {
+    toggle: () => ui.toggleGreeting,
+    controls: () => [ui.fieldGreetingPreset, ui.fieldGreetingCustom, ui.fieldGreetingRecipient],
+  },
+  content: { toggle: () => ui.toggleContent, controls: () => [ui.fieldContent] },
+  closing: { toggle: () => ui.toggleClosing, controls: () => [ui.fieldClosingPreset, ui.fieldClosingCustom] },
+  contactName: { toggle: () => ui.toggleContactName, controls: () => [ui.fieldContactName] },
+  contactRole: { toggle: () => ui.toggleContactRole, controls: () => [ui.fieldContactRole] },
+  contactCompany: { toggle: () => ui.toggleContactCompany, controls: () => [ui.fieldContactCompany] },
+  contactLogo: { toggle: () => ui.toggleContactLogo, controls: () => [ui.contactLogoInput] },
+  contactPhone: { toggle: () => ui.toggleContactPhone, controls: () => [ui.fieldContactPhone] },
+  contactEmail: { toggle: () => ui.toggleContactEmail, controls: () => [ui.fieldContactEmail] },
+  contactWebsite: { toggle: () => ui.toggleContactWebsite, controls: () => [ui.fieldContactWebsite] },
+  contactAddress: { toggle: () => ui.toggleContactAddress, controls: () => [ui.fieldContactAddress] },
+  socials: { toggle: () => ui.toggleSocials, controls: () => [ui.addSocialBtn] },
+  sentAt: { toggle: () => ui.toggleSentAt, controls: () => [] },
+  sentFrom: { toggle: () => ui.toggleSentFrom, controls: () => [] },
+};
 
 boot().catch((error) => {
   console.error(error);
-  ui.previewTemplateName.textContent = t("bootFailed");
+  ui.addressValidation.textContent = t("bootFailed");
 });
 
 async function boot() {
   bindEvents();
   restoreDraft();
   applyLanguage(state.language);
-  applySystemTheme();
-  syncFieldInputs();
+  applyThemeMode(state.themeMode, { persist: false, refreshEditors: false });
+  syncInputsFromState();
+  renderSocialRows();
+  applyOptionalFieldStates();
   syncMobilePreviewMode();
-  await initContentEditor();
-  applyTemplateFieldVisibility();
-  clearAddressValidation();
   renderAttachments();
+  validateAddressFields();
+  updateActionButtons();
   await loadTemplates();
+  await initTinyEditors();
+  renderPreview();
   registerServiceWorker();
 }
 
@@ -542,12 +876,11 @@ function bindEvents() {
   ui.languageMenuList.addEventListener("click", (event) => {
     const option = event.target.closest(".language-option");
     if (!option) return;
-
-    const language = normalizeLanguage(option.dataset.lang);
-    if (!language) return;
+    const nextLanguage = normalizeLanguage(option.dataset.lang);
+    if (!nextLanguage) return;
 
     closeLanguageMenu();
-    applyLanguage(language);
+    applyLanguage(nextLanguage);
     maybeSaveDraft();
   });
 
@@ -558,35 +891,36 @@ function bindEvents() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeLanguageMenu();
-      closeInfoModal();
-      closePreviewModal();
-      if (state.mobilePreviewOpen) {
-        state.mobilePreviewOpen = false;
-        syncMobilePreviewMode();
-      }
+    if (event.key !== "Escape") return;
+    closeLanguageMenu();
+    closeInfoModal();
+    if (state.mobilePreviewOpen) {
+      state.mobilePreviewOpen = false;
+      syncMobilePreviewMode();
     }
   });
 
   ui.languageMode.addEventListener("change", () => {
-    applyLanguage(ui.languageMode.value);
+    const nextLanguage = normalizeLanguage(ui.languageMode.value);
+    if (!nextLanguage) return;
+    applyLanguage(nextLanguage);
+    maybeSaveDraft();
+  });
+
+  ui.themeMode.addEventListener("change", () => {
+    applyThemeMode(ui.themeMode.value, { persist: true, refreshEditors: true });
+    renderPreview();
     maybeSaveDraft();
   });
 
   themeMedia.addEventListener("change", () => {
-    applySystemTheme();
+    if (state.themeMode !== "auto") return;
+    applyThemeMode("auto", { persist: false, refreshEditors: true });
     renderPreview();
-    renderAttachments();
   });
 
-  mobileLayoutMedia.addEventListener("change", () => {
+  mobileMedia.addEventListener("change", () => {
     syncMobilePreviewMode();
-  });
-
-  ui.templateSearch.addEventListener("input", () => {
-    state.searchQuery = ui.templateSearch.value.trim().toLowerCase();
-    renderTemplateList();
   });
 
   ui.mobileTemplateSelect.addEventListener("change", async () => {
@@ -595,226 +929,71 @@ function bindEvents() {
     await selectTemplate(templateId);
   });
 
-  ui.toggleCc.addEventListener("change", () => {
-    state.enabled.cc = ui.toggleCc.checked;
-    applyTemplateFieldVisibility();
-    validateAddressFields();
+  ui.previewMode.addEventListener("change", () => {
+    state.previewMode = normalizePreviewMode(ui.previewMode.value);
+    localStorage.setItem(STORAGE_KEYS.previewMode, state.previewMode);
+    renderPreview();
+    maybeSaveDraft();
+  });
+
+  ui.mobilePreviewToggleBtn.addEventListener("click", () => {
+    if (!mobileMedia.matches) return;
+    state.mobilePreviewOpen = !state.mobilePreviewOpen;
+    syncMobilePreviewMode();
+  });
+
+  bindOptionalToggleEvents();
+  bindFieldEvents();
+
+  ui.fieldGreetingPreset.addEventListener("change", () => {
+    state.fields.greetingPreset = ui.fieldGreetingPreset.value;
+    syncCustomPresetVisibility();
+    applyOptionalFieldStates();
     maybeSaveDraft();
     renderPreview();
-    renderAttachments();
   });
 
-  ui.toggleBcc.addEventListener("change", () => {
-    state.enabled.bcc = ui.toggleBcc.checked;
-    applyTemplateFieldVisibility();
-    validateAddressFields();
+  ui.fieldClosingPreset.addEventListener("change", () => {
+    state.fields.closingPreset = ui.fieldClosingPreset.value;
+    syncCustomPresetVisibility();
+    applyOptionalFieldStates();
     maybeSaveDraft();
     renderPreview();
-    renderAttachments();
   });
 
-  ui.toggleReplyTo.addEventListener("change", () => {
-    state.enabled.replyTo = ui.toggleReplyTo.checked;
-    applyTemplateFieldVisibility();
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
+  ui.addSocialBtn.addEventListener("click", () => {
+    addSocialEntry();
   });
 
-  ui.toggleSubject.addEventListener("change", () => {
-    state.enabled.subject = ui.toggleSubject.checked;
-    applyTemplateFieldVisibility();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
+  ui.socialsList.addEventListener("click", (event) => {
+    const removeButton = event.target.closest("[data-remove-social]");
+    if (!removeButton) return;
+    const socialId = removeButton.dataset.removeSocial;
+    removeSocialEntry(socialId);
   });
 
-  ui.toggleContent.addEventListener("change", () => {
-    state.enabled.content = ui.toggleContent.checked;
-    applyTemplateFieldVisibility();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
+  ui.socialsList.addEventListener("input", (event) => {
+    const row = event.target.closest(".social-row");
+    if (!row) return;
+    const socialId = row.dataset.socialId;
+    const social = state.socials.find((item) => item.id === socialId);
+    if (!social) return;
 
-  ui.fieldTo.addEventListener("input", () => {
-    state.fields.to = ui.fieldTo.value;
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldCc.addEventListener("input", () => {
-    state.fields.cc = ui.fieldCc.value;
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldBcc.addEventListener("input", () => {
-    state.fields.bcc = ui.fieldBcc.value;
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldReplyTo.addEventListener("input", () => {
-    state.fields.replyTo = ui.fieldReplyTo.value;
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldSubject.addEventListener("input", () => {
-    state.fields.subject = ui.fieldSubject.value;
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldContent.addEventListener("input", () => {
-    if (richTextEditor) {
-      return;
-    }
-    state.fields.content = ui.fieldContent.value;
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.replyMode.addEventListener("change", () => {
-    state.enabled.quote = ui.replyMode.checked;
-    applyTemplateFieldVisibility();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldQuote.addEventListener("input", () => {
-    state.fields.quote = ui.fieldQuote.value;
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.fieldSignatureName.addEventListener("input", () => {
-    state.fields.signatureName = ui.fieldSignatureName.value;
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.toggleDate.addEventListener("change", () => {
-    state.enabled.date = ui.toggleDate.checked;
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.toggleTime.addEventListener("change", () => {
-    state.enabled.time = ui.toggleTime.checked;
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.openPreviewModalBtn.addEventListener("click", () => {
-    openPreviewModal();
-  });
-  ui.openPreviewModalTopBtn?.addEventListener("click", () => {
-    if (mobileLayoutMedia.matches) {
-      state.mobilePreviewOpen = !state.mobilePreviewOpen;
-      syncMobilePreviewMode();
-      return;
-    }
-    openPreviewModal();
-  });
-
-  ui.previewModal.addEventListener("click", (event) => {
-    if (
-      event.target instanceof HTMLElement &&
-      event.target.closest("[data-preview-close]") !== null
-    ) {
-      closePreviewModal();
-    }
-  });
-
-  ui.rememberDraft.addEventListener("change", () => {
-    state.rememberDraft = ui.rememberDraft.checked;
-    if (state.rememberDraft) {
-      saveDraft();
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.draft);
-    }
-  });
-
-  ui.exportBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) {
-      return;
+    if (event.target.classList.contains("social-network")) {
+      social.network = event.target.value;
     }
 
-    try {
-      state.isExporting = true;
-      state.exportAction = "save";
-      updateExportButtonLabel();
-      ui.shareBtn.disabled = true;
-      ui.exportBtn.disabled = true;
-      await saveEmlFile();
-    } catch (error) {
-      console.error(error);
-      alert(t("exportFailedAlert"));
-    } finally {
-      state.isExporting = false;
-      state.exportAction = "save";
-      ui.shareBtn.disabled = false;
-      ui.exportBtn.disabled = false;
-      updateExportButtonLabel();
-    }
-  });
-
-  ui.shareBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) {
-      return;
+    if (event.target.classList.contains("social-url")) {
+      social.url = event.target.value;
     }
 
-    try {
-      state.isExporting = true;
-      state.exportAction = "share";
-      updateExportButtonLabel();
-      ui.shareBtn.disabled = true;
-      ui.exportBtn.disabled = true;
-      await shareEmlFile();
-    } catch (error) {
-      console.error(error);
-      alert(t("shareFailedAlert"));
-      await saveEmlFile();
-    } finally {
-      state.isExporting = false;
-      state.exportAction = "save";
-      ui.shareBtn.disabled = false;
-      ui.exportBtn.disabled = false;
-      updateExportButtonLabel();
-    }
+    maybeSaveDraft();
+    renderPreview();
   });
 
-  ui.infoBtn.addEventListener("click", () => {
-    openInfoModal();
-  });
-
-  ui.infoModalClose.addEventListener("click", () => {
-    closeInfoModal();
-  });
-
-  ui.infoModal.addEventListener("click", (event) => {
-    if (event.target instanceof HTMLElement && event.target.dataset.modalClose !== undefined) {
-      closeInfoModal();
-    }
+  ui.contactLogoInput.addEventListener("change", () => {
+    const file = ui.contactLogoInput.files?.[0] || null;
+    setLogoAttachment(file);
   });
 
   ui.addFilesBtn.addEventListener("click", () => {
@@ -842,267 +1021,132 @@ function bindEvents() {
   });
 
   ui.dropZone.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      ui.fileInput.click();
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    ui.fileInput.click();
+  });
+
+  ui.rememberDraft.addEventListener("change", () => {
+    state.rememberDraft = ui.rememberDraft.checked;
+    if (state.rememberDraft) {
+      saveDraft();
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.draft);
+    }
+  });
+
+  ui.exportBtn.addEventListener("click", async () => {
+    if (!validateAddressFields()) return;
+
+    try {
+      state.isExporting = true;
+      state.exportAction = "save";
+      updateActionButtons();
+      await saveEmlFile();
+    } catch (error) {
+      console.error(error);
+      alert(t("exportFailedAlert"));
+    } finally {
+      state.isExporting = false;
+      state.exportAction = "save";
+      updateActionButtons();
+    }
+  });
+
+  ui.shareBtn.addEventListener("click", async () => {
+    if (!validateAddressFields()) return;
+
+    try {
+      state.isExporting = true;
+      state.exportAction = "share";
+      updateActionButtons();
+      await shareEmlFile();
+    } catch (error) {
+      console.error(error);
+      alert(t("shareFailedAlert"));
+      await saveEmlFile();
+    } finally {
+      state.isExporting = false;
+      state.exportAction = "save";
+      updateActionButtons();
+    }
+  });
+
+  ui.infoBtn.addEventListener("click", () => {
+    openInfoModal();
+  });
+
+  ui.infoModalClose.addEventListener("click", () => {
+    closeInfoModal();
+  });
+
+  ui.infoModal.addEventListener("click", (event) => {
+    if (!(event.target instanceof HTMLElement)) return;
+    if (event.target.closest("[data-modal-close]")) {
+      closeInfoModal();
     }
   });
 }
 
-async function initContentEditor(options = {}) {
-  if (richTextEditor) return;
-  if (richTextReinitPromise) {
-    await richTextReinitPromise;
-    return;
-  }
+function bindOptionalToggleEvents() {
+  Object.keys(OPTIONAL_BINDINGS).forEach((key) => {
+    const toggle = OPTIONAL_BINDINGS[key].toggle();
+    if (!toggle) return;
 
-  richTextReinitPromise = (async () => {
-    try {
-      if (!window.tinymce) return;
-
-      const selectedTemplate = getTemplateById(state.selectedTemplateId);
-      const templateFonts = resolveEditorFonts(selectedTemplate);
-      const isDark = state.resolvedTheme === "dark";
-      const initialContent =
-        options.initialContent !== undefined ? options.initialContent : state.fields.content || "";
-
-      const editors = await window.tinymce.init({
-        target: ui.fieldContent,
-        license_key: "gpl",
-        menubar: false,
-        branding: false,
-        statusbar: false,
-        height: 260,
-        resize: true,
-        promotion: false,
-        skin: isDark ? "oxide-dark" : "oxide",
-        content_css: isDark ? "dark" : "default",
-        content_style: buildTinyContentStyle(isDark, templateFonts),
-        plugins:
-          "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
-        toolbar:
-          "undo redo | blocks styles | fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
-        style_formats_merge: true,
-        style_formats: buildTinyStyleFormats(),
-        block_formats: "Akapit=p;Nagłówek 2=h2;Nagłówek 3=h3;Nagłówek 4=h4;Cytat=blockquote",
-        font_family_formats: buildTinyFontFamilyFormats(templateFonts),
-        placeholder: t("fieldContentPlaceholder"),
-        setup: (editor) => {
-          const syncContent = () => {
-            state.fields.content = normalizeEditorHtml(editor.getContent({ format: "html" }));
-            maybeSaveDraft();
-            renderPreview();
-            renderAttachments();
-          };
-
-          editor.on("change input undo redo keyup SetContent", syncContent);
-        },
-      });
-
-      richTextEditor = editors?.[0] || window.tinymce.get(ui.fieldContent.id) || null;
-      if (!richTextEditor) return;
-
-      richTextConfigSignature = buildEditorConfigSignature(state.resolvedTheme, templateFonts);
-      richTextEditor.setContent(initialContent || "");
-      state.fields.content = normalizeEditorHtml(richTextEditor.getContent({ format: "html" }));
+    toggle.addEventListener("change", () => {
+      state.enabled[key] = Boolean(toggle.checked);
+      applyOptionalFieldStates();
+      validateAddressFields();
+      updateActionButtons();
+      maybeSaveDraft();
       renderPreview();
-    } catch (error) {
-      console.warn("TinyMCE initialization failed; using plain textarea.", error);
-    }
-  })();
-
-  try {
-    await richTextReinitPromise;
-  } finally {
-    richTextReinitPromise = null;
-  }
+      renderAttachments();
+    });
+  });
 }
 
-async function refreshContentEditorAppearance() {
-  if (!richTextEditor || !window.tinymce) return;
-
-  const selectedTemplate = getTemplateById(state.selectedTemplateId);
-  const templateFonts = resolveEditorFonts(selectedTemplate);
-  const nextSignature = buildEditorConfigSignature(state.resolvedTheme, templateFonts);
-  if (richTextConfigSignature === nextSignature) return;
-
-  const preservedContent = normalizeEditorHtml(richTextEditor.getContent({ format: "html" }));
-  state.fields.content = preservedContent;
-  richTextEditor.remove();
-  richTextEditor = null;
-  richTextConfigSignature = null;
-
-  await initContentEditor({ initialContent: preservedContent });
-}
-
-function buildEditorConfigSignature(resolvedTheme, fonts) {
-  return `${resolvedTheme}|${fonts.body}|${fonts.headings}`;
-}
-
-function resolveEditorFonts(template) {
-  const defaults = {
-    body: '"Helvetica Neue", Arial, sans-serif',
-    headings: '"Helvetica Neue", Arial, sans-serif',
-  };
-
-  const fromTemplate = template?.editorFonts || {};
-  const body = String(fromTemplate.body || defaults.body).trim();
-  const headings = String(fromTemplate.headings || fromTemplate.body || defaults.headings).trim();
-  return { body, headings };
-}
-
-function buildTinyFontFamilyFormats(fonts) {
-  return [
-    `Template Body=${fonts.body}`,
-    `Template Headings=${fonts.headings}`,
-    "Arial=arial,helvetica,sans-serif",
-    "Georgia=georgia,palatino,serif",
-    "Tahoma=tahoma,arial,sans-serif",
-    "Verdana=verdana,geneva,sans-serif",
-    "Courier New=courier new,courier,monospace",
-    "Times New Roman=times new roman,times,serif",
-    "Trebuchet MS=trebuchet ms,helvetica,sans-serif",
-  ].join(";");
-}
-
-function buildTinyContentStyle(isDark, fonts) {
-  const palette = isDark
-    ? {
-        bg: "#17212b",
-        text: "#e8eef5",
-        muted: "#b5c4d4",
-        border: "#3c5267",
-        quoteBg: "#1f2d3a",
-      }
-    : {
-        bg: "#ffffff",
-        text: "#1f2937",
-        muted: "#5b6b7d",
-        border: "#d2dce8",
-        quoteBg: "#f5f8fc",
-      };
-
-  return `
-    body {
-      font-family: ${fonts.body};
-      font-size: 16px;
-      line-height: 1.6;
-      color: ${palette.text};
-      background: ${palette.bg};
-      margin: 14px;
-    }
-
-    p { margin: 0 0 12px; }
-    h1,h2,h3,h4 {
-      margin: 0 0 10px;
-      line-height: 1.35;
-      color: ${palette.text};
-      font-family: ${fonts.headings};
-    }
-    ul,ol { margin: 0 0 12px 22px; }
-    blockquote {
-      margin: 12px 0;
-      padding: 10px 12px;
-      border-left: 3px solid ${palette.border};
-      background: ${palette.quoteBg};
-      color: ${palette.muted};
-      font-style: italic;
-    }
-    a { color: ${isDark ? "#7cc4ff" : "#0b65c6"}; }
-    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    th,td { border: 1px solid ${palette.border}; padding: 8px; text-align: left; }
-    hr { border: 0; border-top: 1px solid ${palette.border}; margin: 14px 0; }
-  `;
-}
-
-function buildTinyStyleFormats() {
-  return [
-    {
-      title: "Mail - lead",
-      block: "p",
-      styles: {
-        "font-size": "18px",
-        "font-weight": "600",
-        "line-height": "1.55",
-        margin: "0 0 14px 0",
-      },
-    },
-    {
-      title: "Mail - normalny akapit",
-      block: "p",
-      styles: {
-        "font-size": "16px",
-        "line-height": "1.6",
-        margin: "0 0 12px 0",
-      },
-    },
-    {
-      title: "Mail - mała notka",
-      block: "p",
-      styles: {
-        "font-size": "13px",
-        color: "#6b7280",
-        "line-height": "1.5",
-      },
-    },
-    {
-      title: "Mail - cytat",
-      block: "blockquote",
-      styles: {
-        margin: "12px 0",
-        padding: "10px 12px",
-        "border-left": "3px solid #94a3b8",
-        "font-style": "italic",
-      },
-    },
-    {
-      title: "Mail - przycisk CTA (link)",
-      selector: "a",
-      styles: {
-        display: "inline-block",
-        padding: "10px 14px",
-        "background-color": "#1d4ed8",
-        color: "#ffffff",
-        "text-decoration": "none",
-        "border-radius": "8px",
-        "font-weight": "600",
-      },
-    },
+function bindFieldEvents() {
+  const textBindings = [
+    { input: ui.fieldTo, key: "to" },
+    { input: ui.fieldCc, key: "cc" },
+    { input: ui.fieldBcc, key: "bcc" },
+    { input: ui.fieldSubject, key: "subject" },
+    { input: ui.fieldQuote, key: "quote" },
+    { input: ui.fieldGreetingCustom, key: "greetingCustom" },
+    { input: ui.fieldGreetingRecipient, key: "greetingRecipient" },
+    { input: ui.fieldContent, key: "content" },
+    { input: ui.fieldClosingCustom, key: "closingCustom" },
+    { input: ui.fieldSenderName, key: "senderName" },
+    { input: ui.fieldContactName, key: "contactName" },
+    { input: ui.fieldContactRole, key: "contactRole" },
+    { input: ui.fieldContactCompany, key: "contactCompany" },
+    { input: ui.fieldContactPhone, key: "contactPhone" },
+    { input: ui.fieldContactEmail, key: "contactEmail" },
+    { input: ui.fieldContactWebsite, key: "contactWebsite" },
+    { input: ui.fieldContactAddress, key: "contactAddress" },
   ];
-}
 
-function detectInitialLanguage() {
-  const saved = normalizeLanguage(localStorage.getItem(STORAGE_KEYS.language));
-  if (saved) return saved;
+  textBindings.forEach(({ input, key }) => {
+    if (!input) return;
+    input.addEventListener("input", () => {
+      if (key === "content" && tinyEditors.content) return;
+      if (key === "quote" && tinyEditors.quote) return;
 
-  const browserLangs = Array.isArray(navigator.languages)
-    ? navigator.languages
-    : [navigator.language || "pl"];
-
-  for (const lang of browserLangs) {
-    const normalized = normalizeLanguage(lang);
-    if (normalized) {
-      return normalized;
-    }
-  }
-
-  return "pl";
-}
-
-function normalizeLanguage(language) {
-  if (!language) return null;
-  const lower = String(language).toLowerCase();
-  if (lower.startsWith("pl")) return "pl";
-  if (lower.startsWith("en")) return "en";
-  if (lower.startsWith("uk") || lower.startsWith("ua")) return "uk";
-  return null;
+      state.fields[key] = input.value;
+      validateAddressFields();
+      updateActionButtons();
+      maybeSaveDraft();
+      renderPreview();
+      renderAttachments();
+    });
+  });
 }
 
 function t(key, vars = {}) {
   const dictionary = I18N[state.language] || I18N.pl;
   const fallbackDictionary = I18N.pl;
-  let value = dictionary[key];
 
+  let value = dictionary[key];
   if (value === undefined) {
     value = fallbackDictionary[key];
   }
@@ -1114,6 +1158,29 @@ function t(key, vars = {}) {
   return value.replace(/\{([a-zA-Z0-9_]+)\}/g, (_, token) => {
     return vars[token] !== undefined ? String(vars[token]) : "";
   });
+}
+
+function detectInitialLanguage() {
+  const saved = normalizeLanguage(localStorage.getItem(STORAGE_KEYS.language));
+  if (saved) return saved;
+
+  const browser = normalizeLanguage(navigator.language);
+  return browser || "pl";
+}
+
+function normalizeLanguage(value) {
+  const short = String(value || "").toLowerCase().slice(0, 2);
+  return ["pl", "en", "uk"].includes(short) ? short : null;
+}
+
+function normalizeThemeMode(value) {
+  const normalized = String(value || "").toLowerCase();
+  return ["auto", "light", "dark"].includes(normalized) ? normalized : "auto";
+}
+
+function normalizePreviewMode(value) {
+  const normalized = String(value || "").toLowerCase();
+  return ["app", "light", "dark", "both"].includes(normalized) ? normalized : "app";
 }
 
 function applyLanguage(language) {
@@ -1134,62 +1201,125 @@ function applyLanguage(language) {
   ui.languageOptionUk.textContent = t("languageUk");
   updateLanguageMenuUi();
 
-  ui.templatesTitle.textContent = t("templatesTitle");
+  ui.themeModeLabel.textContent = t("themeModeLabel");
+  setSelectOptionLabel(ui.themeMode, "auto", t("themeAuto"));
+  setSelectOptionLabel(ui.themeMode, "light", t("themeLight"));
+  setSelectOptionLabel(ui.themeMode, "dark", t("themeDark"));
+
+  ui.previewModeLabel.textContent = t("previewModeLabel");
+  setSelectOptionLabel(ui.previewMode, "app", t("previewModeApp"));
+  setSelectOptionLabel(ui.previewMode, "light", t("previewModeLight"));
+  setSelectOptionLabel(ui.previewMode, "dark", t("previewModeDark"));
+  setSelectOptionLabel(ui.previewMode, "both", t("previewModeBoth"));
+
   ui.mobileTemplateLabel.textContent = t("mobileTemplateLabel");
   ui.mobileTemplateSelect.setAttribute("aria-label", t("mobileTemplateAria"));
-  ui.templateSearch.placeholder = t("templateSearchPlaceholder");
-  ui.templateList.setAttribute("aria-label", t("templateListAria"));
 
   ui.editorTitle.textContent = t("editorTitle");
+  ui.sectionEnvelopeTitle.textContent = t("sectionEnvelopeTitle");
+  ui.sectionQuoteTitle.textContent = t("sectionQuoteTitle");
+  ui.sectionGreetingTitle.textContent = t("sectionGreetingTitle");
+  ui.sectionContentTitle.textContent = t("sectionContentTitle");
+  ui.sectionClosingTitle.textContent = t("sectionClosingTitle");
+  ui.sectionContactTitle.textContent = t("sectionContactTitle");
+  ui.sectionSentTitle.textContent = t("sectionSentTitle");
+
   ui.fieldToLabel.textContent = t("fieldToLabel");
   ui.fieldTo.placeholder = t("fieldToPlaceholder");
   ui.fieldCcLabel.textContent = t("fieldCcLabel");
   ui.fieldCc.placeholder = t("fieldCcPlaceholder");
   ui.fieldBccLabel.textContent = t("fieldBccLabel");
   ui.fieldBcc.placeholder = t("fieldBccPlaceholder");
-  ui.fieldReplyToLabel.textContent = t("fieldReplyToLabel");
-  ui.fieldReplyTo.placeholder = t("fieldReplyToPlaceholder");
   ui.fieldSubjectLabel.textContent = t("fieldSubjectLabel");
   ui.fieldSubject.placeholder = t("fieldSubjectPlaceholder");
-  ui.fieldContentLabel.textContent = t("fieldContentLabel");
-  ui.fieldContent.placeholder = t("fieldContentPlaceholder");
-  if (richTextEditor) {
-    try {
-      richTextEditor.options?.set?.("placeholder", t("fieldContentPlaceholder"));
-    } catch (error) {
-      console.warn("Could not update TinyMCE placeholder", error);
-    }
-  }
-  ui.toggleCcLabel.textContent = t("toggleCcLabel");
-  ui.toggleBccLabel.textContent = t("toggleBccLabel");
-  ui.toggleReplyToLabel.textContent = t("toggleReplyToLabel");
-  ui.toggleSubjectLabel.textContent = t("toggleSubjectLabel");
-  ui.toggleContentLabel.textContent = t("toggleContentLabel");
-  ui.replyModeLabel.textContent = t("toggleQuoteLabel");
-  ui.toggleDateLabel.textContent = t("toggleDateLabel");
-  ui.toggleDateHint.textContent = t("toggleDateHint");
-  ui.toggleTimeLabel.textContent = t("toggleTimeLabel");
-  ui.toggleTimeHint.textContent = t("toggleTimeHint");
+
   ui.fieldQuoteLabel.textContent = t("fieldQuoteLabel");
   ui.fieldQuote.placeholder = t("fieldQuotePlaceholder");
-  ui.fieldSignatureLabel.textContent = t("fieldSignatureLabel");
-  ui.fieldSignatureName.placeholder = t("fieldSignaturePlaceholder");
+
+  ui.fieldGreetingLabel.textContent = t("fieldGreetingLabel");
+  ui.fieldGreetingCustomLabel.textContent = t("fieldGreetingCustomLabel");
+  ui.fieldGreetingCustom.placeholder = t("fieldGreetingCustomPlaceholder");
+  ui.fieldGreetingRecipientLabel.textContent = t("fieldGreetingRecipientLabel");
+  ui.fieldGreetingRecipient.placeholder = t("fieldGreetingRecipientPlaceholder");
+
+  ui.fieldContentLabel.textContent = t("fieldContentLabel");
+  ui.fieldContent.placeholder = t("fieldContentPlaceholder");
+
+  ui.fieldClosingLabel.textContent = t("fieldClosingLabel");
+  ui.fieldClosingCustomLabel.textContent = t("fieldClosingCustomLabel");
+  ui.fieldClosingCustom.placeholder = t("fieldClosingCustomPlaceholder");
+
+  ui.fieldSenderNameLabel.textContent = t("fieldSenderNameLabel");
+  ui.fieldSenderName.placeholder = t("fieldSenderNamePlaceholder");
+
+  ui.fieldContactNameLabel.textContent = t("fieldContactNameLabel");
+  ui.fieldContactName.placeholder = t("fieldContactNamePlaceholder");
+  ui.fieldContactRoleLabel.textContent = t("fieldContactRoleLabel");
+  ui.fieldContactRole.placeholder = t("fieldContactRolePlaceholder");
+  ui.fieldContactCompanyLabel.textContent = t("fieldContactCompanyLabel");
+  ui.fieldContactCompany.placeholder = t("fieldContactCompanyPlaceholder");
+  ui.fieldContactLogoLabel.textContent = t("fieldContactLogoLabel");
+  ui.contactLogoHint.textContent = t("fieldContactLogoHint");
+  ui.fieldContactPhoneLabel.textContent = t("fieldContactPhoneLabel");
+  ui.fieldContactPhone.placeholder = t("fieldContactPhonePlaceholder");
+  ui.fieldContactEmailLabel.textContent = t("fieldContactEmailLabel");
+  ui.fieldContactEmail.placeholder = t("fieldContactEmailPlaceholder");
+  ui.fieldContactWebsiteLabel.textContent = t("fieldContactWebsiteLabel");
+  ui.fieldContactWebsite.placeholder = t("fieldContactWebsitePlaceholder");
+  ui.fieldContactAddressLabel.textContent = t("fieldContactAddressLabel");
+  ui.fieldContactAddress.placeholder = t("fieldContactAddressPlaceholder");
+
+  ui.fieldSocialsLabel.textContent = t("fieldSocialsLabel");
+  ui.addSocialBtn.textContent = t("socialAddButton");
+
+  ui.fieldSentAtLabel.textContent = t("fieldSentAtLabel");
+  ui.fieldSentAtHint.textContent = t("fieldSentAtHint");
+  ui.fieldSentFromLabel.textContent = t("fieldSentFromLabel");
+  ui.fieldSentFromHint.textContent = t("fieldSentFromHint");
+
+  [
+    ui.toggleCcLabel,
+    ui.toggleBccLabel,
+    ui.toggleSubjectLabel,
+    ui.toggleQuoteLabel,
+    ui.toggleGreetingLabel,
+    ui.toggleContentLabel,
+    ui.toggleClosingLabel,
+    ui.toggleContactNameLabel,
+    ui.toggleContactRoleLabel,
+    ui.toggleContactCompanyLabel,
+    ui.toggleContactLogoLabel,
+    ui.toggleContactPhoneLabel,
+    ui.toggleContactEmailLabel,
+    ui.toggleContactWebsiteLabel,
+    ui.toggleContactAddressLabel,
+    ui.toggleSocialsLabel,
+    ui.toggleSentAtToggleLabel,
+    ui.toggleSentFromToggleLabel,
+  ].forEach((labelNode) => {
+    if (labelNode) labelNode.textContent = t("toggleShow");
+  });
+
   ui.rememberDraftLabel.textContent = t("rememberDraftLabel");
   ui.mutedNote.innerHTML = t("mutedNoteHtml");
 
   ui.previewTitle.textContent = t("previewTitle");
+  ui.previewEnvelopeTitle.textContent = t("previewEnvelopeTitle");
+  ui.previewContentTitle.textContent = t("previewContentTitle");
   ui.previewFrame.title = t("previewFrameTitle");
-  ui.openPreviewModalBtn.textContent = t("openPreviewButton");
-  updateMobilePreviewToggleButton();
-  ui.previewModalTitle.textContent = t("previewTitle");
-  ui.previewModalFrame.title = t("previewFrameTitle");
+  ui.previewFrameDark.title = t("previewFrameDarkTitle");
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
   ui.addFilesBtn.textContent = t("addFilesButton");
   ui.dropZone.textContent = t("dropZoneText");
   ui.dropZone.setAttribute("aria-label", t("dropZoneAria"));
 
-  ui.footerNote.innerHTML = t("footerNoteHtml");
+  ui.mobilePreviewToggleBtn.textContent = t("openPreviewButton");
+  ui.exportBtn.setAttribute("aria-label", t("exportButtonAria"));
+  ui.shareBtn.setAttribute("aria-label", t("shareButtonAria"));
+  ui.exportBtn.title = t("exportButtonAria");
+  ui.shareBtn.title = t("shareButtonAria");
+
   ui.infoBtn.setAttribute("aria-label", t("infoButtonAria"));
   ui.infoModalTitle.textContent = t("infoModalTitle");
   ui.infoModalClose.setAttribute("aria-label", t("infoModalCloseAria"));
@@ -1200,15 +1330,15 @@ function applyLanguage(language) {
     ui.infoModalList.append(item);
   });
 
-  validateAddressFields();
-
-  updateExportButtonLabel();
-
-  if (state.templates.length) {
-    renderTemplateList();
-    renderPreview();
-  }
+  buildPresetOptions();
+  renderTemplateSelectOptions();
+  renderSocialRows();
   renderAttachments();
+  renderPreview();
+  validateAddressFields();
+  updateActionButtons();
+  syncMobilePreviewMode();
+  void refreshTinyEditors();
 }
 
 function setSelectOptionLabel(selectElement, value, text) {
@@ -1218,12 +1348,59 @@ function setSelectOptionLabel(selectElement, value, text) {
   }
 }
 
-function languageFlag(lang) {
-  return LANGUAGE_FLAGS[lang] || "🏳️";
+function buildPresetOptions() {
+  const greetingOptions = [
+    { value: "casual", label: t("greetingPresetCasual") },
+    { value: "formal", label: t("greetingPresetFormal") },
+    { value: "neutral", label: t("greetingPresetNeutral") },
+    { value: "hey", label: t("greetingPresetHey") },
+    { value: "custom", label: t("presetCustom") },
+  ];
+
+  const closingOptions = [
+    { value: "regards", label: t("closingPresetRegards") },
+    { value: "sincerely", label: t("closingPresetSincerely") },
+    { value: "thanks", label: t("closingPresetThanks") },
+    { value: "best", label: t("closingPresetBest") },
+    { value: "custom", label: t("presetCustom") },
+  ];
+
+  fillSelectWithOptions(ui.fieldGreetingPreset, greetingOptions, state.fields.greetingPreset);
+  fillSelectWithOptions(ui.fieldClosingPreset, closingOptions, state.fields.closingPreset);
+
+  syncCustomPresetVisibility();
+}
+
+function fillSelectWithOptions(selectElement, options, selectedValue) {
+  if (!selectElement) return;
+  const currentValue = options.some((item) => item.value === selectedValue)
+    ? selectedValue
+    : options[0]?.value || "";
+
+  selectElement.innerHTML = "";
+  options.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.value;
+    option.textContent = item.label;
+    if (item.value === currentValue) {
+      option.selected = true;
+    }
+    selectElement.append(option);
+  });
+
+  return currentValue;
+}
+
+function syncCustomPresetVisibility() {
+  const greetingCustom = state.fields.greetingPreset === "custom";
+  const closingCustom = state.fields.closingPreset === "custom";
+
+  ui.greetingCustomWrap.hidden = !greetingCustom;
+  ui.closingCustomWrap.hidden = !closingCustom;
 }
 
 function updateLanguageMenuUi() {
-  ui.languageFlag.textContent = languageFlag(state.language);
+  ui.languageFlag.textContent = LANGUAGE_FLAGS[state.language] || "🏳️";
 
   ui.languageMenuList.querySelectorAll(".language-option").forEach((option) => {
     const isActive = option.dataset.lang === state.language;
@@ -1243,69 +1420,116 @@ function closeLanguageMenu() {
   ui.languageMenuBtn.setAttribute("aria-expanded", "false");
 }
 
-function updateExportButtonLabel() {
-  ui.exportBtn.textContent =
-    state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
-  ui.shareBtn.textContent =
-    state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
-}
+function applyThemeMode(mode, options = {}) {
+  const persist = options.persist !== false;
+  const refreshEditors = options.refreshEditors !== false;
 
-function applySystemTheme() {
-  state.resolvedTheme = themeMedia.matches ? "dark" : "light";
-  document.documentElement.dataset.themeMode = "auto";
-  document.documentElement.dataset.resolvedTheme = state.resolvedTheme;
-  if (richTextEditor) {
-    void refreshContentEditorAppearance();
+  state.themeMode = normalizeThemeMode(mode);
+  if (persist) {
+    localStorage.setItem(STORAGE_KEYS.themeMode, state.themeMode);
   }
-}
 
-function openInfoModal() {
-  ui.infoModal.hidden = false;
-  syncBodyModalState();
-}
+  state.resolvedTheme =
+    state.themeMode === "auto" ? (themeMedia.matches ? "dark" : "light") : state.themeMode;
 
-function closeInfoModal() {
-  ui.infoModal.hidden = true;
-  syncBodyModalState();
-}
+  document.documentElement.dataset.themeMode = state.themeMode;
+  document.documentElement.dataset.resolvedTheme = state.resolvedTheme;
+  ui.themeMode.value = state.themeMode;
 
-function openPreviewModal() {
-  ui.previewModal.hidden = false;
-  syncBodyModalState();
-  renderPreview();
-  ui.previewModalClose?.focus();
-}
-
-function closePreviewModal() {
-  ui.previewModal.hidden = true;
-  syncBodyModalState();
+  if (refreshEditors) {
+    void refreshTinyEditors();
+  }
 }
 
 function syncMobilePreviewMode() {
-  if (!mobileLayoutMedia.matches) {
+  if (!mobileMedia.matches) {
     state.mobilePreviewOpen = false;
   }
 
-  const mobilePreviewOpen = mobileLayoutMedia.matches && state.mobilePreviewOpen;
-  document.body.classList.toggle("mobile-preview-open", mobilePreviewOpen);
-  updateMobilePreviewToggleButton();
+  const open = mobileMedia.matches && state.mobilePreviewOpen;
+  document.body.classList.toggle("mobile-preview-open", open);
 
-  if (mobilePreviewOpen) {
-    closePreviewModal();
+  ui.mobilePreviewToggleBtn.textContent = open ? t("closePreviewButton") : t("openPreviewButton");
+  ui.mobilePreviewToggleBtn.setAttribute("aria-pressed", open ? "true" : "false");
+
+  if (open) {
     renderPreview();
   }
 }
 
-function updateMobilePreviewToggleButton() {
-  if (!ui.openPreviewModalTopBtn) return;
-  const isOpen = mobileLayoutMedia.matches && state.mobilePreviewOpen;
-  ui.openPreviewModalTopBtn.textContent = isOpen ? t("closePreviewButton") : t("openPreviewButton");
-  ui.openPreviewModalTopBtn.setAttribute("aria-pressed", isOpen ? "true" : "false");
+function syncInputsFromState() {
+  ui.themeMode.value = normalizeThemeMode(state.themeMode);
+  ui.previewMode.value = normalizePreviewMode(state.previewMode);
+
+  ui.rememberDraft.checked = state.rememberDraft;
+
+  ui.fieldTo.value = state.fields.to;
+  ui.fieldCc.value = state.fields.cc;
+  ui.fieldBcc.value = state.fields.bcc;
+  ui.fieldSubject.value = state.fields.subject;
+  ui.fieldQuote.value = state.fields.quote;
+  ui.fieldGreetingCustom.value = state.fields.greetingCustom;
+  ui.fieldGreetingRecipient.value = state.fields.greetingRecipient;
+  ui.fieldContent.value = state.fields.content;
+  ui.fieldClosingCustom.value = state.fields.closingCustom;
+  ui.fieldSenderName.value = state.fields.senderName;
+
+  ui.fieldContactName.value = state.fields.contactName;
+  ui.fieldContactRole.value = state.fields.contactRole;
+  ui.fieldContactCompany.value = state.fields.contactCompany;
+  ui.fieldContactPhone.value = state.fields.contactPhone;
+  ui.fieldContactEmail.value = state.fields.contactEmail;
+  ui.fieldContactWebsite.value = state.fields.contactWebsite;
+  ui.fieldContactAddress.value = state.fields.contactAddress;
+
+  ui.fieldGreetingPreset.value = state.fields.greetingPreset;
+  ui.fieldClosingPreset.value = state.fields.closingPreset;
+
+  Object.keys(OPTIONAL_BINDINGS).forEach((key) => {
+    const toggle = OPTIONAL_BINDINGS[key].toggle();
+    if (toggle) {
+      toggle.checked = Boolean(state.enabled[key]);
+    }
+  });
+
+  syncCustomPresetVisibility();
+  applyOptionalFieldStates();
 }
 
-function syncBodyModalState() {
-  const modalOpen = !ui.infoModal.hidden || !ui.previewModal.hidden;
-  document.body.classList.toggle("modal-open", modalOpen);
+function applyOptionalFieldStates() {
+  Object.keys(OPTIONAL_BINDINGS).forEach((key) => {
+    const enabled = Boolean(state.enabled[key]);
+    const toggle = OPTIONAL_BINDINGS[key].toggle();
+    const controls = OPTIONAL_BINDINGS[key].controls();
+
+    if (toggle) {
+      toggle.checked = enabled;
+    }
+
+    document.querySelectorAll(`[data-optional-key="${key}"]`).forEach((block) => {
+      block.classList.toggle("is-disabled", !enabled);
+    });
+
+    controls.forEach((control) => {
+      if (!control) return;
+      control.disabled = !enabled;
+      control.setAttribute("aria-disabled", !enabled ? "true" : "false");
+    });
+  });
+
+  syncCustomPresetVisibility();
+
+  if (tinyEditors.content?.mode?.set) {
+    tinyEditors.content.mode.set(state.enabled.content ? "design" : "readonly");
+  }
+  if (tinyEditors.quote?.mode?.set) {
+    tinyEditors.quote.mode.set(state.enabled.quote ? "design" : "readonly");
+  }
+
+  ui.addSocialBtn.disabled = !state.enabled.socials;
+  ui.socialsList.querySelectorAll("select,input,button").forEach((control) => {
+    control.disabled = !state.enabled.socials;
+  });
 }
 
 function restoreDraft() {
@@ -1315,32 +1539,35 @@ function restoreDraft() {
   try {
     const saved = JSON.parse(raw);
     state.rememberDraft = Boolean(saved.rememberDraft);
-    state.fields.to = saved.fields?.to || "";
-    state.fields.cc = saved.fields?.cc || "";
-    state.fields.bcc = saved.fields?.bcc || "";
-    state.fields.replyTo = saved.fields?.replyTo || "";
-    state.fields.subject = saved.fields?.subject || "";
-    state.fields.content = saved.fields?.content || "";
-    state.fields.quote = saved.fields?.quote || "";
-    state.fields.signatureName = saved.fields?.signatureName || "";
+
+    const lang = normalizeLanguage(saved.language);
+    if (lang) state.language = lang;
+
+    state.themeMode = normalizeThemeMode(saved.themeMode || state.themeMode);
+    state.previewMode = normalizePreviewMode(saved.previewMode || state.previewMode);
+
     state.enabled = {
-      ...OPTIONAL_FIELD_DEFAULTS,
+      ...OPTIONAL_DEFAULTS,
       ...(saved.enabled || {}),
     };
-    state.enabled.to = true;
-    state.enabled.signatureName = true;
 
-    if (saved.isReply !== undefined && saved.enabled?.quote === undefined) {
-      state.enabled.quote = Boolean(saved.isReply);
-    }
+    state.fields = {
+      ...state.fields,
+      ...(saved.fields || {}),
+    };
+
+    state.socials = Array.isArray(saved.socials)
+      ? saved.socials
+          .map((item) => ({
+            id: item.id || crypto.randomUUID(),
+            network: normalizeSocialNetwork(item.network),
+            url: String(item.url || ""),
+          }))
+          .filter((item) => Boolean(item.network))
+      : [];
 
     if (saved.selectedTemplateId) {
-      state.selectedTemplateId = saved.selectedTemplateId;
-    }
-
-    const draftLanguage = normalizeLanguage(saved.language);
-    if (draftLanguage) {
-      state.language = draftLanguage;
+      state.selectedTemplateId = String(saved.selectedTemplateId);
     }
   } catch (error) {
     console.warn("Could not restore draft", error);
@@ -1351,41 +1578,21 @@ function restoreDraft() {
 function saveDraft() {
   const draft = {
     rememberDraft: state.rememberDraft,
-    selectedTemplateId: state.selectedTemplateId,
     language: state.language,
+    themeMode: state.themeMode,
+    previewMode: state.previewMode,
+    selectedTemplateId: state.selectedTemplateId,
     enabled: { ...state.enabled },
     fields: { ...state.fields },
+    socials: state.socials.map((item) => ({ ...item })),
   };
+
   localStorage.setItem(STORAGE_KEYS.draft, JSON.stringify(draft));
 }
 
 function maybeSaveDraft() {
-  if (state.rememberDraft) {
-    saveDraft();
-  }
-}
-
-function syncFieldInputs() {
-  state.enabled.to = true;
-  state.enabled.signatureName = true;
-  ui.rememberDraft.checked = state.rememberDraft;
-  ui.toggleCc.checked = Boolean(state.enabled.cc);
-  ui.toggleBcc.checked = Boolean(state.enabled.bcc);
-  ui.toggleReplyTo.checked = Boolean(state.enabled.replyTo);
-  ui.toggleSubject.checked = Boolean(state.enabled.subject);
-  ui.toggleContent.checked = Boolean(state.enabled.content);
-  ui.replyMode.checked = Boolean(state.enabled.quote);
-  ui.toggleDate.checked = Boolean(state.enabled.date);
-  ui.toggleTime.checked = Boolean(state.enabled.time);
-  ui.fieldTo.value = state.fields.to;
-  ui.fieldCc.value = state.fields.cc;
-  ui.fieldBcc.value = state.fields.bcc;
-  ui.fieldReplyTo.value = state.fields.replyTo;
-  ui.fieldSubject.value = state.fields.subject;
-  ui.fieldContent.value = state.fields.content;
-  ui.fieldQuote.value = state.fields.quote;
-  ui.fieldSignatureName.value = state.fields.signatureName;
-  applyTemplateFieldVisibility();
+  if (!state.rememberDraft) return;
+  saveDraft();
 }
 
 async function loadTemplates() {
@@ -1404,114 +1611,31 @@ async function loadTemplates() {
     templateResolvedUrl: new URL(template.templateUrl, TEMPLATE_INDEX_URL).toString(),
   }));
 
-  if (!state.selectedTemplateId || !state.templates.some((tpl) => tpl.id === state.selectedTemplateId)) {
+  if (!state.selectedTemplateId || !state.templates.some((item) => item.id === state.selectedTemplateId)) {
     state.selectedTemplateId = state.templates[0]?.id || null;
   }
 
-  renderTemplateList();
+  renderTemplateSelectOptions();
 
   if (state.selectedTemplateId) {
     await selectTemplate(state.selectedTemplateId);
   }
 }
 
-function renderTemplateList() {
-  const sortedTemplates = [...state.templates].sort((a, b) =>
-    localizedTemplateName(a).localeCompare(localizedTemplateName(b), state.language)
-  );
-
-  renderMobileTemplateOptions(sortedTemplates);
-
-  ui.templateList.innerHTML = "";
-  const fragment = document.createDocumentFragment();
-
-  const visibleTemplates = sortedTemplates.filter((template) => {
-    if (!state.searchQuery) return true;
-    const haystack = `${localizedTemplateName(template)} ${localizedTemplateDescription(template)}`.toLowerCase();
-    return haystack.includes(state.searchQuery);
-  });
-
-  if (!visibleTemplates.length) {
-    const empty = document.createElement("li");
-    empty.className = "empty-state";
-    empty.textContent = t("templateSearchEmpty");
-    fragment.append(empty);
-    ui.templateList.append(fragment);
-    return;
-  }
-
-  visibleTemplates.forEach((template) => {
-    const item = document.createElement("li");
-    item.className = "template-item";
-    item.tabIndex = 0;
-    if (template.id === state.selectedTemplateId) {
-      item.classList.add("active");
-    }
-
-    item.innerHTML = `
-      <div class="template-row">
-        <div class="template-name"></div>
-        <span class="theme-dot" aria-hidden="true"></span>
-      </div>
-      <div class="template-desc"></div>
-    `;
-
-    item.querySelector(".template-name").textContent = localizedTemplateName(template) || template.id;
-    item.querySelector(".template-desc").textContent = localizedTemplateDescription(template);
-    item.querySelector(".theme-dot").style.background = template.theme?.accent || "#2e7dff";
-
-    const activate = async () => {
-      await selectTemplate(template.id);
-    };
-
-    item.addEventListener("click", activate);
-    item.addEventListener("keydown", async (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        await activate();
-      }
-    });
-
-    fragment.append(item);
-  });
-
-  ui.templateList.append(fragment);
-}
-
-function renderMobileTemplateOptions(templates) {
+function renderTemplateSelectOptions() {
+  const previousValue = state.selectedTemplateId;
   ui.mobileTemplateSelect.innerHTML = "";
-  templates.forEach((template) => {
+
+  state.templates.forEach((template) => {
     const option = document.createElement("option");
     option.value = template.id;
     option.textContent = localizedTemplateName(template);
     ui.mobileTemplateSelect.append(option);
   });
 
-  if (state.selectedTemplateId) {
-    ui.mobileTemplateSelect.value = state.selectedTemplateId;
+  if (previousValue && state.templates.some((item) => item.id === previousValue)) {
+    ui.mobileTemplateSelect.value = previousValue;
   }
-}
-
-function localizedTemplateName(template) {
-  return localizedTemplateField(template, "name") || template.id;
-}
-
-function localizedTemplateDescription(template) {
-  return localizedTemplateField(template, "description") || "";
-}
-
-function localizedTemplateField(template, fieldName) {
-  const fromI18n = template?.i18n?.[state.language]?.[fieldName];
-  if (typeof fromI18n === "string" && fromI18n.trim()) {
-    return fromI18n;
-  }
-
-  const fromFallback = template?.[fieldName];
-  if (typeof fromFallback === "string" && fromFallback.trim()) {
-    return fromFallback;
-  }
-
-  return "";
 }
 
 async function selectTemplate(templateId) {
@@ -1519,16 +1643,23 @@ async function selectTemplate(templateId) {
   if (!template) return;
 
   state.selectedTemplateId = template.id;
-  await ensureTemplateMarkup(template);
-  applyTemplateFieldVisibility();
   ui.mobileTemplateSelect.value = template.id;
-  await refreshContentEditorAppearance();
   ui.previewTemplateName.textContent = localizedTemplateName(template);
 
-  renderTemplateList();
+  await ensureTemplateMarkup(template);
   renderPreview();
-  renderAttachments();
   maybeSaveDraft();
+  void refreshTinyEditors();
+}
+
+function localizedTemplateName(template) {
+  const fromI18n = template?.i18n?.[state.language]?.name;
+  if (typeof fromI18n === "string" && fromI18n.trim()) return fromI18n;
+  return template?.name || template?.id || t("noTemplateSelected");
+}
+
+function getTemplateById(templateId) {
+  return state.templates.find((template) => template.id === templateId) || null;
 }
 
 async function ensureTemplateMarkup(template) {
@@ -1546,43 +1677,10 @@ async function ensureTemplateMarkup(template) {
   return markup;
 }
 
-function applyTemplateFieldVisibility() {
-  state.enabled.to = true;
-  state.enabled.signatureName = true;
-
-  ui.fields.forEach((node) => {
-    const field = node.dataset.field;
-    const enabled = field === "to" || field === "signatureName" ? true : Boolean(state.enabled[field]);
-
-    node.hidden = false;
-    node.classList.toggle("is-disabled", !enabled);
-
-    node.querySelectorAll("input, textarea, select").forEach((control) => {
-      control.disabled = !enabled;
-      control.setAttribute("aria-disabled", !enabled ? "true" : "false");
-    });
-
-    const row = node.closest(".field-toggle-row");
-    if (row) {
-      row.classList.toggle("is-disabled", !enabled);
-    }
-  });
-
-  if (richTextEditor) {
-    richTextEditor.mode?.set?.(state.enabled.content ? "design" : "readonly");
-  }
-}
-
-function getTemplateById(templateId) {
-  return state.templates.find((template) => template.id === templateId) || null;
-}
-
 function setFrameSrcdoc(frame, html) {
   if (!frame) return;
   const nextHtml = html || "";
-  if (frameSrcdocCache.get(frame) === nextHtml) {
-    return;
-  }
+  if (frameSrcdocCache.get(frame) === nextHtml) return;
   frame.srcdoc = nextHtml;
   frameSrcdocCache.set(frame, nextHtml);
 }
@@ -1591,517 +1689,1207 @@ function renderPreview() {
   const template = getTemplateById(state.selectedTemplateId);
   if (!template) {
     setFrameSrcdoc(ui.previewFrame, "");
-    setFrameSrcdoc(ui.previewModalFrame, "");
+    setFrameSrcdoc(ui.previewFrameDark, "");
     ui.previewFields.innerHTML = "";
-    ui.previewTemplateName.textContent = "";
+    ui.previewTemplateName.textContent = t("noTemplateSelected");
     return;
   }
 
   const rawMarkup = state.templateMarkup.get(template.id);
-  if (!rawMarkup) {
-    return;
-  }
+  if (!rawMarkup) return;
 
-  const shouldSyncModal = !ui.previewModal.hidden;
-  const html = buildTemplateHtml(rawMarkup, template, {
-    forceMode: null,
-    showPlaceholders: true,
-  });
-  setFrameSrcdoc(ui.previewFrame, html);
+  const mode = normalizePreviewMode(state.previewMode);
 
-  if (shouldSyncModal) {
-    setFrameSrcdoc(ui.previewModalFrame, html);
+  if (mode === "both") {
+    ui.mailCanvas.dataset.mode = "both";
+    const htmlLight = buildTemplateHtml(rawMarkup, template, { forceMode: "light", showPlaceholders: true });
+    const htmlDark = buildTemplateHtml(rawMarkup, template, { forceMode: "dark", showPlaceholders: true });
+    setFrameSrcdoc(ui.previewFrame, htmlLight);
+    setFrameSrcdoc(ui.previewFrameDark, htmlDark);
+  } else {
+    ui.mailCanvas.dataset.mode = "single";
+    const forceMode = mode === "app" ? state.resolvedTheme : mode;
+    const html = buildTemplateHtml(rawMarkup, template, { forceMode, showPlaceholders: true });
+    setFrameSrcdoc(ui.previewFrame, html);
+    setFrameSrcdoc(ui.previewFrameDark, "");
   }
 
   renderPreviewFields();
   ui.previewTemplateName.textContent = localizedTemplateName(template);
 }
 
-function formatCurrentDateValue() {
-  return new Intl.DateTimeFormat(t("dateLocale"), {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date());
-}
-
-function formatCurrentTimeValue() {
-  return new Intl.DateTimeFormat(t("dateLocale"), {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(new Date());
-}
-
-function buildSentAtValue(options = {}) {
-  const withPrefix = options.withPrefix !== false;
-  const showDate = Boolean(state.enabled.date);
-  const showTime = Boolean(state.enabled.time);
-  if (!showDate && !showTime) {
-    return "";
-  }
-
-  const dateValue = showDate ? formatCurrentDateValue() : "";
-  const timeValue = showTime ? formatCurrentTimeValue() : "";
-
-  let core = "";
-  if (dateValue && timeValue) {
-    core = `${dateValue} (${t("sentAtTimePrefix")} ${timeValue})`;
-  } else if (dateValue) {
-    core = dateValue;
-  } else {
-    core = `${t("sentAtTimePrefix")} ${timeValue}`;
-  }
-
-  return withPrefix ? `${t("sentAtPrefix")}: ${core}` : core;
-}
-
-function buildAttachmentsPreviewValue() {
-  if (!state.attachments.length) {
-    return "";
-  }
-
-  const totalBytes = state.attachments.reduce((sum, item) => sum + item.file.size, 0);
-  const maxNames = 3;
-  const names = state.attachments.slice(0, maxNames).map((item) => item.file.name);
-  const remaining = state.attachments.length - names.length;
-  const namesValue = remaining > 0 ? `${names.join(", ")} +${remaining}` : names.join(", ");
-
-  return `${formatFileCount(state.attachments.length)} (${formatBytes(totalBytes)}): ${namesValue}`;
-}
-
-function buildPreviewRows(options = {}) {
+function buildEnvelopeRows(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-  const sentAtValue = buildSentAtValue({ withPrefix: false });
-  const contentText = richHtmlToPlainText(state.fields.content);
-  const quoteText = normalizeMultilineText(state.fields.quote);
-  const signatureText = normalizeInlineText(state.fields.signatureName);
-  const attachmentsValue = buildAttachmentsPreviewValue();
-
   const rows = [
     {
-      key: "to",
-      visible: state.enabled.to,
+      visible: true,
       label: t("fieldToShort"),
       value: normalizeInlineText(state.fields.to),
       placeholder: ui.fieldTo.placeholder,
     },
     {
-      key: "cc",
       visible: state.enabled.cc,
       label: t("fieldCcShort"),
       value: normalizeInlineText(state.fields.cc),
       placeholder: ui.fieldCc.placeholder,
     },
     {
-      key: "bcc",
       visible: state.enabled.bcc,
       label: t("fieldBccShort"),
       value: normalizeInlineText(state.fields.bcc),
       placeholder: ui.fieldBcc.placeholder,
     },
     {
-      key: "replyTo",
-      visible: state.enabled.replyTo,
-      label: t("fieldReplyToShort"),
-      value: normalizeInlineText(state.fields.replyTo),
-      placeholder: ui.fieldReplyTo.placeholder,
-    },
-    {
-      key: "subject",
       visible: state.enabled.subject,
       label: t("fieldSubjectShort"),
       value: normalizeInlineText(state.fields.subject),
       placeholder: ui.fieldSubject.placeholder,
     },
     {
-      key: "content",
-      visible: state.enabled.content,
-      label: t("fieldContentLabel"),
-      value: contentText,
-      placeholder: ui.fieldContent.placeholder,
-    },
-    {
-      key: "quote",
-      visible: state.enabled.quote,
-      label: t("fieldQuoteShort"),
-      value: quoteText,
-      placeholder: ui.fieldQuote.placeholder,
-    },
-    {
-      key: "signatureName",
-      visible: state.enabled.signatureName,
-      label: t("fieldSignatureShort"),
-      value: signatureText,
-      placeholder: ui.fieldSignatureName.placeholder,
-    },
-    {
-      key: "sentAt",
-      visible: state.enabled.date || state.enabled.time,
-      label: t("fieldSentAtShort"),
-      value: sentAtValue,
-      placeholder: sentAtValue,
-    },
-    {
-      key: "attachments",
       visible: true,
       label: t("attachmentsTitle"),
-      value: attachmentsValue,
+      value: buildAttachmentEnvelopeValue(),
       placeholder: t("attachmentsEmpty"),
     },
   ];
 
-  return rows.map((row) => {
-    const hasValue = Boolean(row.value);
-    return {
-      ...row,
-      displayValue: hasValue ? row.value : showPlaceholders ? row.placeholder : "",
-      isPlaceholder: !hasValue && showPlaceholders,
-    };
-  });
-}
-
-function buildEnvelopeRows(options = {}) {
-  const showPlaceholders = Boolean(options.showPlaceholders);
-  const previewRows = buildPreviewRows({ showPlaceholders });
-  const envelopeKeys = new Set(["to", "cc", "bcc", "replyTo", "subject", "sentAt", "attachments"]);
-  return previewRows.filter((row) => envelopeKeys.has(row.key));
+  return rows
+    .filter((row) => row.visible)
+    .map((row) => {
+      const hasValue = Boolean(row.value);
+      return {
+        ...row,
+        displayValue: hasValue ? row.value : showPlaceholders ? row.placeholder : "",
+        isPlaceholder: !hasValue && showPlaceholders,
+      };
+    });
 }
 
 function renderPreviewFields() {
   ui.previewFields.innerHTML = "";
   const fragment = document.createDocumentFragment();
 
-  const rows = buildPreviewRows({ showPlaceholders: true });
+  buildEnvelopeRows({ showPlaceholders: true }).forEach((row) => {
+    const node = document.createElement("div");
+    node.className = "preview-field-row";
 
-  rows
-    .filter((row) => row.visible)
-    .forEach((row) => {
-      const rowNode = document.createElement("div");
-      rowNode.className = "preview-field-row";
+    const label = document.createElement("span");
+    label.className = "preview-field-label";
+    label.textContent = row.label;
 
-      const label = document.createElement("span");
-      label.className = "preview-field-label";
-      label.textContent = row.label;
+    const value = document.createElement("span");
+    value.className = "preview-field-value";
+    value.textContent = row.displayValue || "";
+    if (row.isPlaceholder) {
+      value.classList.add("placeholder");
+    }
 
-      const value = document.createElement("span");
-      value.className = "preview-field-value";
-
-      if (row.displayValue) {
-        value.textContent = row.displayValue;
-        if (row.isPlaceholder) {
-          value.classList.add("placeholder");
-        }
-      } else {
-        value.textContent = "";
-      }
-
-      rowNode.append(label, value);
-      fragment.append(rowNode);
-    });
+    node.append(label, value);
+    fragment.append(node);
+  });
 
   ui.previewFields.append(fragment);
 }
 
 function buildTemplateHtml(rawMarkup, template, options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-  const contentEnabled = Boolean(state.enabled.content);
-  const contentHtmlRaw = contentEnabled ? normalizeEditorHtml(state.fields.content) : "";
-  const hasContent = Boolean(contentHtmlRaw);
-  const contentHtml = hasContent
-    ? contentHtmlRaw
-    : contentEnabled && showPlaceholders
-      ? `<p class="app-placeholder">${escapeHtml(ui.fieldContent.placeholder)}</p>`
-      : "";
-  const signatureHtml = buildSignatureBlockHtml({ showPlaceholders });
-  const quoteText = normalizeMultilineText(state.fields.quote);
-  const quoteHtml = quoteText ? plainTextToInlineHtml(quoteText) : "";
-  const quotePreviewHtml =
-    quoteHtml || (showPlaceholders ? escapeHtml(ui.fieldQuote.placeholder).replace(/\n/g, "<br>") : "");
-  const hasQuote = state.enabled.quote && Boolean(quoteHtml || showPlaceholders);
-  const timeValue = formatCurrentTimeValue();
-  const sentAtValue = buildSentAtValue({ withPrefix: true });
-  const dateTokenValue = state.enabled.date || state.enabled.time ? sentAtValue : "";
-  const timeTokenValue = state.enabled.time ? timeValue : "";
 
   const replacements = {
-    content_block: contentHtml,
-    signature_block: signatureHtml,
-    greeting: escapeHtml(t("greeting")),
-    date: escapeHtml(dateTokenValue),
-    time: escapeHtml(timeTokenValue),
-    template_title: escapeHtml(t("templateHeader")),
-    reply_header: escapeHtml(state.enabled.quote ? t("replyHeader") : t("templateHeader")),
-    quote_label: escapeHtml(t("quoteLabel")),
-    quote_placeholder: hasQuote ? quotePreviewHtml : "",
+    greeting_block: buildGreetingBlockHtml({ showPlaceholders }),
+    content_block: buildContentBlockHtml({ showPlaceholders }),
+    quote_block: buildQuoteBlockHtml({ showPlaceholders }),
+    signature_block: buildSignatureBlockHtml({ showPlaceholders }),
   };
 
-  const withTokens = rawMarkup.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
+  const htmlWithTokens = rawMarkup.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
     return Object.prototype.hasOwnProperty.call(replacements, key) ? replacements[key] : "";
   });
 
   const parser = new DOMParser();
-  const doc = parser.parseFromString(withTokens, "text/html");
+  const doc = parser.parseFromString(htmlWithTokens, "text/html");
   const root = doc.documentElement;
 
   root.classList.remove("forced-light", "forced-dark");
   if (options.forceMode === "light") root.classList.add("forced-light");
   if (options.forceMode === "dark") root.classList.add("forced-dark");
 
-  if (!contentEnabled || (!hasContent && !showPlaceholders)) {
-    doc.querySelectorAll("[data-optional-content]").forEach((node) => node.remove());
-  }
-
-  const signatureText = normalizeInlineText(state.fields.signatureName);
-  if (!state.enabled.signatureName || (!signatureText && !showPlaceholders)) {
-    doc.querySelectorAll("[data-optional-signature]").forEach((node) => node.remove());
-  }
-
-  if (!state.enabled.quote || (!quoteText && !showPlaceholders)) {
-    doc.querySelectorAll("[data-optional-quote]").forEach((node) => node.remove());
-  } else {
-    const quoteNodes = [...doc.querySelectorAll("[data-optional-quote]")];
-    if (quoteNodes.length) {
-      quoteNodes.forEach((node) => {
-        const blockquote = node.querySelector("blockquote");
-        if (blockquote) {
-          blockquote.innerHTML = quotePreviewHtml;
-        } else {
-          const fallbackBlockquote = doc.createElement("blockquote");
-          fallbackBlockquote.innerHTML = quotePreviewHtml;
-          node.append(fallbackBlockquote);
-        }
-      });
-    } else {
-      injectFallbackQuoteBlock(doc, quotePreviewHtml);
-    }
-  }
-
-  if (showPlaceholders) {
-    injectTemplateEnvelopePreview(doc);
-  }
-
-  const accent = template.theme?.accent || "#2e7dff";
+  const accent = template?.theme?.accent || "#2e7dff";
   const themeStyle = doc.createElement("style");
-  themeStyle.textContent = `
-    :root {
-      --template-accent: ${accent};
-      --app-readable-text: #1b2733;
-      --app-readable-muted: #556a7d;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      html:not(.forced-light) {
-        --app-readable-text: #e7eef6;
-        --app-readable-muted: #b5c4d4;
-      }
-    }
-
-    html.forced-light {
-      --app-readable-text: #1b2733;
-      --app-readable-muted: #556a7d;
-    }
-
-    html.forced-dark {
-      --app-readable-text: #e7eef6;
-      --app-readable-muted: #b5c4d4;
-    }
-
-    body {
-      color: var(--app-readable-text);
-    }
-
-    p,
-    li,
-    td,
-    .mail-content,
-    .section {
-      color: inherit;
-    }
-
-    .signature,
-    .quote-label,
-    .mail-head,
-    .fallback-quote-label,
-    .fallback-quote-block blockquote {
-      color: var(--app-readable-muted);
-    }
-
-    .app-placeholder {
-      color: var(--app-readable-muted);
-      font-style: italic;
-    }
-
-    .app-envelope-preview {
-      max-width: 700px;
-      margin: 0 auto 12px;
-      border: 1px solid #cdd8e2;
-      border-radius: 10px;
-      background: #f5f8fc;
-      padding: 10px 12px;
-      display: grid;
-      gap: 6px;
-      font-size: 13px;
-    }
-
-    .app-envelope-row {
-      display: grid;
-      grid-template-columns: 90px 1fr;
-      gap: 8px;
-      align-items: baseline;
-    }
-
-    .app-envelope-label {
-      color: var(--app-readable-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      font-size: 11px;
-    }
-
-    .app-envelope-value {
-      color: var(--app-readable-text);
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
-
-    .app-envelope-value.placeholder {
-      color: var(--app-readable-muted);
-      font-style: italic;
-    }
-
-    html.forced-dark .app-envelope-preview {
-      border-color: #3a4f65;
-      background: #1b2733;
-    }
-
-    .signature-name,
-    strong,
-    h1,
-    h2,
-    h3 {
-      color: var(--app-readable-text);
-    }
-
-    .fallback-quote-block {
-      margin-top: 20px;
-      border: 1px solid #cdd8e2;
-      border-left: 4px solid var(--template-accent);
-      border-radius: 8px;
-      background: #f5f8fc;
-      padding: 12px 14px;
-    }
-
-    html.forced-dark .fallback-quote-block {
-      border-color: #3a4f65;
-      background: #1b2733;
-    }
-
-    .fallback-quote-label {
-      margin: 0 0 8px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-    }
-
-    .fallback-quote-block blockquote {
-      margin: 0;
-      padding-left: 10px;
-      border-left: 2px solid var(--template-accent);
-      font-style: italic;
-    }
-  `;
+  themeStyle.textContent = `:root{--template-accent:${accent};}`;
   doc.head.append(themeStyle);
 
   return `<!doctype html>\n${doc.documentElement.outerHTML}`;
 }
 
-function injectTemplateEnvelopePreview(doc) {
-  const rows = buildEnvelopeRows({ showPlaceholders: true }).filter((row) => row.visible);
-  if (!rows.length) {
-    return;
+function buildGreetingBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  if (!state.enabled.greeting) {
+    return "";
   }
 
-  const block = doc.createElement("section");
-  block.className = "app-envelope-preview";
+  const greetingText = resolveGreetingText();
+  const recipient = normalizeInlineText(state.fields.greetingRecipient);
 
-  rows.forEach((row) => {
-    const rowNode = doc.createElement("div");
-    rowNode.className = "app-envelope-row";
+  if (!greetingText && !showPlaceholders) {
+    return "";
+  }
 
-    const label = doc.createElement("span");
-    label.className = "app-envelope-label";
-    label.textContent = row.label;
+  const base = greetingText || t("greetingPresetCasual");
+  const line = recipient ? `${base} ${recipient},` : `${base},`;
+  const placeholder = !greetingText && showPlaceholders;
 
-    const value = doc.createElement("span");
-    value.className = "app-envelope-value";
-    value.textContent = row.displayValue || "";
-    if (row.isPlaceholder) {
-      value.classList.add("placeholder");
-    }
-
-    rowNode.append(label, value);
-    block.append(rowNode);
-  });
-
-  const firstWrapper =
-    doc.querySelector(".mail-wrap") ||
-    doc.querySelector(".wrapper") ||
-    doc.querySelector("main") ||
-    doc.body;
-
-  firstWrapper.prepend(block);
+  return `<p class="mail-greeting${placeholder ? " app-placeholder" : ""}">${escapeHtml(line)}</p>`;
 }
 
-function injectFallbackQuoteBlock(doc, quoteHtml) {
-  const quoteBlock = doc.createElement("section");
-  quoteBlock.className = "fallback-quote-block";
-  quoteBlock.innerHTML = `
-    <p class="fallback-quote-label">${escapeHtml(t("quoteLabel"))}</p>
-    <blockquote>${quoteHtml}</blockquote>
-  `;
-
-  const signatureNode = doc.querySelector("[data-optional-signature]");
-  if (signatureNode?.parentNode) {
-    signatureNode.parentNode.insertBefore(quoteBlock, signatureNode);
-    return;
+function resolveGreetingText() {
+  if (state.fields.greetingPreset === "custom") {
+    return normalizeInlineText(state.fields.greetingCustom);
   }
 
-  const contentTarget =
-    doc.querySelector(".mail-content") ||
-    doc.querySelector(".section") ||
-    doc.querySelector("article") ||
-    doc.body;
+  const map = {
+    casual: t("greetingPresetCasual"),
+    formal: t("greetingPresetFormal"),
+    neutral: t("greetingPresetNeutral"),
+    hey: t("greetingPresetHey"),
+  };
 
-  contentTarget.append(quoteBlock);
+  return map[state.fields.greetingPreset] || "";
+}
+
+function buildContentBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  if (!state.enabled.content) {
+    return "";
+  }
+
+  const contentHtml = normalizeEditorHtml(state.fields.content);
+  if (contentHtml) {
+    return contentHtml;
+  }
+
+  if (!showPlaceholders) {
+    return "";
+  }
+
+  return `<p class="app-placeholder">${escapeHtml(ui.fieldContent.placeholder)}</p>`;
+}
+
+function buildQuoteBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  if (!state.enabled.quote) {
+    return "";
+  }
+
+  const quoteHtml = normalizeEditorHtml(state.fields.quote);
+  if (!quoteHtml && !showPlaceholders) {
+    return "";
+  }
+
+  const body = quoteHtml || `<p class="app-placeholder">${escapeHtml(ui.fieldQuote.placeholder)}</p>`;
+  return `
+    <section class="mail-quote">
+      <p class="mail-quote-label">${escapeHtml(t("fieldQuoteLabel"))}</p>
+      <div class="mail-quote-body">${body}</div>
+    </section>
+  `;
 }
 
 function buildSignatureBlockHtml(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-  if (!state.enabled.signatureName) {
+
+  const closingText = resolveClosingText();
+  const senderName = normalizeInlineText(state.fields.senderName);
+  const hasClosing = state.enabled.closing && Boolean(closingText || showPlaceholders);
+  const hasSender = Boolean(senderName || showPlaceholders);
+
+  const closingLine = hasClosing
+    ? `<p class="mail-closing${closingText ? "" : " app-placeholder"}">${escapeHtml(
+        closingText || t("closingPresetRegards")
+      )}</p>`
+    : "";
+
+  const senderLine = hasSender
+    ? `<p class="mail-sender${senderName ? "" : " app-placeholder"}">${escapeHtml(
+        senderName || ui.fieldSenderName.placeholder
+      )}</p>`
+    : "";
+
+  const contactBlock = buildContactBlockHtml({ showPlaceholders });
+  const sentBlock = buildSentBlockHtml({ showPlaceholders });
+
+  if (!closingLine && !senderLine && !contactBlock && !sentBlock) {
     return "";
   }
 
-  const signatureName = normalizeInlineText(state.fields.signatureName);
-  if (!signatureName && !showPlaceholders) {
+  return `
+    <section class="mail-signature-block">
+      ${closingLine}
+      ${senderLine}
+      ${contactBlock}
+      ${sentBlock}
+    </section>
+  `;
+}
+
+function resolveClosingText() {
+  if (!state.enabled.closing) {
     return "";
   }
 
-  if (!signatureName) {
-    return `${escapeHtml(t("closing"))}<div class="signature-name app-placeholder">${escapeHtml(
-      ui.fieldSignatureName.placeholder
-    )}</div>`;
+  if (state.fields.closingPreset === "custom") {
+    return normalizeInlineText(state.fields.closingCustom);
   }
 
-  return `${escapeHtml(t("closing"))}<div class="signature-name">${escapeHtml(signatureName)}</div>`;
+  const map = {
+    regards: t("closingPresetRegards"),
+    sincerely: t("closingPresetSincerely"),
+    thanks: t("closingPresetThanks"),
+    best: t("closingPresetBest"),
+  };
+
+  return map[state.fields.closingPreset] || "";
+}
+
+function buildContactBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+
+  const defs = [
+    {
+      key: "contactName",
+      label: t("fieldContactNameLabel"),
+      value: normalizeInlineText(state.fields.contactName),
+      placeholder: ui.fieldContactName.placeholder,
+    },
+    {
+      key: "contactRole",
+      label: t("fieldContactRoleLabel"),
+      value: normalizeInlineText(state.fields.contactRole),
+      placeholder: ui.fieldContactRole.placeholder,
+    },
+    {
+      key: "contactCompany",
+      label: t("fieldContactCompanyLabel"),
+      value: normalizeInlineText(state.fields.contactCompany),
+      placeholder: ui.fieldContactCompany.placeholder,
+    },
+    {
+      key: "contactPhone",
+      label: t("fieldContactPhoneLabel"),
+      value: normalizeInlineText(state.fields.contactPhone),
+      placeholder: ui.fieldContactPhone.placeholder,
+    },
+    {
+      key: "contactEmail",
+      label: t("fieldContactEmailLabel"),
+      value: normalizeInlineText(state.fields.contactEmail),
+      placeholder: ui.fieldContactEmail.placeholder,
+    },
+    {
+      key: "contactWebsite",
+      label: t("fieldContactWebsiteLabel"),
+      value: normalizeInlineText(state.fields.contactWebsite),
+      placeholder: ui.fieldContactWebsite.placeholder,
+    },
+    {
+      key: "contactAddress",
+      label: t("fieldContactAddressLabel"),
+      value: normalizeMultilineText(state.fields.contactAddress),
+      placeholder: ui.fieldContactAddress.placeholder,
+    },
+  ];
+
+  const lines = [];
+
+  defs.forEach((def) => {
+    if (!state.enabled[def.key]) return;
+
+    if (!def.value && !showPlaceholders) return;
+
+    let displayValue = def.value;
+    let isPlaceholder = false;
+
+    if (!displayValue) {
+      displayValue = def.placeholder;
+      isPlaceholder = true;
+    }
+
+    if (def.key === "contactWebsite" && def.value) {
+      const safeUrl = normalizeWebsiteUrl(def.value);
+      lines.push(`
+        <div class="contact-line${isPlaceholder ? " app-placeholder" : ""}">
+          <span class="contact-label">${escapeHtml(def.label)}:</span>
+          <span class="contact-value"><a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+        def.value
+      )}</a></span>
+        </div>
+      `);
+      return;
+    }
+
+    lines.push(`
+      <div class="contact-line${isPlaceholder ? " app-placeholder" : ""}">
+        <span class="contact-label">${escapeHtml(def.label)}:</span>
+        <span class="contact-value">${escapeHtml(displayValue).replace(/\n/g, "<br>")}</span>
+      </div>
+    `);
+  });
+
+  if (state.enabled.contactLogo) {
+    const logoName = state.logoAttachment?.file?.name || "";
+    if (logoName || showPlaceholders) {
+      lines.push(`
+        <div class="contact-line${logoName ? "" : " app-placeholder"}">
+          <span class="contact-label">${escapeHtml(t("fieldContactLogoLabel"))}:</span>
+          <span class="contact-value">${escapeHtml(logoName || t("logoPlaceholder"))}</span>
+        </div>
+      `);
+    }
+  }
+
+  if (state.enabled.socials) {
+    const socials = state.socials
+      .map((item) => {
+        const url = normalizeInlineText(item.url);
+        if (!url) return null;
+        const network = SOCIAL_NETWORKS.find((entry) => entry.value === item.network) || SOCIAL_NETWORKS[0];
+        const safeUrl = normalizeWebsiteUrl(url);
+        return `<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+          `${network.icon} ${t(network.labelKey)}`
+        )}</a>`;
+      })
+      .filter(Boolean);
+
+    if (socials.length) {
+      lines.push(`<div class="contact-socials">${socials.join(" ")}</div>`);
+    } else if (showPlaceholders) {
+      lines.push(`<div class="contact-socials app-placeholder">${escapeHtml(t("socialPlaceholder"))}</div>`);
+    }
+  }
+
+  if (!lines.length) {
+    return "";
+  }
+
+  return `<div class="mail-contact-block">${lines.join("")}</div>`;
+}
+
+function buildSentBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  const lines = [];
+
+  if (state.enabled.sentAt) {
+    const value = buildSentAtValue();
+    if (value || showPlaceholders) {
+      lines.push(`<p class="mail-sent-line">${escapeHtml(value)}</p>`);
+    }
+  }
+
+  if (state.enabled.sentFrom) {
+    const value = `${t("sentFromPrefix")}: ${detectDeviceLabel()}`;
+    if (value || showPlaceholders) {
+      lines.push(`<p class="mail-sent-line">${escapeHtml(value)}</p>`);
+    }
+  }
+
+  if (!lines.length) {
+    return "";
+  }
+
+  return `<div class="mail-sent-block">${lines.join("")}</div>`;
+}
+
+function buildSentAtValue() {
+  const date = new Intl.DateTimeFormat(t("dateLocale"), {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date());
+
+  const time = new Intl.DateTimeFormat(t("dateLocale"), {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
+
+  return `${t("sentAtPrefix")}: ${date} (${t("sentAtTimePrefix")} ${time})`;
+}
+
+function detectDeviceLabel() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes("iphone")) return "iPhone";
+  if (ua.includes("ipad")) return "iPad";
+  if (ua.includes("android")) return "Android";
+  if (ua.includes("mac os") || ua.includes("macintosh")) return "macOS";
+  if (ua.includes("windows")) return "Windows";
+  if (ua.includes("linux")) return "Linux";
+  return "Browser";
+}
+
+function clearAddressValidation() {
+  ui.addressValidation.textContent = "";
+  [
+    ui.fieldTo,
+    ui.fieldCc,
+    ui.fieldBcc,
+    ui.fieldSenderName,
+    ui.fieldContactEmail,
+    ui.fieldContactWebsite,
+  ].forEach((input) => {
+    input.setAttribute("aria-invalid", "false");
+  });
+}
+
+function collectValidationState() {
+  const issues = [];
+  const invalidInputs = new Set();
+
+  const toAddresses = parseAddressList(state.fields.to);
+  if (!toAddresses.length) {
+    issues.push(t("requiredToMissing"));
+    invalidInputs.add(ui.fieldTo);
+  } else {
+    const invalidTo = toAddresses.filter((address) => !isValidEmailAddress(address));
+    if (invalidTo.length) {
+      issues.push(t("invalidAddressList", { label: t("fieldToShort"), list: [...new Set(invalidTo)].join(", ") }));
+      invalidInputs.add(ui.fieldTo);
+    }
+  }
+
+  const optionalEmailDefs = [
+    { key: "cc", label: t("fieldCcShort"), input: ui.fieldCc },
+    { key: "bcc", label: t("fieldBccShort"), input: ui.fieldBcc },
+  ];
+
+  optionalEmailDefs.forEach((def) => {
+    if (!state.enabled[def.key]) return;
+    const value = state.fields[def.key];
+    if (!normalizeInlineText(value)) return;
+
+    const addresses = parseAddressList(value);
+    const invalid = addresses.filter((address) => !isValidEmailAddress(address));
+    if (invalid.length) {
+      issues.push(t("invalidAddressList", { label: def.label, list: [...new Set(invalid)].join(", ") }));
+      invalidInputs.add(def.input);
+    }
+  });
+
+  if (!normalizeInlineText(state.fields.senderName)) {
+    issues.push(t("requiredSenderMissing"));
+    invalidInputs.add(ui.fieldSenderName);
+  }
+
+  if (state.enabled.contactEmail) {
+    const contactEmail = normalizeInlineText(state.fields.contactEmail);
+    if (contactEmail && !isValidEmailAddress(contactEmail)) {
+      issues.push(t("contactEmailInvalid"));
+      invalidInputs.add(ui.fieldContactEmail);
+    }
+  }
+
+  if (state.enabled.contactWebsite) {
+    const website = normalizeInlineText(state.fields.contactWebsite);
+    if (website && !isLikelyUrl(website)) {
+      issues.push(t("contactWebsiteInvalid"));
+      invalidInputs.add(ui.fieldContactWebsite);
+    }
+  }
+
+  return { issues, invalidInputs };
+}
+
+function validateAddressFields(showMessage = true) {
+  clearAddressValidation();
+
+  const { issues, invalidInputs } = collectValidationState();
+
+  invalidInputs.forEach((input) => {
+    input?.setAttribute("aria-invalid", "true");
+  });
+
+  if (showMessage && issues.length) {
+    ui.addressValidation.textContent = `${t("addressValidationPrefix")} ${issues.join("; ")}`;
+  }
+
+  return issues.length === 0;
+}
+
+function updateActionButtons() {
+  ui.exportBtn.textContent =
+    state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
+  ui.shareBtn.textContent =
+    state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
+
+  if (state.isExporting) {
+    ui.exportBtn.disabled = true;
+    ui.shareBtn.disabled = true;
+    return;
+  }
+
+  const canExport = collectValidationState().issues.length === 0;
+  ui.exportBtn.disabled = !canExport;
+  ui.shareBtn.disabled = !canExport;
+}
+
+function parseAddressList(rawValue) {
+  return String(rawValue || "")
+    .trim()
+    .split(/[\s,;]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function isValidEmailAddress(email) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(email);
+}
+
+function isLikelyUrl(value) {
+  const raw = String(value || "").trim();
+  return /^https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:[/?#].*)?$/i.test(raw);
+}
+
+function normalizeWebsiteUrl(value) {
+  const raw = String(value || "").trim();
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return `https://${raw}`;
+}
+
+function normalizeInlineText(value) {
+  return String(value || "").trim();
+}
+
+function normalizeMultilineText(value) {
+  return String(value || "").replace(/\r\n?/g, "\n").trim();
+}
+
+function addSocialEntry() {
+  state.socials.push({
+    id: crypto.randomUUID(),
+    network: "linkedin",
+    url: "",
+  });
+  renderSocialRows();
+  applyOptionalFieldStates();
+  maybeSaveDraft();
+  renderPreview();
+}
+
+function removeSocialEntry(socialId) {
+  const index = state.socials.findIndex((item) => item.id === socialId);
+  if (index === -1) return;
+  state.socials.splice(index, 1);
+  renderSocialRows();
+  applyOptionalFieldStates();
+  maybeSaveDraft();
+  renderPreview();
+}
+
+function normalizeSocialNetwork(value) {
+  return SOCIAL_NETWORKS.some((entry) => entry.value === value) ? value : "linkedin";
+}
+
+function renderSocialRows() {
+  ui.socialsList.innerHTML = "";
+
+  if (!state.socials.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-state";
+    empty.textContent = t("socialsEmpty");
+    ui.socialsList.append(empty);
+  } else {
+    const fragment = document.createDocumentFragment();
+
+    state.socials.forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "social-row";
+      row.dataset.socialId = item.id;
+
+      const networkSelect = document.createElement("select");
+      networkSelect.className = "social-network";
+      SOCIAL_NETWORKS.forEach((network) => {
+        const option = document.createElement("option");
+        option.value = network.value;
+        option.textContent = `${network.icon} ${t(network.labelKey)}`;
+        option.selected = network.value === item.network;
+        networkSelect.append(option);
+      });
+
+      const urlInput = document.createElement("input");
+      urlInput.className = "social-url";
+      urlInput.type = "url";
+      urlInput.placeholder = t("socialUrlPlaceholder");
+      urlInput.value = item.url;
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "button";
+      removeButton.dataset.removeSocial = item.id;
+      removeButton.textContent = t("socialRemoveButton");
+
+      row.append(networkSelect, urlInput, removeButton);
+      fragment.append(row);
+    });
+
+    ui.socialsList.append(fragment);
+  }
+
+  applyOptionalFieldStates();
+}
+
+function setLogoAttachment(file) {
+  if (state.logoAttachment?.previewUrl) {
+    URL.revokeObjectURL(state.logoAttachment.previewUrl);
+  }
+
+  if (!file) {
+    state.logoAttachment = null;
+    renderAttachments();
+    renderPreview();
+    maybeSaveDraft();
+    return;
+  }
+
+  const isImage = file.type.startsWith("image/");
+  state.logoAttachment = {
+    id: "logo",
+    file,
+    previewUrl: isImage ? URL.createObjectURL(file) : "",
+    kind: isImage ? "logo" : detectFileKind(file),
+  };
+
+  renderAttachments();
+  renderPreview();
+  maybeSaveDraft();
+}
+
+function addAttachments(fileList) {
+  const files = Array.from(fileList || []);
+  if (!files.length) return;
+
+  files.forEach((file) => {
+    const isImage = file.type.startsWith("image/");
+    state.attachments.push({
+      id: crypto.randomUUID(),
+      file,
+      previewUrl: isImage ? URL.createObjectURL(file) : "",
+      kind: detectFileKind(file),
+    });
+  });
+
+  renderAttachments();
+  renderPreview();
+}
+
+function detectFileKind(file) {
+  if (file.type.startsWith("image/")) return "image";
+  if (file.type === "application/pdf") return "pdf";
+  if (file.type.startsWith("audio/")) return "audio";
+  if (file.type.startsWith("video/")) return "video";
+  return "file";
+}
+
+function removeAttachment(attachmentId) {
+  const index = state.attachments.findIndex((attachment) => attachment.id === attachmentId);
+  if (index === -1) return;
+
+  const [removed] = state.attachments.splice(index, 1);
+  if (removed.previewUrl) {
+    URL.revokeObjectURL(removed.previewUrl);
+  }
+
+  renderAttachments();
+  renderPreview();
+}
+
+function clearLogoAttachment() {
+  if (state.logoAttachment?.previewUrl) {
+    URL.revokeObjectURL(state.logoAttachment.previewUrl);
+  }
+
+  state.logoAttachment = null;
+  ui.contactLogoInput.value = "";
+
+  renderAttachments();
+  renderPreview();
+}
+
+function getAllExportAttachments() {
+  const files = [...state.attachments];
+  if (state.enabled.contactLogo && state.logoAttachment) {
+    files.unshift(state.logoAttachment);
+  }
+  return files;
+}
+
+function buildAttachmentEnvelopeValue() {
+  const attachments = getAllExportAttachments();
+  if (!attachments.length) return "";
+
+  const totalBytes = attachments.reduce((sum, item) => sum + item.file.size, 0);
+  const names = attachments.slice(0, 3).map((item) => item.file.name);
+  const remaining = attachments.length - names.length;
+  const suffix = remaining > 0 ? ` +${remaining}` : "";
+
+  return `${formatFileCount(attachments.length)} (${formatBytes(totalBytes)}): ${names.join(", ")}${suffix}`;
+}
+
+function renderAttachments() {
+  ui.attachmentList.innerHTML = "";
+  const attachments = getAllExportAttachments();
+
+  if (!attachments.length) {
+    const empty = document.createElement("li");
+    empty.className = "empty-state";
+    empty.textContent = t("attachmentsEmpty");
+    ui.attachmentList.append(empty);
+  } else {
+    const fragment = document.createDocumentFragment();
+
+    attachments.forEach((attachment) => {
+      const tile = document.createElement("li");
+      tile.className = "attachment-tile";
+
+      const visual = document.createElement("div");
+      visual.className = "attachment-visual";
+
+      if (attachment.kind === "image" || attachment.kind === "logo") {
+        const image = document.createElement("img");
+        image.src = attachment.previewUrl;
+        image.alt = attachment.file.name;
+        visual.append(image);
+      } else {
+        const badge = document.createElement("span");
+        badge.className = "file-badge";
+        badge.textContent = fileKindLabel(attachment.kind);
+        visual.append(badge);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "attachment-meta";
+
+      const name = document.createElement("div");
+      name.className = "attachment-name";
+      name.textContent = attachment.file.name;
+
+      const size = document.createElement("div");
+      size.className = "attachment-size";
+      size.textContent = formatBytes(attachment.file.size);
+
+      meta.append(name, size);
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "button remove-attachment";
+      removeButton.textContent = t("removeAttachment");
+
+      if (attachment.id === "logo") {
+        removeButton.addEventListener("click", () => {
+          clearLogoAttachment();
+        });
+      } else {
+        removeButton.addEventListener("click", () => {
+          removeAttachment(attachment.id);
+        });
+      }
+
+      tile.append(visual, meta, removeButton);
+      fragment.append(tile);
+    });
+
+    ui.attachmentList.append(fragment);
+  }
+
+  const totalBytes = attachments.reduce((sum, item) => sum + item.file.size, 0);
+  const estimatedBytes = estimateExportSizeBytes();
+
+  ui.attachmentCount.textContent = formatFileCount(attachments.length);
+  ui.attachmentTotal.textContent = t("attachmentTotal", { size: formatBytes(totalBytes) });
+  ui.attachmentEstimated.textContent = t("attachmentEstimated", { size: formatBytes(estimatedBytes) });
+
+  ui.attachmentWarning.className = "warning-text";
+  ui.attachmentWarning.textContent = "";
+
+  if (estimatedBytes >= DANGER_MB * MB) {
+    ui.attachmentWarning.classList.add("danger");
+    ui.attachmentWarning.textContent = t("warningDanger");
+  } else if (estimatedBytes >= WARN_MB * MB) {
+    ui.attachmentWarning.classList.add("warn");
+    ui.attachmentWarning.textContent = t("warningWarn");
+  }
+}
+
+function estimateExportSizeBytes() {
+  let htmlBytes = 800;
+
+  const template = getTemplateById(state.selectedTemplateId);
+  if (template) {
+    const markup = state.templateMarkup.get(template.id);
+    if (markup) {
+      htmlBytes = new TextEncoder().encode(
+        buildTemplateHtml(markup, template, { forceMode: null, showPlaceholders: false })
+      ).length;
+    }
+  }
+
+  const plainBytes = new TextEncoder().encode(buildPlainTextBody()).length;
+  const attachmentsBytes = getAllExportAttachments().reduce((sum, attachment) => {
+    return sum + estimateBase64TransferBytes(attachment.file.size) + 260;
+  }, 0);
+
+  const overhead = 1800;
+  return (
+    overhead +
+    estimateBase64TransferBytes(plainBytes) +
+    estimateBase64TransferBytes(htmlBytes) +
+    attachmentsBytes
+  );
+}
+
+function estimateBase64TransferBytes(rawBytes) {
+  if (!rawBytes || rawBytes <= 0) return 0;
+  const encodedBytes = Math.ceil(rawBytes / 3) * 4;
+  const lines = Math.ceil(encodedBytes / 76);
+  return encodedBytes + lines * 2;
+}
+
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes) || bytes < 0) return "0 B";
+  if (bytes < 1024) return `${bytes} B`;
+
+  const units = ["KB", "MB", "GB"];
+  let value = bytes / 1024;
+  let unitIndex = 0;
+
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  const fraction = value >= 100 ? 0 : value >= 10 ? 1 : 2;
+  return `${value.toFixed(fraction)} ${units[unitIndex]}`;
+}
+
+function formatFileCount(count) {
+  const forms = (I18N[state.language] || I18N.pl).fileWordForms || I18N.pl.fileWordForms;
+  const pluralRule = new Intl.PluralRules(state.language);
+  const category = pluralRule.select(count);
+  const word = forms[category] || forms.other || forms.one;
+  return `${count} ${word}`;
+}
+
+function fileKindLabel(kind) {
+  switch (kind) {
+    case "image":
+      return t("fileKindImage");
+    case "pdf":
+      return t("fileKindPdf");
+    case "audio":
+      return t("fileKindAudio");
+    case "video":
+      return t("fileKindVideo");
+    case "logo":
+      return t("fileKindLogo");
+    default:
+      return t("fileKindFile");
+  }
+}
+
+function openInfoModal() {
+  ui.infoModal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function closeInfoModal() {
+  ui.infoModal.hidden = true;
+  document.body.classList.remove("modal-open");
+}
+
+function buildPlainTextBody() {
+  const parts = [];
+
+  const greeting = buildGreetingPlainText();
+  if (greeting) parts.push(greeting);
+
+  if (state.enabled.content) {
+    const content = richHtmlToPlainText(state.fields.content);
+    if (content) parts.push(content);
+  }
+
+  if (state.enabled.quote) {
+    const quote = richHtmlToPlainText(state.fields.quote);
+    if (quote) {
+      parts.push(`${t("fieldQuoteLabel")}:\n${quote}`);
+    }
+  }
+
+  const signature = buildSignaturePlainText();
+  if (signature) parts.push(signature);
+
+  return parts.join("\n\n").trim();
+}
+
+function buildGreetingPlainText() {
+  if (!state.enabled.greeting) return "";
+  const greeting = resolveGreetingText();
+  if (!greeting) return "";
+  const recipient = normalizeInlineText(state.fields.greetingRecipient);
+  return recipient ? `${greeting} ${recipient},` : `${greeting},`;
+}
+
+function buildSignaturePlainText() {
+  const lines = [];
+
+  const closing = resolveClosingText();
+  if (state.enabled.closing && closing) {
+    lines.push(closing);
+  }
+
+  const sender = normalizeInlineText(state.fields.senderName);
+  if (sender) {
+    lines.push(sender);
+  }
+
+  const contactLines = buildContactPlainLines();
+  if (contactLines.length) {
+    lines.push(...contactLines);
+  }
+
+  if (state.enabled.sentAt) {
+    lines.push(buildSentAtValue());
+  }
+
+  if (state.enabled.sentFrom) {
+    lines.push(`${t("sentFromPrefix")}: ${detectDeviceLabel()}`);
+  }
+
+  return lines.join("\n").trim();
+}
+
+function buildContactPlainLines() {
+  const lines = [];
+  const defs = [
+    ["contactName", t("fieldContactNameLabel"), state.fields.contactName],
+    ["contactRole", t("fieldContactRoleLabel"), state.fields.contactRole],
+    ["contactCompany", t("fieldContactCompanyLabel"), state.fields.contactCompany],
+    ["contactPhone", t("fieldContactPhoneLabel"), state.fields.contactPhone],
+    ["contactEmail", t("fieldContactEmailLabel"), state.fields.contactEmail],
+    ["contactWebsite", t("fieldContactWebsiteLabel"), state.fields.contactWebsite],
+    ["contactAddress", t("fieldContactAddressLabel"), state.fields.contactAddress],
+  ];
+
+  defs.forEach(([key, label, value]) => {
+    if (!state.enabled[key]) return;
+    const normalized = normalizeMultilineText(value);
+    if (!normalized) return;
+    lines.push(`${label}: ${normalized.replace(/\n/g, ", ")}`);
+  });
+
+  if (state.enabled.contactLogo && state.logoAttachment?.file?.name) {
+    lines.push(`${t("fieldContactLogoLabel")}: ${state.logoAttachment.file.name}`);
+  }
+
+  if (state.enabled.socials) {
+    state.socials.forEach((item) => {
+      const url = normalizeInlineText(item.url);
+      if (!url) return;
+      const network = SOCIAL_NETWORKS.find((entry) => entry.value === item.network) || SOCIAL_NETWORKS[0];
+      lines.push(`${network.icon} ${t(network.labelKey)}: ${url}`);
+    });
+  }
+
+  return lines;
+}
+
+async function saveEmlFile() {
+  const { blob, filename } = await buildEmlFile();
+  triggerDownload(blob, filename);
+}
+
+async function shareEmlFile() {
+  const { blob, filename } = await buildEmlFile();
+  const file = new File([blob], filename, { type: "message/rfc822" });
+
+  if (typeof navigator.canShare === "function" && !navigator.canShare({ files: [file] })) {
+    throw new Error("Navigator cannot share this file type");
+  }
+
+  if (typeof navigator.share !== "function") {
+    throw new Error("Web Share API is unavailable");
+  }
+
+  await navigator.share({
+    files: [file],
+    title: filename,
+  });
+}
+
+async function buildEmlFile() {
+  const template = getTemplateById(state.selectedTemplateId);
+  if (!template) {
+    throw new Error(t("noTemplateSelected"));
+  }
+
+  const rawMarkup = await ensureTemplateMarkup(template);
+  const htmlBody = buildTemplateHtml(rawMarkup, template, { forceMode: null, showPlaceholders: false });
+  const plainTextBody = buildPlainTextBody();
+
+  const mixedBoundary = `----=_PrettyMailsMixed_${Date.now().toString(16)}_${Math.random()
+    .toString(16)
+    .slice(2)}`;
+  const alternativeBoundary = `----=_PrettyMailsAlt_${Date.now().toString(16)}_${Math.random()
+    .toString(16)
+    .slice(2)}`;
+
+  const toAddresses = parseAddressList(state.fields.to);
+  const ccAddresses = state.enabled.cc ? parseAddressList(state.fields.cc) : [];
+  const bccAddresses = state.enabled.bcc ? parseAddressList(state.fields.bcc) : [];
+  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
+
+  const lines = [];
+
+  if (toAddresses.length) {
+    lines.push(`To: ${toAddresses.join(", ")}`);
+  }
+
+  if (ccAddresses.length) {
+    lines.push(`Cc: ${ccAddresses.join(", ")}`);
+  }
+
+  if (bccAddresses.length) {
+    lines.push(`Bcc: ${bccAddresses.join(", ")}`);
+  }
+
+  if (subject) {
+    lines.push(`Subject: ${encodeMimeHeader(subject)}`);
+  }
+
+  lines.push(`Date: ${new Date().toUTCString()}`);
+  lines.push("MIME-Version: 1.0");
+  lines.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`);
+  lines.push("");
+
+  lines.push(`--${mixedBoundary}`);
+  lines.push(`Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`);
+  lines.push("");
+
+  lines.push(`--${alternativeBoundary}`);
+  lines.push('Content-Type: text/plain; charset="utf-8"');
+  lines.push("Content-Transfer-Encoding: base64");
+  lines.push("");
+  lines.push(foldBase64(base64FromUtf8(plainTextBody)));
+  lines.push("");
+
+  lines.push(`--${alternativeBoundary}`);
+  lines.push('Content-Type: text/html; charset="utf-8"');
+  lines.push("Content-Transfer-Encoding: base64");
+  lines.push("");
+  lines.push(foldBase64(base64FromUtf8(htmlBody)));
+  lines.push("");
+
+  lines.push(`--${alternativeBoundary}--`);
+  lines.push("");
+
+  for (const attachment of getAllExportAttachments()) {
+    const base64 = await fileToBase64(attachment.file);
+    const mimeType = attachment.file.type || "application/octet-stream";
+    const safeName = sanitizeFilenameForHeader(attachment.file.name);
+    const encodedName = encodeURIComponent(attachment.file.name).replace(/'/g, "%27");
+
+    lines.push(`--${mixedBoundary}`);
+    lines.push(`Content-Type: ${mimeType}; name=\"${safeName}\"; name*=UTF-8''${encodedName}`);
+    lines.push("Content-Transfer-Encoding: base64");
+    lines.push(
+      `Content-Disposition: attachment; filename=\"${safeName}\"; filename*=UTF-8''${encodedName}`
+    );
+    lines.push("");
+    lines.push(foldBase64(base64));
+    lines.push("");
+  }
+
+  lines.push(`--${mixedBoundary}--`);
+  lines.push("");
+
+  const emlContent = lines.join("\r\n");
+  const blob = new Blob([emlContent], { type: "message/rfc822;charset=utf-8" });
+  const filename = buildExportFilename();
+
+  return { blob, filename };
+}
+
+function buildExportFilename() {
+  const now = new Date();
+  const year = String(now.getFullYear());
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hour = String(now.getHours()).padStart(2, "0");
+  const minute = String(now.getMinutes()).padStart(2, "0");
+  return `mail-${year}${month}${day}-${hour}${minute}.eml`;
+}
+
+function sanitizeFilenameForHeader(filename) {
+  return String(filename || "file").replace(/["\\\r\n]/g, "_");
+}
+
+function encodeMimeHeader(value) {
+  if (/^[\x20-\x7e]*$/.test(value)) {
+    return value;
+  }
+  return `=?UTF-8?B?${base64FromUtf8(value)}?=`;
+}
+
+function base64FromUtf8(value) {
+  const bytes = new TextEncoder().encode(String(value || ""));
+  let binary = "";
+  const chunkSize = 0x8000;
+
+  for (let index = 0; index < bytes.length; index += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+  }
+
+  return btoa(binary);
+}
+
+function foldBase64(base64) {
+  return String(base64 || "").replace(/.{1,76}/g, "$&\r\n").trim();
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onerror = () => reject(reader.error || new Error("FileReader failed"));
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      const [, base64 = ""] = result.split(",");
+      resolve(base64);
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function normalizeEditorHtml(value) {
   const raw = String(value || "").trim();
-  if (!raw) {
-    return "";
-  }
+  if (!raw) return "";
 
   if (!/[<>]/.test(raw)) {
     return plainTextToSafeHtml(raw);
@@ -2110,10 +2898,40 @@ function normalizeEditorHtml(value) {
   return sanitizeRichHtml(raw);
 }
 
+function plainTextToSafeHtml(text) {
+  const normalized = normalizeMultilineText(text);
+  if (!normalized) return "";
+
+  return normalized
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`)
+    .join("\n");
+}
+
+function richHtmlToPlainText(value) {
+  const html = normalizeEditorHtml(value);
+  if (!html) return "";
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
+  const root = doc.body.firstElementChild || doc.body;
+
+  root.querySelectorAll("br").forEach((node) => {
+    node.replaceWith("\n");
+  });
+
+  root.querySelectorAll("p,div,li,blockquote,h1,h2,h3,h4,h5,h6,tr").forEach((node) => {
+    node.append("\n");
+  });
+
+  return normalizeMultilineText(root.textContent || "");
+}
+
 function sanitizeRichHtml(rawHtml) {
   const parser = new DOMParser();
   const sourceDoc = parser.parseFromString(`<div>${rawHtml}</div>`, "text/html");
   const wrapper = sourceDoc.body.firstElementChild || sourceDoc.body;
+
   const cleanDoc = document.implementation.createHTMLDocument("");
   const cleanWrapper = cleanDoc.createElement("div");
 
@@ -2190,11 +3008,10 @@ function sanitizeRichNode(node, doc) {
       const attrValue = attr.value || "";
 
       if (attrName.startsWith("on")) return;
+
       if (attrName === "style") {
         const cleanStyle = sanitizeInlineStyle(attrValue);
-        if (cleanStyle) {
-          element.setAttribute("style", cleanStyle);
-        }
+        if (cleanStyle) element.setAttribute("style", cleanStyle);
         return;
       }
 
@@ -2216,7 +3033,8 @@ function sanitizeRichNode(node, doc) {
         return;
       }
 
-      if (tag === "img" && ["alt", "width", "height", "title"].includes(attrName)) {
+      const allowedGlobalAttrs = new Set(["class", "title", "alt", "colspan", "rowspan", "width", "height"]);
+      if (allowedGlobalAttrs.has(attrName)) {
         element.setAttribute(attrName, attrValue);
       }
     });
@@ -2234,11 +3052,10 @@ function sanitizeInlineStyle(styleValue) {
     "color",
     "background",
     "background-color",
-    "font-family",
     "font-size",
+    "font-family",
     "font-weight",
     "font-style",
-    "font-variant",
     "text-decoration",
     "text-transform",
     "letter-spacing",
@@ -2300,533 +3117,153 @@ function sanitizeUrl(value, options = {}) {
   return "";
 }
 
-function richHtmlToPlainText(value) {
-  const html = normalizeEditorHtml(value);
-  if (!html) {
-    return "";
+async function initTinyEditors(options = {}) {
+  const force = Boolean(options.force);
+  if (!window.tinymce) return;
+
+  if (tinyInitPromise) {
+    await tinyInitPromise;
+    return;
   }
 
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
-  const root = doc.body.firstElementChild || doc.body;
-
-  root.querySelectorAll("br").forEach((node) => {
-    node.replaceWith("\n");
-  });
-
-  root.querySelectorAll("p,div,li,blockquote,h1,h2,h3,h4,h5,h6,tr").forEach((node) => {
-    node.append("\n");
-  });
-
-  return normalizeMultilineText(root.textContent || "");
-}
-
-function plainTextToSafeHtml(text) {
-  const normalized = normalizeMultilineText(text);
-  if (!normalized) {
-    return "";
+  const signature = buildTinySignature();
+  if (!force && tinyEditors.content && tinyEditors.quote && tinySignature === signature) {
+    return;
   }
 
-  return normalized
-    .split(/\n{2,}/)
-    .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`)
-    .join("\n");
-}
+  tinyInitPromise = (async () => {
+    try {
+      const preservedContent = state.fields.content;
+      const preservedQuote = state.fields.quote;
 
-function plainTextToInlineHtml(text) {
-  const normalized = normalizeMultilineText(text);
-  if (!normalized) {
-    return "";
-  }
-
-  return escapeHtml(normalized).replace(/\n/g, "<br>");
-}
-
-function normalizeMultilineText(value) {
-  return String(value || "").replace(/\r\n?/g, "\n").trim();
-}
-
-function normalizeInlineText(value) {
-  return String(value || "").trim();
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function clearAddressValidation() {
-  ui.addressValidation.textContent = "";
-  [ui.fieldTo, ui.fieldCc, ui.fieldBcc, ui.fieldReplyTo, ui.fieldSignatureName].forEach((input) => {
-    input.setAttribute("aria-invalid", "false");
-  });
-}
-
-function validateAddressFields() {
-  clearAddressValidation();
-  const issues = [];
-  const toAddresses = parseAddressList(state.fields.to);
-  const toInvalid = toAddresses.filter((address) => !isValidEmailAddress(address));
-
-  if (!toAddresses.length) {
-    ui.fieldTo.setAttribute("aria-invalid", "true");
-    issues.push(t("requiredToMissing"));
-  } else if (toInvalid.length) {
-    ui.fieldTo.setAttribute("aria-invalid", "true");
-    issues.push(`${t("fieldToShort")}: ${[...new Set(toInvalid)].join(", ")}`);
-  }
-
-  const optionalAddressDefinitions = [
-    { key: "cc", shortLabelKey: "fieldCcShort", input: ui.fieldCc },
-    { key: "bcc", shortLabelKey: "fieldBccShort", input: ui.fieldBcc },
-    { key: "replyTo", shortLabelKey: "fieldReplyToShort", input: ui.fieldReplyTo },
-  ];
-
-  optionalAddressDefinitions.forEach((definition) => {
-    if (!state.enabled[definition.key]) return;
-
-    const addresses = parseAddressList(state.fields[definition.key]);
-    const invalid = addresses.filter((address) => !isValidEmailAddress(address));
-
-    if (definition.key === "replyTo" && addresses.length > 1) {
-      if (!issues.includes(t("replyToSingleAddress"))) {
-        issues.push(t("replyToSingleAddress"));
+      if (tinyEditors.content) {
+        tinyEditors.content.remove();
+        tinyEditors.content = null;
       }
-      definition.input.setAttribute("aria-invalid", "true");
-    }
-
-    if (invalid.length) {
-      definition.input.setAttribute("aria-invalid", "true");
-      issues.push(`${t(definition.shortLabelKey)}: ${[...new Set(invalid)].join(", ")}`);
-    }
-  });
-
-  if (!normalizeInlineText(state.fields.signatureName)) {
-    ui.fieldSignatureName.setAttribute("aria-invalid", "true");
-    issues.push(t("requiredSignatureMissing"));
-  }
-
-  if (!issues.length) {
-    return true;
-  }
-
-  ui.addressValidation.textContent = `${t("addressValidationPrefix")} ${issues.join("; ")}`;
-  return false;
-}
-
-function parseAddressList(rawValue) {
-  return String(rawValue || "")
-    .split(/[;,]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function isValidEmailAddress(email) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(email);
-}
-
-function addAttachments(fileList) {
-  const files = Array.from(fileList || []);
-  if (!files.length) return;
-
-  files.forEach((file) => {
-    const isImage = file.type.startsWith("image/");
-    state.attachments.push({
-      id: crypto.randomUUID(),
-      file,
-      previewUrl: isImage ? URL.createObjectURL(file) : "",
-      kind: detectFileKind(file),
-    });
-  });
-
-  renderPreview();
-  renderAttachments();
-}
-
-function detectFileKind(file) {
-  if (file.type.startsWith("image/")) return "image";
-  if (file.type === "application/pdf") return "pdf";
-  if (file.type.startsWith("audio/")) return "audio";
-  if (file.type.startsWith("video/")) return "video";
-  return "file";
-}
-
-function renderAttachments() {
-  ui.attachmentList.innerHTML = "";
-
-  if (!state.attachments.length) {
-    const empty = document.createElement("li");
-    empty.className = "empty-state";
-    empty.textContent = t("attachmentsEmpty");
-    ui.attachmentList.append(empty);
-  } else {
-    const fragment = document.createDocumentFragment();
-
-    state.attachments.forEach((attachment) => {
-      const tile = document.createElement("li");
-      tile.className = "attachment-tile";
-
-      const visual = document.createElement("div");
-      visual.className = "attachment-visual";
-
-      if (attachment.kind === "image") {
-        const img = document.createElement("img");
-        img.src = attachment.previewUrl;
-        img.alt = attachment.file.name;
-        visual.append(img);
-      } else {
-        const badge = document.createElement("span");
-        badge.className = "file-badge";
-        badge.textContent = fileKindLabel(attachment.kind);
-        visual.append(badge);
+      if (tinyEditors.quote) {
+        tinyEditors.quote.remove();
+        tinyEditors.quote = null;
       }
 
-      const meta = document.createElement("div");
-      meta.className = "attachment-meta";
-
-      const name = document.createElement("div");
-      name.className = "attachment-name";
-      name.textContent = attachment.file.name;
-
-      const size = document.createElement("div");
-      size.className = "attachment-size";
-      size.textContent = formatBytes(attachment.file.size);
-
-      meta.append(name, size);
-
-      const removeButton = document.createElement("button");
-      removeButton.type = "button";
-      removeButton.className = "button remove-attachment";
-      removeButton.textContent = t("removeAttachment");
-      removeButton.addEventListener("click", () => {
-        removeAttachment(attachment.id);
+      await initSingleTinyEditor({
+        target: ui.fieldContent,
+        key: "content",
+        height: 320,
       });
 
-      tile.append(visual, meta, removeButton);
-      fragment.append(tile);
-    });
+      await initSingleTinyEditor({
+        target: ui.fieldQuote,
+        key: "quote",
+        height: 210,
+      });
 
-    ui.attachmentList.append(fragment);
-  }
+      if (tinyEditors.content) {
+        tinyEditors.content.setContent(preservedContent || "");
+        state.fields.content = normalizeEditorHtml(tinyEditors.content.getContent({ format: "html" }));
+      }
 
-  const totalBytes = state.attachments.reduce((sum, item) => sum + item.file.size, 0);
-  const estimatedBytes = estimateExportSizeBytes();
+      if (tinyEditors.quote) {
+        tinyEditors.quote.setContent(preservedQuote || "");
+        state.fields.quote = normalizeEditorHtml(tinyEditors.quote.getContent({ format: "html" }));
+      }
 
-  ui.attachmentCount.textContent = formatFileCount(state.attachments.length);
-  ui.attachmentTotal.textContent = t("attachmentTotal", { size: formatBytes(totalBytes) });
-  ui.attachmentEstimated.textContent = t("attachmentEstimated", { size: formatBytes(estimatedBytes) });
-
-  ui.attachmentWarning.className = "warning-text";
-  ui.attachmentWarning.textContent = "";
-
-  if (estimatedBytes >= DANGER_MB * MB) {
-    ui.attachmentWarning.classList.add("danger");
-    ui.attachmentWarning.textContent = t("warningDanger");
-  } else if (estimatedBytes >= WARN_MB * MB) {
-    ui.attachmentWarning.classList.add("warn");
-    ui.attachmentWarning.textContent = t("warningWarn");
-  }
-}
-
-function estimateExportSizeBytes() {
-  let htmlBytes = 800;
-  const template = getTemplateById(state.selectedTemplateId);
-  if (template) {
-    const markup = state.templateMarkup.get(template.id);
-    if (markup) {
-      htmlBytes = new TextEncoder().encode(buildTemplateHtml(markup, template, { forceMode: null })).length;
+      tinySignature = signature;
+      applyOptionalFieldStates();
+      renderPreview();
+    } catch (error) {
+      console.warn("TinyMCE initialization failed; using plain textarea.", error);
     }
-  }
+  })();
 
-  const plainBytes = new TextEncoder().encode(buildPlainTextBody()).length;
-  const attachmentBytes = state.attachments.reduce((sum, attachment) => {
-    return sum + estimateBase64TransferBytes(attachment.file.size) + 260;
-  }, 0);
-
-  const messageOverhead = 1800;
-  return (
-    messageOverhead +
-    estimateBase64TransferBytes(plainBytes) +
-    estimateBase64TransferBytes(htmlBytes) +
-    attachmentBytes
-  );
-}
-
-function estimateBase64TransferBytes(rawBytes) {
-  if (!rawBytes || rawBytes <= 0) return 0;
-
-  const encodedBytes = Math.ceil(rawBytes / 3) * 4;
-  const lineBreakBytes = Math.floor(Math.max(encodedBytes - 1, 0) / 76) * 2;
-  return encodedBytes + lineBreakBytes;
-}
-
-function formatFileCount(count) {
-  const forms = (I18N[state.language] || I18N.pl).fileWordForms || I18N.pl.fileWordForms;
-  const pluralRule = new Intl.PluralRules(state.language).select(count);
-  const word = forms[pluralRule] || forms.other || forms.many || forms.one;
-  return `${count} ${word}`;
-}
-
-function fileKindLabel(kind) {
-  switch (kind) {
-    case "pdf":
-      return "PDF";
-    case "audio":
-      return "AUDIO";
-    case "video":
-      return "VIDEO";
-    case "image":
-      return "IMG";
-    default:
-      return t("fileKindFile");
+  try {
+    await tinyInitPromise;
+  } finally {
+    tinyInitPromise = null;
   }
 }
 
-function removeAttachment(attachmentId) {
-  const index = state.attachments.findIndex((attachment) => attachment.id === attachmentId);
-  if (index === -1) return;
-
-  const [removed] = state.attachments.splice(index, 1);
-  if (removed.previewUrl) {
-    URL.revokeObjectURL(removed.previewUrl);
-  }
-
-  renderPreview();
-  renderAttachments();
+async function refreshTinyEditors() {
+  await initTinyEditors({ force: true });
 }
 
-function buildPlainTextBody() {
-  const content = state.enabled.content ? richHtmlToPlainText(state.fields.content) : "";
-  const quote = state.enabled.quote ? normalizeMultilineText(state.fields.quote) : "";
-  const signatureName =
-    state.enabled.signatureName ? normalizeInlineText(state.fields.signatureName) : "";
-  const parts = [];
-
-  if (content) {
-    parts.push(`${t("greeting")}\n\n${content}`);
-  }
-
-  if (quote) {
-    parts.push(`${t("quoteLabel")}:\n${quote}`);
-  }
-
-  if (signatureName) {
-    parts.push(`${t("closing")}\n${signatureName}`);
-  }
-
-  return parts.join("\n\n").trim();
-}
-
-async function saveEmlFile() {
-  const { blob, filename } = await buildEmlFile();
-  triggerDownload(blob, filename);
-}
-
-async function shareEmlFile() {
-  const { blob, filename } = await buildEmlFile();
-  const subject = normalizeInlineText(state.fields.subject);
-
-  if (!("share" in navigator)) {
-    throw new Error("Web Share API not available");
-  }
-
-  const file = new File([blob], filename, { type: "message/rfc822" });
-  if (typeof navigator.canShare === "function" && !navigator.canShare({ files: [file] })) {
-    throw new Error("File sharing is not supported");
-  }
-
-  await navigator.share({
-    files: [file],
-    title: subject || filename,
-  });
-}
-
-async function buildEmlFile() {
+function buildTinySignature() {
   const template = getTemplateById(state.selectedTemplateId);
-  if (!template) {
-    throw new Error(t("noTemplateSelected"));
-  }
-
-  const rawMarkup = state.templateMarkup.get(template.id) || (await ensureTemplateMarkup(template));
-  const htmlBody = buildTemplateHtml(rawMarkup, template, { forceMode: null });
-  const plainTextBody = buildPlainTextBody();
-
-  const mixedBoundary = `----=_MailTemplatesPwaMixed_${Date.now().toString(16)}_${Math.random()
-    .toString(16)
-    .slice(2)}`;
-  const alternativeBoundary = `----=_MailTemplatesPwaAlt_${Date.now().toString(16)}_${Math.random()
-    .toString(16)
-    .slice(2)}`;
-
-  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
-  const toAddresses = state.enabled.to ? parseAddressList(state.fields.to) : [];
-  const ccAddresses = state.enabled.cc ? parseAddressList(state.fields.cc) : [];
-  const bccAddresses = state.enabled.bcc ? parseAddressList(state.fields.bcc) : [];
-  const replyToAddresses = state.enabled.replyTo ? parseAddressList(state.fields.replyTo) : [];
-
-  const lines = [];
-
-  if (toAddresses.length) {
-    lines.push(`To: ${toAddresses.join(", ")}`);
-  }
-
-  if (ccAddresses.length) {
-    lines.push(`Cc: ${ccAddresses.join(", ")}`);
-  }
-
-  if (bccAddresses.length) {
-    lines.push(`Bcc: ${bccAddresses.join(", ")}`);
-  }
-
-  if (replyToAddresses.length) {
-    lines.push(`Reply-To: ${replyToAddresses[0]}`);
-  }
-
-  if (subject) {
-    lines.push(`Subject: ${encodeMimeHeader(subject)}`);
-  }
-
-  lines.push(`Date: ${new Date().toUTCString()}`);
-  lines.push("MIME-Version: 1.0");
-  lines.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`);
-  lines.push("");
-
-  lines.push(`--${mixedBoundary}`);
-  lines.push(`Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`);
-  lines.push("");
-
-  lines.push(`--${alternativeBoundary}`);
-  lines.push('Content-Type: text/plain; charset="utf-8"');
-  lines.push("Content-Transfer-Encoding: base64");
-  lines.push("");
-  lines.push(foldBase64(base64FromUtf8(plainTextBody)));
-  lines.push("");
-
-  lines.push(`--${alternativeBoundary}`);
-  lines.push('Content-Type: text/html; charset="utf-8"');
-  lines.push("Content-Transfer-Encoding: base64");
-  lines.push("");
-  lines.push(foldBase64(base64FromUtf8(htmlBody)));
-  lines.push("");
-
-  lines.push(`--${alternativeBoundary}--`);
-  lines.push("");
-
-  for (const attachment of state.attachments) {
-    const base64 = await fileToBase64(attachment.file);
-    const mimeType = attachment.file.type || "application/octet-stream";
-    const safeName = sanitizeFilenameForHeader(attachment.file.name);
-    const encodedName = encodeURIComponent(attachment.file.name).replace(/'/g, "%27");
-
-    lines.push(`--${mixedBoundary}`);
-    lines.push(`Content-Type: ${mimeType}; name="${safeName}"; name*=UTF-8''${encodedName}`);
-    lines.push("Content-Transfer-Encoding: base64");
-    lines.push(
-      `Content-Disposition: attachment; filename="${safeName}"; filename*=UTF-8''${encodedName}`
-    );
-    lines.push("");
-    lines.push(foldBase64(base64));
-    lines.push("");
-  }
-
-  lines.push(`--${mixedBoundary}--`);
-  lines.push("");
-
-  const emlContent = lines.join("\r\n");
-  const blob = new Blob([emlContent], { type: "message/rfc822;charset=utf-8" });
-  const filename = buildExportFilename();
-  return { blob, filename };
+  const bodyFont = template?.editorFonts?.body || '"Helvetica Neue", Arial, sans-serif';
+  const headingFont = template?.editorFonts?.headings || bodyFont;
+  return [state.resolvedTheme, state.language, bodyFont, headingFont].join("|");
 }
 
-function sanitizeFilenameForHeader(filename) {
-  return filename.replace(/["\\\r\n]/g, "_");
-}
+async function initSingleTinyEditor(config) {
+  if (!window.tinymce || !config?.target) return;
 
-function encodeMimeHeader(value) {
-  if (/^[\x20-\x7e]*$/.test(value)) {
-    return value;
-  }
-  return `=?UTF-8?B?${base64FromUtf8(value)}?=`;
-}
+  const template = getTemplateById(state.selectedTemplateId);
+  const bodyFont = template?.editorFonts?.body || '"Helvetica Neue", Arial, sans-serif';
+  const headingFont = template?.editorFonts?.headings || bodyFont;
+  const isDark = state.resolvedTheme === "dark";
 
-function base64FromUtf8(value) {
-  const bytes = new TextEncoder().encode(value);
-  let binary = "";
-  const chunkSize = 0x8000;
+  const editors = await window.tinymce.init({
+    target: config.target,
+    license_key: "gpl",
+    menubar: false,
+    branding: false,
+    statusbar: false,
+    promotion: false,
+    height: config.height,
+    resize: true,
+    toolbar_mode: "wrap",
+    skin: isDark ? "oxide-dark" : "oxide",
+    content_css: isDark ? "dark" : "default",
+    content_style: `
+      body {
+        font-family: ${bodyFont};
+        color: ${isDark ? "#e7eef5" : "#12202a"};
+        background: transparent;
+      }
+      h1,h2,h3,h4 {
+        font-family: ${headingFont};
+      }
+      blockquote {
+        border-left: 3px solid #8ca7be;
+        margin-left: 0;
+        padding-left: 10px;
+      }
+    `,
+    plugins:
+      "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+    toolbar:
+      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+    block_formats: "Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4;Quote=blockquote",
+    setup: (editor) => {
+      const sync = () => {
+        state.fields[config.key] = normalizeEditorHtml(editor.getContent({ format: "html" }));
+        validateAddressFields();
+        updateActionButtons();
+        maybeSaveDraft();
+        renderPreview();
+      };
 
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-  }
-
-  return btoa(binary);
-}
-
-function foldBase64(base64) {
-  return base64.replace(/.{1,76}/g, "$&\r\n").trimEnd();
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(reader.error);
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      resolve(result.split(",")[1] || "");
-    };
-    reader.readAsDataURL(file);
+      editor.on("change input undo redo keyup SetContent", sync);
+    },
   });
+
+  const instance = editors?.[0] || window.tinymce.get(config.target.id) || null;
+  if (!instance) return;
+
+  tinyEditors[config.key] = instance;
 }
 
-function buildExportFilename() {
-  const now = new Date();
-  const parts = [
-    now.getFullYear(),
-    String(now.getMonth() + 1).padStart(2, "0"),
-    String(now.getDate()).padStart(2, "0"),
-  ];
-  const time = `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
-  return `mail-${parts.join("")}-${time}.eml`;
-}
-
-function triggerDownload(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
-}
-
-function formatBytes(bytes) {
-  if (!Number.isFinite(bytes) || bytes < 1024) {
-    return `${bytes || 0} B`;
-  }
-
-  const units = ["KB", "MB", "GB"];
-  let value = bytes;
-  let unitIndex = -1;
-
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${value.toFixed(value >= 10 ? 1 : 2)} ${units[unitIndex]}`;
+function buildExportBodyHtml() {
+  const template = getTemplateById(state.selectedTemplateId);
+  const rawMarkup = template ? state.templateMarkup.get(template.id) : "";
+  if (!rawMarkup || !template) return "";
+  return buildTemplateHtml(rawMarkup, template, { forceMode: null, showPlaceholders: false });
 }
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
-  window.addEventListener("load", async () => {
-    try {
-      await navigator.serviceWorker.register("./sw.js");
-    } catch (error) {
-      console.warn("Service Worker registration failed", error);
-    }
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((error) => {
+      console.warn("SW registration failed", error);
+    });
   });
 }

@@ -16,6 +16,7 @@
     <div class="topbar-section topbar-brand">
       <h1>Pretty-Mails</h1>
     </div>
+
     <div class="topbar-section topbar-template">
       <div class="mobile-template-picker">
         <label id="mobileTemplateLabel" for="mobileTemplateSelect">Szablon</label>
@@ -24,9 +25,9 @@
     </div>
 
     <div class="topbar-section topbar-send">
-      <button id="openPreviewModalTopBtn" class="button preview-topbar-btn" type="button">Podgląd</button>
-      <button id="exportBtn" class="button button-primary" type="button">Zapisz .eml</button>
-      <button id="shareBtn" class="button" type="button">Udostępnij .eml</button>
+      <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
+      <button id="exportBtn" class="button button-primary" type="button" aria-label="Zapisz plik .eml">💾</button>
+      <button id="shareBtn" class="button" type="button" aria-label="Udostępnij plik .eml">📤</button>
     </div>
 
     <div class="topbar-section topbar-locale">
@@ -63,127 +64,222 @@
         <option value="en">English</option>
         <option value="uk">Українська</option>
       </select>
+
+      <div class="theme-picker">
+        <label id="themeModeLabel" for="themeMode">Motyw</label>
+        <select id="themeMode">
+          <option value="auto">Auto</option>
+          <option value="light">Jasny</option>
+          <option value="dark">Ciemny</option>
+        </select>
+      </div>
+
       <button id="infoBtn" class="button" type="button" aria-haspopup="dialog" aria-controls="infoModal">ℹ️</button>
     </div>
   </header>
 
   <main class="layout">
-    <aside class="card templates-panel">
-      <div class="panel-head">
-        <h2 id="templatesTitle">Szablony</h2>
-        <input id="templateSearch" type="search" placeholder="Szukaj po nazwie lub opisie" autocomplete="off">
-      </div>
-      <ul id="templateList" class="template-list" aria-label="Lista szablonów"></ul>
-    </aside>
-
     <section class="workspace">
       <div class="editor-column">
         <section class="card editor-panel">
-          <h2 id="editorTitle">Edycja</h2>
+          <h2 id="editorTitle">Edytor</h2>
 
-          <label class="field" data-field="to">
-            <span id="fieldToLabel">Adresat</span>
-            <input id="fieldTo" type="text" placeholder="adres@example.com" autocomplete="email">
-          </label>
+          <section class="editor-section">
+            <h3 id="sectionEnvelopeTitle">Informacje wysyłkowe</h3>
 
-          <div class="field-block">
-            <span id="fieldCcLabel" class="field-mini-label">DW</span>
-            <div class="field-toggle-row" data-field-row="cc">
-              <label class="field-toggle field-toggle-inline">
-                <input id="toggleCc" type="checkbox">
-                <span id="toggleCcLabel">Pokaż</span>
-              </label>
-              <label class="field" data-field="cc">
+            <div class="field-block">
+              <label class="field-main-label" id="fieldToLabel" for="fieldTo">Do</label>
+              <input id="fieldTo" type="text" placeholder="adres@example.com adres2@example.com" autocomplete="email">
+            </div>
+
+            <div class="field-block" data-optional-key="cc">
+              <label class="field-main-label" id="fieldCcLabel" for="fieldCc">DW</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleCc" type="checkbox"><span id="toggleCcLabel">Pokaż</span></label>
                 <input id="fieldCc" type="text" placeholder="adres@example.com, drugi@example.com" autocomplete="email">
-              </label>
+              </div>
             </div>
-          </div>
 
-          <div class="field-block">
-            <span id="fieldBccLabel" class="field-mini-label">UDW</span>
-            <div class="field-toggle-row" data-field-row="bcc">
-              <label class="field-toggle field-toggle-inline">
-                <input id="toggleBcc" type="checkbox">
-                <span id="toggleBccLabel">Pokaż</span>
-              </label>
-              <label class="field" data-field="bcc">
+            <div class="field-block" data-optional-key="bcc">
+              <label class="field-main-label" id="fieldBccLabel" for="fieldBcc">UDW</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleBcc" type="checkbox"><span id="toggleBccLabel">Pokaż</span></label>
                 <input id="fieldBcc" type="text" placeholder="adres@example.com" autocomplete="email">
-              </label>
+              </div>
             </div>
-          </div>
 
-          <div class="field-block">
-            <span id="fieldReplyToLabel" class="field-mini-label">Adres odpowiedzi</span>
-            <div class="field-toggle-row" data-field-row="replyTo">
-              <label class="field-toggle field-toggle-inline">
-                <input id="toggleReplyTo" type="checkbox">
-                <span id="toggleReplyToLabel">Pokaż</span>
-              </label>
-              <label class="field" data-field="replyTo">
-                <input id="fieldReplyTo" type="text" placeholder="adres@example.com" autocomplete="email">
-              </label>
-            </div>
-          </div>
-
-          <div class="field-block">
-            <span id="fieldSubjectLabel" class="field-mini-label">Temat</span>
-            <div class="field-toggle-row" data-field-row="subject">
-              <label class="field-toggle field-toggle-inline">
-                <input id="toggleSubject" type="checkbox" checked>
-                <span id="toggleSubjectLabel">Pokaż</span>
-              </label>
-              <label class="field" data-field="subject">
+            <div class="field-block" data-optional-key="subject">
+              <label class="field-main-label" id="fieldSubjectLabel" for="fieldSubject">Temat</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleSubject" type="checkbox" checked><span id="toggleSubjectLabel">Pokaż</span></label>
                 <input id="fieldSubject" type="text" placeholder="Temat wiadomości" autocomplete="off">
-              </label>
+              </div>
             </div>
-          </div>
+          </section>
 
-          <div class="field-block">
-            <span id="fieldContentLabel" class="field-mini-label">Treść</span>
-            <div class="field-toggle-row field-toggle-row-multiline" data-field-row="content">
-              <label class="field-toggle field-toggle-inline">
-                <input id="toggleContent" type="checkbox" checked>
-                <span id="toggleContentLabel">Pokaż</span>
-              </label>
-              <label class="field" data-field="content">
-                <textarea id="fieldContent" rows="10" placeholder="Wpisz treść wiadomości..."></textarea>
-              </label>
+          <section class="editor-section">
+            <h3 id="sectionQuoteTitle">Cytat</h3>
+            <div class="field-block" data-optional-key="quote">
+              <label class="field-main-label" id="fieldQuoteLabel" for="fieldQuote">Cytat odpowiedzi</label>
+              <div class="field-toggle-row field-toggle-row-multiline">
+                <label class="field-toggle-inline"><input id="toggleQuote" type="checkbox"><span id="toggleQuoteLabel">Pokaż</span></label>
+                <textarea id="fieldQuote" rows="5" placeholder="Wklej cytowany fragment..."></textarea>
+              </div>
             </div>
-          </div>
+          </section>
 
-          <div class="field-block">
-            <span id="fieldQuoteLabel" class="field-mini-label">Cytat</span>
-            <div class="field-toggle-row field-toggle-row-multiline" data-field-row="quote">
-              <label class="field-toggle field-toggle-inline">
-                <input id="replyMode" type="checkbox">
-                <span id="replyModeLabel">Pokaż</span>
-              </label>
-              <label class="field" data-field="quote">
-                <textarea id="fieldQuote" rows="4" placeholder="Wklej cytowany fragment, jeśli to odpowiedź..."></textarea>
-              </label>
+          <section class="editor-section">
+            <h3 id="sectionGreetingTitle">Przywitanie</h3>
+            <div class="field-block" data-optional-key="greeting">
+              <label class="field-main-label" id="fieldGreetingLabel" for="fieldGreetingPreset">Przywitanie</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleGreeting" type="checkbox" checked><span id="toggleGreetingLabel">Pokaż</span></label>
+                <select id="fieldGreetingPreset"></select>
+              </div>
             </div>
-          </div>
 
-          <label class="field" data-field="signatureName">
-            <span id="fieldSignatureLabel">Nadawca</span>
-            <input id="fieldSignatureName" type="text" placeholder="Twoje imię" autocomplete="name">
-          </label>
+            <div class="field-block" id="greetingCustomWrap" data-optional-key="greeting">
+              <label class="field-main-label" id="fieldGreetingCustomLabel" for="fieldGreetingCustom">Własne przywitanie</label>
+              <input id="fieldGreetingCustom" type="text" placeholder="Np. Cześć wszystkim">
+            </div>
 
-          <div class="field-toggle-row field-toggle-row-auto">
-            <label class="field-toggle field-toggle-inline">
-              <input id="toggleDate" type="checkbox" checked>
-              <span id="toggleDateLabel">Data</span>
-            </label>
-            <p class="auto-field-note" id="toggleDateHint">Data jest automatyczna i nie ma pola edycji.</p>
-          </div>
+            <div class="field-block" data-optional-key="greeting">
+              <label class="field-main-label" id="fieldGreetingRecipientLabel" for="fieldGreetingRecipient">Adresat (w treści)</label>
+              <input id="fieldGreetingRecipient" type="text" placeholder="Np. Aniu / Zespole">
+            </div>
+          </section>
 
-          <div class="field-toggle-row field-toggle-row-auto">
-            <label class="field-toggle field-toggle-inline">
-              <input id="toggleTime" type="checkbox">
-              <span id="toggleTimeLabel">Godzina</span>
-            </label>
-            <p class="auto-field-note" id="toggleTimeHint">Godzina jest automatyczna i nie ma pola edycji.</p>
-          </div>
+          <section class="editor-section">
+            <h3 id="sectionContentTitle">Treść</h3>
+            <div class="field-block" data-optional-key="content">
+              <label class="field-main-label" id="fieldContentLabel" for="fieldContent">Treść wiadomości</label>
+              <div class="field-toggle-row field-toggle-row-multiline">
+                <label class="field-toggle-inline"><input id="toggleContent" type="checkbox" checked><span id="toggleContentLabel">Pokaż</span></label>
+                <textarea id="fieldContent" rows="12" placeholder="Wpisz treść wiadomości..."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <h3 id="sectionClosingTitle">Pozdrowienie</h3>
+            <div class="field-block" data-optional-key="closing">
+              <label class="field-main-label" id="fieldClosingLabel" for="fieldClosingPreset">Pozdrowienie</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleClosing" type="checkbox" checked><span id="toggleClosingLabel">Pokaż</span></label>
+                <select id="fieldClosingPreset"></select>
+              </div>
+            </div>
+
+            <div class="field-block" id="closingCustomWrap" data-optional-key="closing">
+              <label class="field-main-label" id="fieldClosingCustomLabel" for="fieldClosingCustom">Własne pozdrowienie</label>
+              <input id="fieldClosingCustom" type="text" placeholder="Np. Dzięki i do usłyszenia">
+            </div>
+
+            <div class="field-block">
+              <label class="field-main-label" id="fieldSenderNameLabel" for="fieldSenderName">Nadawca</label>
+              <input id="fieldSenderName" type="text" placeholder="Imię i nazwisko" autocomplete="name">
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <h3 id="sectionContactTitle">Dane kontaktowe</h3>
+
+            <div class="field-block" data-optional-key="contactName">
+              <label class="field-main-label" id="fieldContactNameLabel" for="fieldContactName">Imię i nazwisko</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactName" type="checkbox"><span id="toggleContactNameLabel">Pokaż</span></label>
+                <input id="fieldContactName" type="text" placeholder="Imię i nazwisko">
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="contactRole">
+              <label class="field-main-label" id="fieldContactRoleLabel" for="fieldContactRole">Stanowisko</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactRole" type="checkbox"><span id="toggleContactRoleLabel">Pokaż</span></label>
+                <input id="fieldContactRole" type="text" placeholder="Np. Project Manager">
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="contactCompany">
+              <label class="field-main-label" id="fieldContactCompanyLabel" for="fieldContactCompany">Nazwa firmy</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactCompany" type="checkbox"><span id="toggleContactCompanyLabel">Pokaż</span></label>
+                <input id="fieldContactCompany" type="text" placeholder="Nazwa firmy">
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="contactLogo">
+              <label class="field-main-label" id="fieldContactLogoLabel" for="contactLogoInput">Logo firmy (załącznik)</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactLogo" type="checkbox"><span id="toggleContactLogoLabel">Pokaż</span></label>
+                <input id="contactLogoInput" type="file" accept="image/*">
+              </div>
+              <p id="contactLogoHint" class="auto-field-note">Logo dodawane jest jako osobny załącznik.</p>
+            </div>
+
+            <div class="field-block" data-optional-key="contactPhone">
+              <label class="field-main-label" id="fieldContactPhoneLabel" for="fieldContactPhone">Numer telefonu</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactPhone" type="checkbox"><span id="toggleContactPhoneLabel">Pokaż</span></label>
+                <input id="fieldContactPhone" type="text" placeholder="+48 000 000 000" autocomplete="tel">
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="contactEmail">
+              <label class="field-main-label" id="fieldContactEmailLabel" for="fieldContactEmail">Adres e-mail</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactEmail" type="checkbox"><span id="toggleContactEmailLabel">Pokaż</span></label>
+                <input id="fieldContactEmail" type="email" placeholder="kontakt@firma.pl" autocomplete="email">
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="contactWebsite">
+              <label class="field-main-label" id="fieldContactWebsiteLabel" for="fieldContactWebsite">Strona WWW</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleContactWebsite" type="checkbox"><span id="toggleContactWebsiteLabel">Pokaż</span></label>
+                <input id="fieldContactWebsite" type="url" placeholder="https://twojafirma.pl" autocomplete="url">
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="contactAddress">
+              <label class="field-main-label" id="fieldContactAddressLabel" for="fieldContactAddress">Adres fizyczny</label>
+              <div class="field-toggle-row field-toggle-row-multiline">
+                <label class="field-toggle-inline"><input id="toggleContactAddress" type="checkbox"><span id="toggleContactAddressLabel">Pokaż</span></label>
+                <textarea id="fieldContactAddress" rows="2" placeholder="Ulica, kod, miasto"></textarea>
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="socials">
+              <label class="field-main-label" id="fieldSocialsLabel" for="addSocialBtn">Media społecznościowe</label>
+              <div class="field-toggle-row field-toggle-row-multiline">
+                <label class="field-toggle-inline"><input id="toggleSocials" type="checkbox"><span id="toggleSocialsLabel">Pokaż</span></label>
+                <div>
+                  <div id="socialsList" class="socials-list"></div>
+                  <button id="addSocialBtn" class="button" type="button">+ Dodaj social</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <h3 id="sectionSentTitle">Wysłano</h3>
+
+            <div class="field-block" data-optional-key="sentAt">
+              <label class="field-main-label" id="fieldSentAtLabel" for="toggleSentAt">Wysłano o</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleSentAt" type="checkbox" checked><span id="toggleSentAtToggleLabel">Pokaż</span></label>
+                <p id="fieldSentAtHint" class="auto-field-note">Data i godzina są automatyczne.</p>
+              </div>
+            </div>
+
+            <div class="field-block" data-optional-key="sentFrom">
+              <label class="field-main-label" id="fieldSentFromLabel" for="toggleSentFrom">Wysłano z</label>
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleSentFrom" type="checkbox"><span id="toggleSentFromToggleLabel">Pokaż</span></label>
+                <p id="fieldSentFromHint" class="auto-field-note">Urządzenie rozpoznawane automatycznie.</p>
+              </div>
+            </div>
+          </section>
 
           <label class="remember-draft">
             <input id="rememberDraft" type="checkbox">
@@ -191,8 +287,7 @@
           </label>
 
           <div id="addressValidation" class="form-validation" aria-live="polite"></div>
-
-          <p class="muted-note" id="mutedNote">Puste pola opcjonalne nie są dodawane do wiadomości. Treść jest bezpiecznie konwertowana z tekstu na HTML.</p>
+          <p class="muted-note" id="mutedNote">Odznaczone pola nie będą widoczne w podglądzie ani eksporcie.</p>
         </section>
 
         <section class="card attachments-panel">
@@ -210,7 +305,7 @@
 
           <div class="attachment-summary">
             <span id="attachmentCount">0 plików</span>
-            <span id="attachmentTotal">Suma: 0 B</span>
+            <span id="attachmentTotal">Suma plików: 0 B</span>
             <span id="attachmentEstimated">Szacowany rozmiar wiadomości: 0 B</span>
             <span id="attachmentWarning" class="warning-text"></span>
           </div>
@@ -222,12 +317,27 @@
           <h2 id="previewTitle">Podgląd</h2>
           <div class="preview-head-right">
             <span id="previewTemplateName" class="preview-template-name"></span>
+            <label id="previewModeLabel" for="previewMode" class="preview-mode-label">Tryb podglądu</label>
+            <select id="previewMode">
+              <option value="app">Jak na stronie</option>
+              <option value="light">Jasny</option>
+              <option value="dark">Ciemny</option>
+              <option value="both">Oba</option>
+            </select>
           </div>
         </div>
-        <button id="openPreviewModalBtn" class="button preview-modal-trigger" type="button">Otwórz podgląd</button>
-        <div id="previewFields" class="preview-fields" aria-live="polite"></div>
-        <div class="mail-canvas" id="mailCanvas">
-          <iframe id="previewFrame" title="Podgląd wiadomości" loading="eager"></iframe>
+
+        <div class="preview-section">
+          <h3 id="previewEnvelopeTitle">Informacje wysyłkowe</h3>
+          <div id="previewFields" class="preview-fields" aria-live="polite"></div>
+        </div>
+
+        <div class="preview-section">
+          <h3 id="previewContentTitle">Treść maila</h3>
+          <div class="mail-canvas" id="mailCanvas" data-mode="single">
+            <iframe id="previewFrame" title="Podgląd wiadomości" loading="eager"></iframe>
+            <iframe id="previewFrameDark" title="Podgląd wiadomości - ciemny" loading="eager"></iframe>
+          </div>
         </div>
       </section>
     </section>
@@ -246,23 +356,10 @@
       </div>
       <ul id="infoModalList" class="modal-list">
         <li>✉️ Aplikacja tworzy plik <code>.eml</code> z HTML i załącznikami.</li>
-        <li>💾 „Zapisz .eml” pobiera plik na urządzenie.</li>
-        <li>📤 „Udostępnij .eml” otwiera systemowe udostępnianie.</li>
+        <li>💾 „Zapisz” pobiera plik na urządzenie.</li>
+        <li>📤 „Udostępnij” otwiera systemowe udostępnianie.</li>
         <li>📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.</li>
       </ul>
-    </section>
-  </div>
-
-  <div id="previewModal" class="modal" hidden>
-    <div class="modal-backdrop" data-preview-close></div>
-    <section class="modal-card preview-modal-card" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
-      <div class="modal-head">
-        <h2 id="previewModalTitle">Podgląd</h2>
-        <button id="previewModalClose" class="button" type="button" data-preview-close aria-label="Zamknij">✕</button>
-      </div>
-      <div class="mail-canvas" id="previewModalCanvas">
-        <iframe id="previewModalFrame" title="Podgląd wiadomości" loading="eager"></iframe>
-      </div>
     </section>
   </div>
 

@@ -2,272 +2,164 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="x-apple-disable-message-reformatting">
   <style>
     :root {
-      --template-accent: #0f766e;
-      --page-bg: #eef3f7;
-      --card-bg: #ffffff;
-      --card-muted-bg: #f5f8fb;
-      --card-border: #d9e5ef;
-      --txt-main: #1d2a36;
-      --txt-muted: #61788e;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--page-bg);
-      color: var(--txt-main);
-      font-family: "Avenir Next", "Segoe UI", sans-serif;
-    }
-
-    .page {
-      padding: 26px 14px;
-      background: radial-gradient(circle at top right, color-mix(in srgb, var(--template-accent) 11%, transparent), transparent 60%), var(--page-bg);
-    }
-
-    .mail {
-      max-width: 700px;
-      margin: 0 auto;
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      overflow: hidden;
-      background: var(--card-bg);
-    }
-
-    .head {
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--card-border);
-      background: color-mix(in srgb, var(--template-accent) 10%, var(--card-bg));
-    }
-
-    .head-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .head-meta {
-      margin-top: 6px;
-      color: var(--txt-muted);
-      font-size: 13px;
-    }
-
-    .body {
-      padding: 24px;
-      line-height: 1.65;
-      font-size: 16px;
-    }
-
-    .body p {
-      margin: 0 0 12px;
-    }
-
-    .body p:last-child {
-      margin-bottom: 0;
-    }
-
-    .signature-box {
-      margin-top: 22px;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px;
-      background: var(--card-muted-bg);
-    }
-
-    .signature-box:empty {
-      display: none;
-    }
-
-    .signature-name {
-      margin-top: 6px;
-      font-weight: 700;
+      color-scheme: light dark;
+      --bg: #edf4f7;
+      --card: #ffffff;
+      --text: #122533;
+      --muted: #5b6b79;
+      --line: #d6e0e7;
+      --accent: var(--template-accent, #0f766e);
+      --quote-bg: #eff8f6;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --page-bg: #121a24;
-        --card-bg: #1a2532;
-        --card-muted-bg: #202d3b;
-        --card-border: #304356;
-        --txt-main: #e6eef7;
-        --txt-muted: #a8bdd0;
+        --bg: #101a1f;
+        --card: #17252c;
+        --text: #e5eef4;
+        --muted: #a7bcc9;
+        --line: #314550;
+        --quote-bg: #1c323a;
       }
     }
 
     html.forced-light {
-      --page-bg: #eef3f7;
-      --card-bg: #ffffff;
-      --card-muted-bg: #f5f8fb;
-      --card-border: #d9e5ef;
-      --txt-main: #1d2a36;
-      --txt-muted: #61788e;
+      --bg: #edf4f7;
+      --card: #ffffff;
+      --text: #122533;
+      --muted: #5b6b79;
+      --line: #d6e0e7;
+      --quote-bg: #eff8f6;
     }
 
     html.forced-dark {
-      --page-bg: #121a24;
-      --card-bg: #1a2532;
-      --card-muted-bg: #202d3b;
-      --card-border: #304356;
-      --txt-main: #e6eef7;
-      --txt-muted: #a8bdd0;
-    }
-  
-
-    /* Neutral Theme Bridge: consistent contrast in light/dark mode */
-    :root {
-      --neutral-page-bg: #f3f6fa;
-      --neutral-surface-bg: #ffffff;
-      --neutral-border: #d5dfeb;
-      --neutral-text: #1a2733;
-      --neutral-muted: #5d7186;
-      --neutral-link: #1f6fd6;
+      --bg: #101a1f;
+      --card: #17252c;
+      --text: #e5eef4;
+      --muted: #a7bcc9;
+      --line: #314550;
+      --quote-bg: #1c323a;
     }
 
-    @media (prefers-color-scheme: dark) {
-      html:not(.forced-light) {
-        --neutral-page-bg: #101a24;
-        --neutral-surface-bg: #1a2733;
-        --neutral-border: #33475b;
-        --neutral-text: #e7eef6;
-        --neutral-muted: #a8b9cb;
-        --neutral-link: #8bcaff;
-      }
-    }
-
-    html.forced-light {
-      --neutral-page-bg: #f3f6fa;
-      --neutral-surface-bg: #ffffff;
-      --neutral-border: #d5dfeb;
-      --neutral-text: #1a2733;
-      --neutral-muted: #5d7186;
-      --neutral-link: #1f6fd6;
-    }
-
-    html.forced-dark {
-      --neutral-page-bg: #101a24;
-      --neutral-surface-bg: #1a2733;
-      --neutral-border: #33475b;
-      --neutral-text: #e7eef6;
-      --neutral-muted: #a8b9cb;
-      --neutral-link: #8bcaff;
-    }
-
-    html,
     body {
-      background: var(--neutral-page-bg) !important;
-      color: var(--neutral-text) !important;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.56 "Manrope", "Segoe UI", sans-serif;
+      padding: 24px 12px;
     }
 
-    .mail-wrap,
-    .wrap,
-    .page,
-    .shell,
-    .canvas,
-    .pad,
-    .space,
-    .stage {
-      background: var(--neutral-page-bg) !important;
-      color: var(--neutral-text) !important;
+    .mail-shell {
+      max-width: 730px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
     }
 
-    .mail,
-    .mail-card,
-    .card,
-    .sheet,
-    .paper,
-    .note,
-    .post,
-    .inner,
-    .body,
-    .mail-content,
-    .signature,
-    .signature-box,
-    .letterhead,
-    .top,
-    .head,
-    .hero {
-      border-color: var(--neutral-border) !important;
-      color: var(--neutral-text) !important;
+    .mail-shell-inner {
+      padding: 22px 24px 24px;
     }
 
-    html.forced-dark [style*="background:#f"],
-    html.forced-dark [style*="background: #f"],
-    html.forced-dark [style*="background:#e"],
-    html.forced-dark [style*="background: #e"],
-    html.forced-dark [style*="background-color:#f"],
-    html.forced-dark [style*="background-color: #f"],
-    html.forced-dark [style*="background-color:#e"],
-    html.forced-dark [style*="background-color: #e"] {
-      background: var(--neutral-surface-bg) !important;
-      color: var(--neutral-text) !important;
-      border-color: var(--neutral-border) !important;
+    .mail-shell::before {
+      content: "";
+      display: block;
+      height: 8px;
+      background: linear-gradient(90deg, var(--accent), #9bc8c3);
     }
 
-    @media (prefers-color-scheme: dark) {
-      html:not(.forced-light) [style*="background:#f"],
-      html:not(.forced-light) [style*="background: #f"],
-      html:not(.forced-light) [style*="background:#e"],
-      html:not(.forced-light) [style*="background: #e"],
-      html:not(.forced-light) [style*="background-color:#f"],
-      html:not(.forced-light) [style*="background-color: #f"],
-      html:not(.forced-light) [style*="background-color:#e"],
-      html:not(.forced-light) [style*="background-color: #e"] {
-        background: var(--neutral-surface-bg) !important;
-        color: var(--neutral-text) !important;
-        border-color: var(--neutral-border) !important;
-      }
+    .mail-greeting,
+    .mail-closing,
+    .mail-sender {
+      margin: 0 0 14px;
     }
 
-    p,
-    li,
-    td,
-    h1,
-    h2,
-    h3,
-    h4,
-    strong,
-    .signature-name {
-      color: var(--neutral-text) !important;
+    .mail-content {
+      min-height: 20px;
     }
 
-    .meta,
-    .head-meta,
-    .signature,
-    .quote-label,
-    .head p,
-    .top p,
-    .hero p,
-    small {
-      color: var(--neutral-muted) !important;
+    .mail-quote {
+      margin: 20px 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--quote-bg);
+      padding: 12px 14px;
     }
 
-    a {
-      color: var(--neutral-link) !important;
+    .mail-quote-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
     }
 
-</style>
+    .mail-signature-block {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .mail-contact-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact-line {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px;
+    }
+
+    .contact-label {
+      font-weight: 600;
+    }
+
+    .contact-socials {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-socials a,
+    .contact-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .mail-sent-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .app-placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
-  <div class="page" style="padding:26px 14px;background:#eef3f7;">
-    <article class="mail" style="max-width:700px;margin:0 auto;border:1px solid #d9e5ef;border-radius:16px;background:#ffffff;overflow:hidden;">
-      <header class="head" style="padding:18px 24px;border-bottom:1px solid #d9e5ef;background:#f5faf9;">
-        <h1 class="head-title" style="margin:0;font-size:18px;">{{template_title}}</h1>
-        <div class="head-meta">{{date}}</div>
-      </header>
-
-      <section class="body" style="padding:24px;line-height:1.65;font-size:16px;">
-        <p data-optional-content><strong>{{greeting}}</strong></p>
-        {{content_block}}
-
-        <div class="signature-box" data-optional-signature style="margin-top:22px;border:1px solid #d9e5ef;border-radius:10px;padding:14px;background:#f5f8fb;">
-          {{signature_block}}
-        </div>
-      </section>
-    </article>
-  </div>
+  <main class="mail-shell">
+    <div class="mail-shell-inner">
+      {{greeting_block}}
+      <section class="mail-content">{{content_block}}</section>
+      {{quote_block}}
+      {{signature_block}}
+    </div>
+  </main>
 </body>
 </html>

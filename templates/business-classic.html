@@ -8,68 +8,77 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f7f2ea;
-      --card: #fffaf3;
-      --text: #35281f;
-      --muted: #736052;
-      --line: #dfd2c4;
-      --accent: var(--template-accent, #8e5f3c);
-      --quote-bg: #f4e8da;
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --text: #172333;
+      --muted: #56677a;
+      --line: #d4dce8;
+      --accent: var(--template-accent, #245fbd);
+      --quote-bg: #eff4ff;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #191513;
-        --card: #241d19;
-        --text: #f2e5d9;
-        --muted: #c8b19a;
-        --line: #493a30;
-        --quote-bg: #342920;
+        --bg: #121821;
+        --card: #1a2531;
+        --text: #e8eef6;
+        --muted: #aec0d2;
+        --line: #34495f;
+        --quote-bg: #1d3047;
       }
     }
 
     html.forced-light {
-      --bg: #f7f2ea;
-      --card: #fffaf3;
-      --text: #35281f;
-      --muted: #736052;
-      --line: #dfd2c4;
-      --quote-bg: #f4e8da;
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --text: #172333;
+      --muted: #56677a;
+      --line: #d4dce8;
+      --quote-bg: #eff4ff;
     }
 
     html.forced-dark {
-      --bg: #191513;
-      --card: #241d19;
-      --text: #f2e5d9;
-      --muted: #c8b19a;
-      --line: #493a30;
-      --quote-bg: #342920;
+      --bg: #121821;
+      --card: #1a2531;
+      --text: #e8eef6;
+      --muted: #aec0d2;
+      --line: #34495f;
+      --quote-bg: #1d3047;
     }
 
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font: 17px/1.62 "Lora", "Georgia", serif;
-      padding: 22px 12px;
+      font: 16px/1.58 "Source Sans 3", "Segoe UI", sans-serif;
+      padding: 24px 12px;
     }
 
     .mail-shell {
-      max-width: 730px;
+      max-width: 740px;
       margin: 0 auto;
-      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      background: var(--card);
+      overflow: hidden;
+    }
+
+    .mail-head {
+      background: var(--accent);
+      color: #ffffff;
+      padding: 10px 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .mail-inner {
+      padding: 22px;
     }
 
     .mail-content {
       min-height: 20px;
-    }
-
-    .mail-content p {
-      margin: 0 0 0.65em;
     }
 
     .mail-greeting,
@@ -81,7 +90,6 @@
     .mail-quote {
       margin: 20px 0;
       border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
       border-radius: 8px;
       background: var(--quote-bg);
       padding: 12px 14px;
@@ -92,16 +100,14 @@
       color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       font-weight: 700;
-      font-family: "Inter", "Segoe UI", sans-serif;
     }
 
     .mail-signature-block {
       margin-top: 22px;
       padding-top: 16px;
-      border-top: 1px dashed var(--line);
-      font-family: "Inter", "Segoe UI", sans-serif;
+      border-top: 1px solid var(--line);
     }
 
     .mail-contact-block {
@@ -151,10 +157,13 @@
 </head>
 <body>
   <main class="mail-shell">
-    {{greeting_block}}
-    <section class="mail-content">{{content_block}}</section>
-    {{quote_block}}
-    {{signature_block}}
+    <div class="mail-head">Message</div>
+    <div class="mail-inner">
+      {{greeting_block}}
+      <section class="mail-content">{{content_block}}</section>
+      {{quote_block}}
+      {{signature_block}}
+    </div>
   </main>
 </body>
 </html>
