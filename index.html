@@ -8,28 +8,77 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.svg">
+  <script src="https://cdn.tiny.cloud/1/rvwao9ib8mj0j8bfxbp4dml22na1rnlbgwu4wvfkitbd7dr3/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./app.css">
 </head>
 <body>
   <header class="app-header">
-    <div>
+    <div class="topbar-section topbar-brand">
       <h1>Mail Templates PWA</h1>
       <p id="appSubtitle">Szablony, podgląd, załączniki i eksport wiadomości do pliku <code>.eml</code>.</p>
     </div>
-    <div class="header-actions">
-      <label class="theme-picker" id="languageModeLabel" for="languageMode">Język</label>
-      <select id="languageMode" aria-label="Język interfejsu">
+    <div class="topbar-section topbar-template">
+      <div class="mobile-template-picker">
+        <label id="mobileTemplateLabel" for="mobileTemplateSelect">Szablon</label>
+        <select id="mobileTemplateSelect" aria-label="Wybierz szablon"></select>
+      </div>
+    </div>
+
+    <div class="topbar-section topbar-send">
+      <button id="shareBtn" class="button" type="button">Udostępnij .eml</button>
+      <button id="exportBtn" class="button button-primary" type="button">Zapisz .eml</button>
+    </div>
+
+    <div class="topbar-section topbar-locale">
+      <div class="language-menu" id="languageMenu">
+        <button id="languageMenuBtn" class="button language-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Język interfejsu">
+          <span id="languageFlag" class="language-flag" aria-hidden="true">🇵🇱</span>
+          <span class="language-caret" aria-hidden="true">▾</span>
+        </button>
+        <ul id="languageMenuList" class="language-menu-list" role="listbox" hidden>
+          <li>
+            <button type="button" class="language-option" data-lang="pl" role="option">
+              <span class="language-flag" aria-hidden="true">🇵🇱</span>
+              <span id="languageOptionPl">Polski</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="language-option" data-lang="en" role="option">
+              <span class="language-flag" aria-hidden="true">🇬🇧</span>
+              <span id="languageOptionEn">English</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="language-option" data-lang="uk" role="option">
+              <span class="language-flag" aria-hidden="true">🇺🇦</span>
+              <span id="languageOptionUk">Українська</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <label class="theme-switch" for="themeSwitch">
+        <input id="themeSwitch" type="checkbox" role="switch" aria-label="Motyw aplikacji">
+        <span class="theme-switch-track" aria-hidden="true">
+          <span class="theme-switch-thumb"></span>
+        </span>
+        <span id="themeSwitchLabel">Ciemny</span>
+      </label>
+
+      <label class="visually-hidden" id="languageModeLabel" for="languageMode">Język</label>
+      <select id="languageMode" class="visually-hidden" aria-hidden="true" tabindex="-1">
         <option value="pl">Polski</option>
         <option value="en">English</option>
         <option value="uk">Українська</option>
       </select>
-      <label class="theme-picker" id="themeModeLabel" for="themeMode">Motyw aplikacji</label>
-      <select id="themeMode" aria-label="Motyw aplikacji">
+
+      <label class="visually-hidden" id="themeModeLabel" for="themeMode">Motyw aplikacji</label>
+      <select id="themeMode" class="visually-hidden" aria-hidden="true" tabindex="-1">
         <option value="auto">Auto</option>
         <option value="light">Jasny</option>
         <option value="dark">Ciemny</option>
       </select>
-      <button id="exportBtn" class="button button-primary" type="button">Export .eml</button>
+      <button id="infoBtn" class="button" type="button" aria-haspopup="dialog" aria-controls="infoModal">ℹ️</button>
     </div>
   </header>
 
@@ -47,26 +96,46 @@
         <section class="card editor-panel">
           <h2 id="editorTitle">Edycja</h2>
 
-          <label class="field" data-field="to">
+          <label class="field-toggle">
+            <input id="toggleTo" type="checkbox">
+            <span id="toggleToLabel">Pokaż pole Do (opcjonalne)</span>
+          </label>
+          <label class="field" data-field="to" hidden>
             <span id="fieldToLabel">Do (opcjonalnie)</span>
             <input id="fieldTo" type="text" placeholder="adres@example.com" autocomplete="email">
           </label>
 
-          <label class="field" data-field="cc">
+          <label class="field-toggle">
+            <input id="toggleCc" type="checkbox">
+            <span id="toggleCcLabel">Pokaż pole DW (opcjonalne)</span>
+          </label>
+          <label class="field" data-field="cc" hidden>
             <span id="fieldCcLabel">DW (opcjonalnie)</span>
             <input id="fieldCc" type="text" placeholder="adres@example.com, drugi@example.com" autocomplete="email">
           </label>
 
-          <label class="field" data-field="bcc">
+          <label class="field-toggle">
+            <input id="toggleBcc" type="checkbox">
+            <span id="toggleBccLabel">Pokaż pole UDW (opcjonalne)</span>
+          </label>
+          <label class="field" data-field="bcc" hidden>
             <span id="fieldBccLabel">UDW (opcjonalnie)</span>
             <input id="fieldBcc" type="text" placeholder="adres@example.com" autocomplete="email">
           </label>
 
-          <label class="field" data-field="replyTo">
+          <label class="field-toggle">
+            <input id="toggleReplyTo" type="checkbox">
+            <span id="toggleReplyToLabel">Pokaż pole Reply-To (opcjonalne)</span>
+          </label>
+          <label class="field" data-field="replyTo" hidden>
             <span id="fieldReplyToLabel">Reply-To (opcjonalnie)</span>
             <input id="fieldReplyTo" type="text" placeholder="adres@example.com" autocomplete="email">
           </label>
 
+          <label class="field-toggle">
+            <input id="toggleSubject" type="checkbox" checked>
+            <span id="toggleSubjectLabel">Pokaż pole Temat (opcjonalne)</span>
+          </label>
           <label class="field" data-field="subject">
             <span id="fieldSubjectLabel">Temat (opcjonalnie)</span>
             <input id="fieldSubject" type="text" placeholder="Temat wiadomości" autocomplete="off">
@@ -77,28 +146,67 @@
             <textarea id="fieldContent" rows="10" placeholder="Wpisz treść wiadomości..."></textarea>
           </label>
 
+          <label class="field-toggle">
+            <input id="replyMode" type="checkbox">
+            <span id="replyModeLabel">Pokaż pole cytatu odpowiedzi (opcjonalne)</span>
+          </label>
+
+          <label class="field" data-field="quote" hidden>
+            <span id="fieldQuoteLabel">Cytat odpowiedzi (opcjonalnie)</span>
+            <textarea id="fieldQuote" rows="4" placeholder="Wklej cytowany fragment, jeśli to odpowiedź..."></textarea>
+          </label>
+
+          <label class="field-toggle">
+            <input id="toggleSignatureName" type="checkbox" checked>
+            <span id="toggleSignatureNameLabel">Pokaż podpis (opcjonalny)</span>
+          </label>
           <label class="field" data-field="signatureName">
-            <span id="fieldSignatureLabel">Imię w stopce</span>
+            <span id="fieldSignatureLabel">Imię w stopce (opcjonalnie)</span>
             <input id="fieldSignatureName" type="text" placeholder="Twoje imię" autocomplete="name">
           </label>
 
+          <label class="field-toggle">
+            <input id="toggleDate" type="checkbox" checked>
+            <span id="toggleDateLabel">Pokaż datę (automatycznie)</span>
+          </label>
+          <p class="auto-field-note" id="toggleDateHint">Data jest automatyczna i nie ma pola edycji.</p>
+
           <label class="remember-draft">
             <input id="rememberDraft" type="checkbox">
-            <span id="rememberDraftLabel">Zapamiętaj draft lokalnie (bez załączników)</span>
+            <span id="rememberDraftLabel">Zapamiętaj brudnopis lokalnie (bez załączników)</span>
           </label>
 
           <div id="addressValidation" class="form-validation" aria-live="polite"></div>
 
-          <p class="muted-note" id="mutedNote">Treść jest escapowana i bezpiecznie konwertowana z tekstu na HTML (<code>&lt;p&gt;</code> / <code>&lt;br&gt;</code>).</p>
+          <p class="muted-note" id="mutedNote">Puste pola opcjonalne nie są dodawane do wiadomości. Treść jest bezpiecznie konwertowana z tekstu na HTML.</p>
         </section>
 
         <section class="card preview-panel">
           <div class="preview-head">
             <h2 id="previewTitle">Podgląd</h2>
-            <span id="previewTemplateName" class="preview-template-name"></span>
+            <div class="preview-head-right">
+              <span id="previewTemplateName" class="preview-template-name"></span>
+              <label class="theme-switch template-theme-switch" for="templateThemeSwitch">
+                <input id="templateThemeSwitch" type="checkbox" role="switch" aria-label="Motyw szablonu">
+                <span class="theme-switch-track" aria-hidden="true">
+                  <span class="theme-switch-thumb"></span>
+                </span>
+                <span id="templateThemeSwitchLabel">Motyw szablonu</span>
+              </label>
+              <label class="theme-picker" id="previewModeLabel" for="previewMode">Tryb podglądu</label>
+              <select id="previewMode" aria-label="Tryb podglądu">
+                <option value="app">Jak w aplikacji</option>
+                <option value="light">Jasny</option>
+                <option value="dark">Ciemny</option>
+                <option value="split">Jasny + Ciemny</option>
+              </select>
+            </div>
           </div>
+          <button id="openPreviewModalBtn" class="button preview-modal-trigger" type="button">Otwórz podgląd</button>
+          <div id="previewFields" class="preview-fields" aria-live="polite"></div>
           <div class="mail-canvas" id="mailCanvas">
             <iframe id="previewFrame" title="Podgląd wiadomości" loading="eager"></iframe>
+            <iframe id="previewFrameDark" title="Podgląd wiadomości - ciemny" loading="eager" hidden></iframe>
           </div>
         </section>
       </div>
@@ -126,9 +234,39 @@
     </section>
   </main>
 
-  <footer class="app-footer">
-    <p id="footerNote"><strong>Uwaga:</strong> <code>mailto:</code> nie wspiera HTML i załączników, dlatego użyj eksportu <code>.eml</code>.</p>
+  <footer class="app-footer" hidden>
+    <p id="footerNote"></p>
   </footer>
+
+  <div id="infoModal" class="modal" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal-head">
+        <h2 id="infoModalTitle">ℹ️ Jak to działa</h2>
+        <button id="infoModalClose" class="button" type="button" aria-label="Zamknij">✕</button>
+      </div>
+      <ul id="infoModalList" class="modal-list">
+        <li>✉️ Aplikacja tworzy plik <code>.eml</code> z HTML i załącznikami.</li>
+        <li>💾 „Zapisz .eml” pobiera plik na urządzenie.</li>
+        <li>📤 „Udostępnij .eml” otwiera systemowe udostępnianie.</li>
+        <li>📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.</li>
+      </ul>
+    </section>
+  </div>
+
+  <div id="previewModal" class="modal" hidden>
+    <div class="modal-backdrop" data-preview-close></div>
+    <section class="modal-card preview-modal-card" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
+      <div class="modal-head">
+        <h2 id="previewModalTitle">Podgląd</h2>
+        <button id="previewModalClose" class="button" type="button" aria-label="Zamknij">✕</button>
+      </div>
+      <div class="mail-canvas" id="previewModalCanvas">
+        <iframe id="previewModalFrame" title="Podgląd wiadomości" loading="eager"></iframe>
+        <iframe id="previewModalFrameDark" title="Podgląd wiadomości - ciemny" loading="eager" hidden></iframe>
+      </div>
+    </section>
+  </div>
 
   <script type="module" src="./app.js"></script>
 </body>

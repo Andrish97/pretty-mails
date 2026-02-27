@@ -1,5 +1,6 @@
 const STORAGE_KEYS = {
   themeMode: "mailTemplatesPwa.themeMode",
+  previewMode: "mailTemplatesPwa.previewMode",
   language: "mailTemplatesPwa.language",
   draft: "mailTemplatesPwa.draft.v1",
 };
@@ -8,6 +9,21 @@ const TEMPLATE_INDEX_URL = new URL("./templates/templates.json", window.location
 const MB = 1024 * 1024;
 const WARN_MB = 15;
 const DANGER_MB = 22;
+const LANGUAGE_FLAGS = {
+  pl: "🇵🇱",
+  en: "🇬🇧",
+  uk: "🇺🇦",
+};
+const OPTIONAL_FIELD_DEFAULTS = {
+  to: false,
+  cc: false,
+  bcc: false,
+  replyTo: false,
+  subject: true,
+  quote: false,
+  signatureName: true,
+  date: true,
+};
 
 const I18N = {
   pl: {
@@ -22,9 +38,20 @@ const I18N = {
     themeAuto: "Auto",
     themeLight: "Jasny",
     themeDark: "Ciemny",
-    exportButton: "Export .eml",
+    exportButton: "Zapisz .eml",
     exportBusy: "Eksport...",
+    shareButton: "Udostępnij .eml",
+    shareBusy: "Udostępnianie...",
+    infoButtonAria: "Pokaż wskazówki",
+    infoModalTitle: "ℹ️ Jak to działa",
+    infoModalCloseAria: "Zamknij",
+    infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
+    infoLine2: "💾 „Zapisz .eml” pobiera plik na urządzenie.",
+    infoLine3: "📤 „Udostępnij .eml” otwiera systemowe udostępnianie.",
+    infoLine4: "📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.",
     templatesTitle: "Szablony",
+    mobileTemplateLabel: "Szablon",
+    mobileTemplateAria: "Wybierz szablon",
     templateSearchPlaceholder: "Szukaj po nazwie lub opisie",
     templateListAria: "Lista szablonów",
     templateSearchEmpty: "Brak wyników wyszukiwania.",
@@ -42,18 +69,42 @@ const I18N = {
     fieldReplyToShort: "Reply-To",
     fieldReplyToPlaceholder: "adres@example.com",
     fieldSubjectLabel: "Temat (opcjonalnie)",
+    fieldSubjectShort: "Temat",
     fieldSubjectPlaceholder: "Temat wiadomości",
     fieldContentLabel: "Treść",
     fieldContentPlaceholder: "Wpisz treść wiadomości...",
+    toggleToLabel: "Pokaż pole Do (opcjonalne)",
+    toggleCcLabel: "Pokaż pole DW (opcjonalne)",
+    toggleBccLabel: "Pokaż pole UDW (opcjonalne)",
+    toggleReplyToLabel: "Pokaż pole Reply-To (opcjonalne)",
+    toggleSubjectLabel: "Pokaż pole Temat (opcjonalne)",
+    toggleQuoteLabel: "Pokaż pole cytatu odpowiedzi (opcjonalne)",
+    toggleSignatureLabel: "Pokaż podpis (opcjonalny)",
+    toggleDateLabel: "Pokaż datę (automatycznie)",
+    toggleDateHint: "Data jest automatyczna i nie ma pola edycji.",
+    replyModeLabel: "Pokaż pole cytatu odpowiedzi (opcjonalne)",
+    fieldQuoteLabel: "Cytat odpowiedzi (opcjonalnie)",
+    fieldQuoteShort: "Cytat",
+    fieldQuotePlaceholder: "Wklej cytowany fragment, jeśli to odpowiedź...",
     fieldSignatureLabel: "Imię w stopce (opcjonalnie)",
+    fieldSignatureShort: "Podpis",
     fieldSignaturePlaceholder: "Twoje imię",
-    rememberDraftLabel: "Zapamiętaj draft lokalnie (bez załączników)",
+    fieldDateShort: "Data",
+    rememberDraftLabel: "Zapamiętaj brudnopis lokalnie (bez załączników)",
     mutedNoteHtml:
-      "Puste pola opcjonalne nie są dodawane do wiadomości. Treść jest bezpiecznie konwertowana do HTML.",
+      "Pola opcjonalne włączasz checkboxami. Aktywne puste pola pokazują placeholder tylko w podglądzie; eksport używa wyłącznie wpisanych wartości.",
     addressValidationPrefix: "Popraw adresy e-mail:",
     replyToSingleAddress: "Reply-To może zawierać tylko jeden adres.",
     previewTitle: "Podgląd",
     previewFrameTitle: "Podgląd wiadomości",
+    previewFrameDarkTitle: "Podgląd wiadomości - ciemny",
+    templateThemeSwitchLabel: "Motyw szablonu",
+    previewModeLabel: "Tryb podglądu",
+    previewModeApp: "Jak w aplikacji",
+    previewModeLight: "Jasny",
+    previewModeDark: "Ciemny",
+    previewModeSplit: "Jasny + Ciemny",
+    openPreviewButton: "Otwórz podgląd",
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
     dropZoneText: "Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.",
@@ -68,6 +119,7 @@ const I18N = {
       "<strong>Uwaga:</strong> <code>mailto:</code> nie wspiera HTML i załączników, dlatego użyj eksportu <code>.eml</code>.",
     bootFailed: "Nie udało się uruchomić aplikacji.",
     exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
+    shareFailedAlert: "Nie udało się udostępnić pliku .eml. Zapisuję plik lokalnie.",
     noTemplateSelected: "Brak wybranego szablonu",
     greeting: "Cześć,",
     closing: "Pozdrawiam,",
@@ -99,9 +151,20 @@ const I18N = {
     themeAuto: "Auto",
     themeLight: "Light",
     themeDark: "Dark",
-    exportButton: "Export .eml",
+    exportButton: "Save .eml",
     exportBusy: "Exporting...",
+    shareButton: "Share .eml",
+    shareBusy: "Sharing...",
+    infoButtonAria: "Show tips",
+    infoModalTitle: "ℹ️ How it works",
+    infoModalCloseAria: "Close",
+    infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
+    infoLine2: "💾 “Save .eml” downloads the file to your device.",
+    infoLine3: "📤 “Share .eml” opens the system share sheet.",
+    infoLine4: "📮 Sending is done by your mail app and your account.",
     templatesTitle: "Templates",
+    mobileTemplateLabel: "Template",
+    mobileTemplateAria: "Choose template",
     templateSearchPlaceholder: "Search by name or description",
     templateListAria: "Template list",
     templateSearchEmpty: "No matching templates.",
@@ -119,18 +182,42 @@ const I18N = {
     fieldReplyToShort: "Reply-To",
     fieldReplyToPlaceholder: "address@example.com",
     fieldSubjectLabel: "Subject (optional)",
+    fieldSubjectShort: "Subject",
     fieldSubjectPlaceholder: "Message subject",
     fieldContentLabel: "Content",
     fieldContentPlaceholder: "Type message content...",
+    toggleToLabel: "Show To field (optional)",
+    toggleCcLabel: "Show CC field (optional)",
+    toggleBccLabel: "Show BCC field (optional)",
+    toggleReplyToLabel: "Show Reply-To field (optional)",
+    toggleSubjectLabel: "Show Subject field (optional)",
+    toggleQuoteLabel: "Show reply quote field (optional)",
+    toggleSignatureLabel: "Show signature (optional)",
+    toggleDateLabel: "Show date (automatic)",
+    toggleDateHint: "Date is generated automatically and cannot be edited.",
+    replyModeLabel: "Show reply quote field (optional)",
+    fieldQuoteLabel: "Reply quote (optional)",
+    fieldQuoteShort: "Quote",
+    fieldQuotePlaceholder: "Paste quoted message fragment for reply...",
     fieldSignatureLabel: "Signature name (optional)",
+    fieldSignatureShort: "Signature",
     fieldSignaturePlaceholder: "Your name",
+    fieldDateShort: "Date",
     rememberDraftLabel: "Remember draft locally (without attachments)",
     mutedNoteHtml:
-      "Empty optional fields are not added to the message. Content is safely converted to HTML.",
+      "Optional fields are controlled with checkboxes. Active empty fields show placeholders only in preview; export uses only entered values.",
     addressValidationPrefix: "Fix email addresses:",
     replyToSingleAddress: "Reply-To can contain only one address.",
     previewTitle: "Preview",
     previewFrameTitle: "Message preview",
+    previewFrameDarkTitle: "Message preview - dark",
+    templateThemeSwitchLabel: "Template theme",
+    previewModeLabel: "Preview mode",
+    previewModeApp: "As app",
+    previewModeLight: "Light",
+    previewModeDark: "Dark",
+    previewModeSplit: "Light + Dark",
+    openPreviewButton: "Open preview",
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
     dropZoneText: "Drag and drop files here or use the “Add files” button.",
@@ -145,6 +232,7 @@ const I18N = {
       "<strong>Note:</strong> <code>mailto:</code> does not support HTML or attachments, so use <code>.eml</code> export.",
     bootFailed: "Failed to start the application.",
     exportFailedAlert: "Failed to export the .eml file",
+    shareFailedAlert: "Could not share the .eml file. Saving it locally instead.",
     noTemplateSelected: "No template selected",
     greeting: "Hi,",
     closing: "Best regards,",
@@ -174,9 +262,20 @@ const I18N = {
     themeAuto: "Авто",
     themeLight: "Світла",
     themeDark: "Темна",
-    exportButton: "Export .eml",
+    exportButton: "Зберегти .eml",
     exportBusy: "Експорт...",
+    shareButton: "Поділитися .eml",
+    shareBusy: "Надсилання...",
+    infoButtonAria: "Показати підказки",
+    infoModalTitle: "ℹ️ Як це працює",
+    infoModalCloseAria: "Закрити",
+    infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
+    infoLine2: "💾 «Зберегти .eml» завантажує файл на пристрій.",
+    infoLine3: "📤 «Поділитися .eml» відкриває системне меню поширення.",
+    infoLine4: "📮 Надсилання виконує ваша поштова програма з вашого акаунта.",
     templatesTitle: "Шаблони",
+    mobileTemplateLabel: "Шаблон",
+    mobileTemplateAria: "Оберіть шаблон",
     templateSearchPlaceholder: "Пошук за назвою або описом",
     templateListAria: "Список шаблонів",
     templateSearchEmpty: "Шаблони не знайдено.",
@@ -194,18 +293,42 @@ const I18N = {
     fieldReplyToShort: "Reply-To",
     fieldReplyToPlaceholder: "adres@example.com",
     fieldSubjectLabel: "Тема (необов'язково)",
+    fieldSubjectShort: "Тема",
     fieldSubjectPlaceholder: "Тема листа",
     fieldContentLabel: "Текст",
     fieldContentPlaceholder: "Введіть текст повідомлення...",
+    toggleToLabel: "Показати поле Кому (необов'язково)",
+    toggleCcLabel: "Показати поле Копія (необов'язково)",
+    toggleBccLabel: "Показати поле Прих. копія (необов'язково)",
+    toggleReplyToLabel: "Показати поле Reply-To (необов'язково)",
+    toggleSubjectLabel: "Показати поле Тема (необов'язково)",
+    toggleQuoteLabel: "Показати поле цитати відповіді (необов'язково)",
+    toggleSignatureLabel: "Показати підпис (необов'язково)",
+    toggleDateLabel: "Показати дату (автоматично)",
+    toggleDateHint: "Дата генерується автоматично й не редагується.",
+    replyModeLabel: "Показати поле цитати відповіді (необов'язково)",
+    fieldQuoteLabel: "Цитата відповіді (необов'язково)",
+    fieldQuoteShort: "Цитата",
+    fieldQuotePlaceholder: "Вставте цитований фрагмент, якщо це відповідь...",
     fieldSignatureLabel: "Ім'я в підписі (необов'язково)",
+    fieldSignatureShort: "Підпис",
     fieldSignaturePlaceholder: "Ваше ім'я",
+    fieldDateShort: "Дата",
     rememberDraftLabel: "Зберігати чернетку локально (без вкладень)",
     mutedNoteHtml:
-      "Порожні необов'язкові поля не додаються до листа. Текст безпечно конвертується у HTML.",
+      "Необов'язкові поля вмикаються чекбоксами. Активні порожні поля показують плейсхолдер тільки в перегляді; експорт бере лише введені значення.",
     addressValidationPrefix: "Виправте адреси email:",
     replyToSingleAddress: "Поле Reply-To може містити лише одну адресу.",
     previewTitle: "Попередній перегляд",
     previewFrameTitle: "Попередній перегляд листа",
+    previewFrameDarkTitle: "Попередній перегляд листа - темний",
+    templateThemeSwitchLabel: "Тема шаблону",
+    previewModeLabel: "Режим перегляду",
+    previewModeApp: "Як у застосунку",
+    previewModeLight: "Світлий",
+    previewModeDark: "Темний",
+    previewModeSplit: "Світлий + Темний",
+    openPreviewButton: "Відкрити перегляд",
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
     dropZoneText: "Перетягніть файли сюди або натисніть «Додати файли».",
@@ -220,6 +343,7 @@ const I18N = {
       "<strong>Увага:</strong> <code>mailto:</code> не підтримує HTML і вкладення, тому використовуйте експорт <code>.eml</code>.",
     bootFailed: "Не вдалося запустити застосунок.",
     exportFailedAlert: "Не вдалося експортувати файл .eml",
+    shareFailedAlert: "Не вдалося поділитися файлом .eml. Зберігаю його локально.",
     noTemplateSelected: "Шаблон не вибрано",
     greeting: "Привіт,",
     closing: "З повагою,",
@@ -246,10 +370,13 @@ const state = {
   templateMarkup: new Map(),
   selectedTemplateId: null,
   themeMode: localStorage.getItem(STORAGE_KEYS.themeMode) || "auto",
+  previewMode: localStorage.getItem(STORAGE_KEYS.previewMode) || "app",
   resolvedTheme: "light",
   language: detectInitialLanguage(),
   rememberDraft: false,
+  enabled: { ...OPTIONAL_FIELD_DEFAULTS },
   isExporting: false,
+  exportAction: "save",
   fields: {
     to: "",
     cc: "",
@@ -257,6 +384,7 @@ const state = {
     replyTo: "",
     subject: "",
     content: "",
+    quote: "",
     signatureName: "",
   },
   attachments: [],
@@ -265,11 +393,22 @@ const state = {
 
 const ui = {
   appSubtitle: document.querySelector("#appSubtitle"),
+  languageMenu: document.querySelector("#languageMenu"),
+  languageMenuBtn: document.querySelector("#languageMenuBtn"),
+  languageMenuList: document.querySelector("#languageMenuList"),
+  languageFlag: document.querySelector("#languageFlag"),
+  languageOptionPl: document.querySelector("#languageOptionPl"),
+  languageOptionEn: document.querySelector("#languageOptionEn"),
+  languageOptionUk: document.querySelector("#languageOptionUk"),
   languageModeLabel: document.querySelector("#languageModeLabel"),
   languageMode: document.querySelector("#languageMode"),
+  themeSwitch: document.querySelector("#themeSwitch"),
+  themeSwitchLabel: document.querySelector("#themeSwitchLabel"),
   themeModeLabel: document.querySelector("#themeModeLabel"),
   themeMode: document.querySelector("#themeMode"),
   templateSearch: document.querySelector("#templateSearch"),
+  mobileTemplateLabel: document.querySelector("#mobileTemplateLabel"),
+  mobileTemplateSelect: document.querySelector("#mobileTemplateSelect"),
   templateList: document.querySelector("#templateList"),
   templatesTitle: document.querySelector("#templatesTitle"),
   editorTitle: document.querySelector("#editorTitle"),
@@ -279,22 +418,61 @@ const ui = {
   fieldReplyToLabel: document.querySelector("#fieldReplyToLabel"),
   fieldSubjectLabel: document.querySelector("#fieldSubjectLabel"),
   fieldContentLabel: document.querySelector("#fieldContentLabel"),
+  toggleToLabel: document.querySelector("#toggleToLabel"),
+  toggleCcLabel: document.querySelector("#toggleCcLabel"),
+  toggleBccLabel: document.querySelector("#toggleBccLabel"),
+  toggleReplyToLabel: document.querySelector("#toggleReplyToLabel"),
+  toggleSubjectLabel: document.querySelector("#toggleSubjectLabel"),
+  replyModeLabel: document.querySelector("#replyModeLabel"),
+  toggleSignatureNameLabel: document.querySelector("#toggleSignatureNameLabel"),
+  toggleDateLabel: document.querySelector("#toggleDateLabel"),
+  toggleDateHint: document.querySelector("#toggleDateHint"),
+  fieldQuoteLabel: document.querySelector("#fieldQuoteLabel"),
   fieldSignatureLabel: document.querySelector("#fieldSignatureLabel"),
+  toggleTo: document.querySelector("#toggleTo"),
+  toggleCc: document.querySelector("#toggleCc"),
+  toggleBcc: document.querySelector("#toggleBcc"),
+  toggleReplyTo: document.querySelector("#toggleReplyTo"),
+  toggleSubject: document.querySelector("#toggleSubject"),
   fieldTo: document.querySelector("#fieldTo"),
   fieldCc: document.querySelector("#fieldCc"),
   fieldBcc: document.querySelector("#fieldBcc"),
   fieldReplyTo: document.querySelector("#fieldReplyTo"),
   fieldSubject: document.querySelector("#fieldSubject"),
   fieldContent: document.querySelector("#fieldContent"),
+  replyMode: document.querySelector("#replyMode"),
+  fieldQuote: document.querySelector("#fieldQuote"),
+  toggleSignatureName: document.querySelector("#toggleSignatureName"),
   fieldSignatureName: document.querySelector("#fieldSignatureName"),
+  toggleDate: document.querySelector("#toggleDate"),
   rememberDraft: document.querySelector("#rememberDraft"),
   rememberDraftLabel: document.querySelector("#rememberDraftLabel"),
   addressValidation: document.querySelector("#addressValidation"),
   mutedNote: document.querySelector("#mutedNote"),
   previewTitle: document.querySelector("#previewTitle"),
+  templateThemeSwitch: document.querySelector("#templateThemeSwitch"),
+  templateThemeSwitchLabel: document.querySelector("#templateThemeSwitchLabel"),
+  previewModeLabel: document.querySelector("#previewModeLabel"),
+  previewMode: document.querySelector("#previewMode"),
+  openPreviewModalBtn: document.querySelector("#openPreviewModalBtn"),
+  previewFields: document.querySelector("#previewFields"),
   previewTemplateName: document.querySelector("#previewTemplateName"),
+  mailCanvas: document.querySelector("#mailCanvas"),
   previewFrame: document.querySelector("#previewFrame"),
+  previewFrameDark: document.querySelector("#previewFrameDark"),
+  previewModal: document.querySelector("#previewModal"),
+  previewModalClose: document.querySelector("#previewModalClose"),
+  previewModalTitle: document.querySelector("#previewModalTitle"),
+  previewModalCanvas: document.querySelector("#previewModalCanvas"),
+  previewModalFrame: document.querySelector("#previewModalFrame"),
+  previewModalFrameDark: document.querySelector("#previewModalFrameDark"),
+  shareBtn: document.querySelector("#shareBtn"),
   exportBtn: document.querySelector("#exportBtn"),
+  infoBtn: document.querySelector("#infoBtn"),
+  infoModal: document.querySelector("#infoModal"),
+  infoModalClose: document.querySelector("#infoModalClose"),
+  infoModalTitle: document.querySelector("#infoModalTitle"),
+  infoModalList: document.querySelector("#infoModalList"),
   attachmentsTitle: document.querySelector("#attachmentsTitle"),
   addFilesBtn: document.querySelector("#addFilesBtn"),
   fileInput: document.querySelector("#fileInput"),
@@ -309,6 +487,9 @@ const ui = {
 };
 
 const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+let richTextEditor = null;
+let richTextConfigSignature = null;
+let richTextReinitPromise = null;
 
 boot().catch((error) => {
   console.error(error);
@@ -321,6 +502,7 @@ async function boot() {
   applyLanguage(state.language);
   applyTheme(state.themeMode);
   syncFieldInputs();
+  await initContentEditor();
   clearAddressValidation();
   renderAttachments();
   await loadTemplates();
@@ -328,9 +510,47 @@ async function boot() {
 }
 
 function bindEvents() {
+  ui.languageMenuBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    toggleLanguageMenu();
+  });
+
+  ui.languageMenuList.addEventListener("click", (event) => {
+    const option = event.target.closest(".language-option");
+    if (!option) return;
+
+    const language = normalizeLanguage(option.dataset.lang);
+    if (!language) return;
+
+    closeLanguageMenu();
+    applyLanguage(language);
+    maybeSaveDraft();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!ui.languageMenu.contains(event.target)) {
+      closeLanguageMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeLanguageMenu();
+      closeInfoModal();
+      closePreviewModal();
+    }
+  });
+
   ui.languageMode.addEventListener("change", () => {
     applyLanguage(ui.languageMode.value);
     maybeSaveDraft();
+  });
+
+  ui.themeSwitch.addEventListener("change", () => {
+    applyTheme(ui.themeSwitch.checked ? "dark" : "light");
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
   });
 
   ui.themeMode.addEventListener("change", () => {
@@ -353,42 +573,123 @@ function bindEvents() {
     renderTemplateList();
   });
 
+  ui.mobileTemplateSelect.addEventListener("change", async () => {
+    const templateId = ui.mobileTemplateSelect.value;
+    if (!templateId) return;
+    await selectTemplate(templateId);
+  });
+
+  ui.toggleTo.addEventListener("change", () => {
+    state.enabled.to = ui.toggleTo.checked;
+    applyTemplateFieldVisibility();
+    validateAddressFields();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.toggleCc.addEventListener("change", () => {
+    state.enabled.cc = ui.toggleCc.checked;
+    applyTemplateFieldVisibility();
+    validateAddressFields();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.toggleBcc.addEventListener("change", () => {
+    state.enabled.bcc = ui.toggleBcc.checked;
+    applyTemplateFieldVisibility();
+    validateAddressFields();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.toggleReplyTo.addEventListener("change", () => {
+    state.enabled.replyTo = ui.toggleReplyTo.checked;
+    applyTemplateFieldVisibility();
+    validateAddressFields();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.toggleSubject.addEventListener("change", () => {
+    state.enabled.subject = ui.toggleSubject.checked;
+    applyTemplateFieldVisibility();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
   ui.fieldTo.addEventListener("input", () => {
     state.fields.to = ui.fieldTo.value;
-    clearAddressValidation();
+    validateAddressFields();
     maybeSaveDraft();
+    renderPreview();
     renderAttachments();
   });
 
   ui.fieldCc.addEventListener("input", () => {
     state.fields.cc = ui.fieldCc.value;
-    clearAddressValidation();
+    validateAddressFields();
     maybeSaveDraft();
+    renderPreview();
     renderAttachments();
   });
 
   ui.fieldBcc.addEventListener("input", () => {
     state.fields.bcc = ui.fieldBcc.value;
-    clearAddressValidation();
+    validateAddressFields();
     maybeSaveDraft();
+    renderPreview();
     renderAttachments();
   });
 
   ui.fieldReplyTo.addEventListener("input", () => {
     state.fields.replyTo = ui.fieldReplyTo.value;
-    clearAddressValidation();
+    validateAddressFields();
     maybeSaveDraft();
+    renderPreview();
     renderAttachments();
   });
 
   ui.fieldSubject.addEventListener("input", () => {
     state.fields.subject = ui.fieldSubject.value;
     maybeSaveDraft();
+    renderPreview();
     renderAttachments();
   });
 
   ui.fieldContent.addEventListener("input", () => {
+    if (richTextEditor) {
+      return;
+    }
     state.fields.content = ui.fieldContent.value;
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.replyMode.addEventListener("change", () => {
+    state.enabled.quote = ui.replyMode.checked;
+    applyTemplateFieldVisibility();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.fieldQuote.addEventListener("input", () => {
+    state.fields.quote = ui.fieldQuote.value;
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.toggleSignatureName.addEventListener("change", () => {
+    state.enabled.signatureName = ui.toggleSignatureName.checked;
+    applyTemplateFieldVisibility();
     maybeSaveDraft();
     renderPreview();
     renderAttachments();
@@ -399,6 +700,40 @@ function bindEvents() {
     maybeSaveDraft();
     renderPreview();
     renderAttachments();
+  });
+
+  ui.toggleDate.addEventListener("change", () => {
+    state.enabled.date = ui.toggleDate.checked;
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.previewMode.addEventListener("change", () => {
+    applyPreviewMode(ui.previewMode.value);
+    maybeSaveDraft();
+    renderPreview();
+  });
+
+  ui.templateThemeSwitch.addEventListener("change", () => {
+    ui.templateThemeSwitch.indeterminate = false;
+    applyPreviewMode(ui.templateThemeSwitch.checked ? "dark" : "light");
+    maybeSaveDraft();
+    renderPreview();
+  });
+
+  ui.openPreviewModalBtn.addEventListener("click", () => {
+    openPreviewModal();
+  });
+
+  ui.previewModalClose.addEventListener("click", () => {
+    closePreviewModal();
+  });
+
+  ui.previewModal.addEventListener("click", (event) => {
+    if (event.target instanceof HTMLElement && event.target.dataset.previewClose !== undefined) {
+      closePreviewModal();
+    }
   });
 
   ui.rememberDraft.addEventListener("change", () => {
@@ -417,16 +752,59 @@ function bindEvents() {
 
     try {
       state.isExporting = true;
+      state.exportAction = "save";
       updateExportButtonLabel();
+      ui.shareBtn.disabled = true;
       ui.exportBtn.disabled = true;
-      await exportEml();
+      await saveEmlFile();
     } catch (error) {
       console.error(error);
       alert(t("exportFailedAlert"));
     } finally {
       state.isExporting = false;
+      state.exportAction = "save";
+      ui.shareBtn.disabled = false;
       ui.exportBtn.disabled = false;
       updateExportButtonLabel();
+    }
+  });
+
+  ui.shareBtn.addEventListener("click", async () => {
+    if (!validateAddressFields()) {
+      return;
+    }
+
+    try {
+      state.isExporting = true;
+      state.exportAction = "share";
+      updateExportButtonLabel();
+      ui.shareBtn.disabled = true;
+      ui.exportBtn.disabled = true;
+      await shareEmlFile();
+    } catch (error) {
+      console.error(error);
+      alert(t("shareFailedAlert"));
+      await saveEmlFile();
+    } finally {
+      state.isExporting = false;
+      state.exportAction = "save";
+      ui.shareBtn.disabled = false;
+      ui.exportBtn.disabled = false;
+      updateExportButtonLabel();
+    }
+  });
+
+  ui.infoBtn.addEventListener("click", () => {
+    openInfoModal();
+  });
+
+  ui.infoModalClose.addEventListener("click", () => {
+    closeInfoModal();
+  });
+
+  ui.infoModal.addEventListener("click", (event) => {
+    if (event.target instanceof HTMLElement && event.target.dataset.modalClose !== undefined) {
+      closeInfoModal();
     }
   });
 
@@ -460,6 +838,228 @@ function bindEvents() {
       ui.fileInput.click();
     }
   });
+}
+
+async function initContentEditor(options = {}) {
+  if (richTextEditor) return;
+  if (richTextReinitPromise) {
+    await richTextReinitPromise;
+    return;
+  }
+
+  richTextReinitPromise = (async () => {
+    try {
+      if (!window.tinymce) return;
+
+      const selectedTemplate = getTemplateById(state.selectedTemplateId);
+      const templateFonts = resolveEditorFonts(selectedTemplate);
+      const isDark = state.resolvedTheme === "dark";
+      const initialContent =
+        options.initialContent !== undefined ? options.initialContent : state.fields.content || "";
+
+      const editors = await window.tinymce.init({
+        target: ui.fieldContent,
+        license_key: "gpl",
+        menubar: false,
+        branding: false,
+        statusbar: false,
+        height: 260,
+        resize: true,
+        promotion: false,
+        skin: isDark ? "oxide-dark" : "oxide",
+        content_css: isDark ? "dark" : "default",
+        content_style: buildTinyContentStyle(isDark, templateFonts),
+        plugins:
+          "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+        toolbar:
+          "undo redo | blocks styles | fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+        style_formats_merge: true,
+        style_formats: buildTinyStyleFormats(),
+        block_formats: "Akapit=p;Nagłówek 2=h2;Nagłówek 3=h3;Nagłówek 4=h4;Cytat=blockquote",
+        font_family_formats: buildTinyFontFamilyFormats(templateFonts),
+        placeholder: t("fieldContentPlaceholder"),
+        setup: (editor) => {
+          const syncContent = () => {
+            state.fields.content = normalizeEditorHtml(editor.getContent({ format: "html" }));
+            maybeSaveDraft();
+            renderPreview();
+            renderAttachments();
+          };
+
+          editor.on("change input undo redo keyup SetContent", syncContent);
+        },
+      });
+
+      richTextEditor = editors?.[0] || window.tinymce.get(ui.fieldContent.id) || null;
+      if (!richTextEditor) return;
+
+      richTextConfigSignature = buildEditorConfigSignature(state.resolvedTheme, templateFonts);
+      richTextEditor.setContent(initialContent || "");
+      state.fields.content = normalizeEditorHtml(richTextEditor.getContent({ format: "html" }));
+      renderPreview();
+    } catch (error) {
+      console.warn("TinyMCE initialization failed; using plain textarea.", error);
+    }
+  })();
+
+  try {
+    await richTextReinitPromise;
+  } finally {
+    richTextReinitPromise = null;
+  }
+}
+
+async function refreshContentEditorAppearance() {
+  if (!richTextEditor || !window.tinymce) return;
+
+  const selectedTemplate = getTemplateById(state.selectedTemplateId);
+  const templateFonts = resolveEditorFonts(selectedTemplate);
+  const nextSignature = buildEditorConfigSignature(state.resolvedTheme, templateFonts);
+  if (richTextConfigSignature === nextSignature) return;
+
+  const preservedContent = normalizeEditorHtml(richTextEditor.getContent({ format: "html" }));
+  state.fields.content = preservedContent;
+  richTextEditor.remove();
+  richTextEditor = null;
+  richTextConfigSignature = null;
+
+  await initContentEditor({ initialContent: preservedContent });
+}
+
+function buildEditorConfigSignature(resolvedTheme, fonts) {
+  return `${resolvedTheme}|${fonts.body}|${fonts.headings}`;
+}
+
+function resolveEditorFonts(template) {
+  const defaults = {
+    body: '"Helvetica Neue", Arial, sans-serif',
+    headings: '"Helvetica Neue", Arial, sans-serif',
+  };
+
+  const fromTemplate = template?.editorFonts || {};
+  const body = String(fromTemplate.body || defaults.body).trim();
+  const headings = String(fromTemplate.headings || fromTemplate.body || defaults.headings).trim();
+  return { body, headings };
+}
+
+function buildTinyFontFamilyFormats(fonts) {
+  return [
+    `Template Body=${fonts.body}`,
+    `Template Headings=${fonts.headings}`,
+    "Arial=arial,helvetica,sans-serif",
+    "Georgia=georgia,palatino,serif",
+    "Tahoma=tahoma,arial,sans-serif",
+    "Verdana=verdana,geneva,sans-serif",
+    "Courier New=courier new,courier,monospace",
+    "Times New Roman=times new roman,times,serif",
+    "Trebuchet MS=trebuchet ms,helvetica,sans-serif",
+  ].join(";");
+}
+
+function buildTinyContentStyle(isDark, fonts) {
+  const palette = isDark
+    ? {
+        bg: "#17212b",
+        text: "#e8eef5",
+        muted: "#b5c4d4",
+        border: "#3c5267",
+        quoteBg: "#1f2d3a",
+      }
+    : {
+        bg: "#ffffff",
+        text: "#1f2937",
+        muted: "#5b6b7d",
+        border: "#d2dce8",
+        quoteBg: "#f5f8fc",
+      };
+
+  return `
+    body {
+      font-family: ${fonts.body};
+      font-size: 16px;
+      line-height: 1.6;
+      color: ${palette.text};
+      background: ${palette.bg};
+      margin: 14px;
+    }
+
+    p { margin: 0 0 12px; }
+    h1,h2,h3,h4 {
+      margin: 0 0 10px;
+      line-height: 1.35;
+      color: ${palette.text};
+      font-family: ${fonts.headings};
+    }
+    ul,ol { margin: 0 0 12px 22px; }
+    blockquote {
+      margin: 12px 0;
+      padding: 10px 12px;
+      border-left: 3px solid ${palette.border};
+      background: ${palette.quoteBg};
+      color: ${palette.muted};
+      font-style: italic;
+    }
+    a { color: ${isDark ? "#7cc4ff" : "#0b65c6"}; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th,td { border: 1px solid ${palette.border}; padding: 8px; text-align: left; }
+    hr { border: 0; border-top: 1px solid ${palette.border}; margin: 14px 0; }
+  `;
+}
+
+function buildTinyStyleFormats() {
+  return [
+    {
+      title: "Mail - lead",
+      block: "p",
+      styles: {
+        "font-size": "18px",
+        "font-weight": "600",
+        "line-height": "1.55",
+        margin: "0 0 14px 0",
+      },
+    },
+    {
+      title: "Mail - normalny akapit",
+      block: "p",
+      styles: {
+        "font-size": "16px",
+        "line-height": "1.6",
+        margin: "0 0 12px 0",
+      },
+    },
+    {
+      title: "Mail - mała notka",
+      block: "p",
+      styles: {
+        "font-size": "13px",
+        color: "#6b7280",
+        "line-height": "1.5",
+      },
+    },
+    {
+      title: "Mail - cytat",
+      block: "blockquote",
+      styles: {
+        margin: "12px 0",
+        padding: "10px 12px",
+        "border-left": "3px solid #94a3b8",
+        "font-style": "italic",
+      },
+    },
+    {
+      title: "Mail - przycisk CTA (link)",
+      selector: "a",
+      styles: {
+        display: "inline-block",
+        padding: "10px 14px",
+        "background-color": "#1d4ed8",
+        color: "#ffffff",
+        "text-decoration": "none",
+        "border-radius": "8px",
+        "font-weight": "600",
+      },
+    },
+  ];
 }
 
 function detectInitialLanguage() {
@@ -515,20 +1115,29 @@ function applyLanguage(language) {
   ui.languageMode.value = state.language;
   ui.languageModeLabel.textContent = t("languageLabel");
   ui.languageMode.setAttribute("aria-label", t("languageAria"));
+  ui.languageMenuBtn.setAttribute("aria-label", t("languageAria"));
 
   setSelectOptionLabel(ui.languageMode, "pl", t("languagePl"));
   setSelectOptionLabel(ui.languageMode, "en", t("languageEn"));
   setSelectOptionLabel(ui.languageMode, "uk", t("languageUk"));
+  ui.languageOptionPl.textContent = t("languagePl");
+  ui.languageOptionEn.textContent = t("languageEn");
+  ui.languageOptionUk.textContent = t("languageUk");
+  updateLanguageMenuUi();
 
   ui.appSubtitle.innerHTML = t("subtitleHtml");
 
   ui.themeModeLabel.textContent = t("themeLabel");
   ui.themeMode.setAttribute("aria-label", t("themeLabel"));
+  ui.themeSwitch.setAttribute("aria-label", t("themeLabel"));
+  ui.themeSwitchLabel.textContent = t("themeDark");
   setSelectOptionLabel(ui.themeMode, "auto", t("themeAuto"));
   setSelectOptionLabel(ui.themeMode, "light", t("themeLight"));
   setSelectOptionLabel(ui.themeMode, "dark", t("themeDark"));
 
   ui.templatesTitle.textContent = t("templatesTitle");
+  ui.mobileTemplateLabel.textContent = t("mobileTemplateLabel");
+  ui.mobileTemplateSelect.setAttribute("aria-label", t("mobileTemplateAria"));
   ui.templateSearch.placeholder = t("templateSearchPlaceholder");
   ui.templateList.setAttribute("aria-label", t("templateListAria"));
 
@@ -545,13 +1154,44 @@ function applyLanguage(language) {
   ui.fieldSubject.placeholder = t("fieldSubjectPlaceholder");
   ui.fieldContentLabel.textContent = t("fieldContentLabel");
   ui.fieldContent.placeholder = t("fieldContentPlaceholder");
+  if (richTextEditor) {
+    try {
+      richTextEditor.options?.set?.("placeholder", t("fieldContentPlaceholder"));
+    } catch (error) {
+      console.warn("Could not update TinyMCE placeholder", error);
+    }
+  }
+  ui.toggleToLabel.textContent = t("toggleToLabel");
+  ui.toggleCcLabel.textContent = t("toggleCcLabel");
+  ui.toggleBccLabel.textContent = t("toggleBccLabel");
+  ui.toggleReplyToLabel.textContent = t("toggleReplyToLabel");
+  ui.toggleSubjectLabel.textContent = t("toggleSubjectLabel");
+  ui.replyModeLabel.textContent = t("toggleQuoteLabel");
+  ui.toggleSignatureNameLabel.textContent = t("toggleSignatureLabel");
+  ui.toggleDateLabel.textContent = t("toggleDateLabel");
+  ui.toggleDateHint.textContent = t("toggleDateHint");
+  ui.fieldQuoteLabel.textContent = t("fieldQuoteLabel");
+  ui.fieldQuote.placeholder = t("fieldQuotePlaceholder");
   ui.fieldSignatureLabel.textContent = t("fieldSignatureLabel");
   ui.fieldSignatureName.placeholder = t("fieldSignaturePlaceholder");
   ui.rememberDraftLabel.textContent = t("rememberDraftLabel");
   ui.mutedNote.innerHTML = t("mutedNoteHtml");
 
   ui.previewTitle.textContent = t("previewTitle");
+  ui.templateThemeSwitchLabel.textContent = t("templateThemeSwitchLabel");
+  ui.templateThemeSwitch.setAttribute("aria-label", t("templateThemeSwitchLabel"));
+  ui.previewModeLabel.textContent = t("previewModeLabel");
+  ui.previewMode.setAttribute("aria-label", t("previewModeLabel"));
+  setSelectOptionLabel(ui.previewMode, "app", t("previewModeApp"));
+  setSelectOptionLabel(ui.previewMode, "light", t("previewModeLight"));
+  setSelectOptionLabel(ui.previewMode, "dark", t("previewModeDark"));
+  setSelectOptionLabel(ui.previewMode, "split", t("previewModeSplit"));
   ui.previewFrame.title = t("previewFrameTitle");
+  ui.previewFrameDark.title = t("previewFrameDarkTitle");
+  ui.openPreviewModalBtn.textContent = t("openPreviewButton");
+  ui.previewModalTitle.textContent = t("previewTitle");
+  ui.previewModalFrame.title = t("previewFrameTitle");
+  ui.previewModalFrameDark.title = t("previewFrameDarkTitle");
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
   ui.addFilesBtn.textContent = t("addFilesButton");
@@ -559,17 +1199,17 @@ function applyLanguage(language) {
   ui.dropZone.setAttribute("aria-label", t("dropZoneAria"));
 
   ui.footerNote.innerHTML = t("footerNoteHtml");
+  ui.infoBtn.setAttribute("aria-label", t("infoButtonAria"));
+  ui.infoModalTitle.textContent = t("infoModalTitle");
+  ui.infoModalClose.setAttribute("aria-label", t("infoModalCloseAria"));
+  ui.infoModalList.innerHTML = "";
+  ["infoLine1", "infoLine2", "infoLine3", "infoLine4"].forEach((key) => {
+    const item = document.createElement("li");
+    item.textContent = t(key);
+    ui.infoModalList.append(item);
+  });
 
-  if (
-    state.fields.to.trim() ||
-    state.fields.cc.trim() ||
-    state.fields.bcc.trim() ||
-    state.fields.replyTo.trim()
-  ) {
-    validateAddressFields();
-  } else {
-    clearAddressValidation();
-  }
+  validateAddressFields();
 
   updateExportButtonLabel();
 
@@ -587,8 +1227,36 @@ function setSelectOptionLabel(selectElement, value, text) {
   }
 }
 
+function languageFlag(lang) {
+  return LANGUAGE_FLAGS[lang] || "🏳️";
+}
+
+function updateLanguageMenuUi() {
+  ui.languageFlag.textContent = languageFlag(state.language);
+
+  ui.languageMenuList.querySelectorAll(".language-option").forEach((option) => {
+    const isActive = option.dataset.lang === state.language;
+    option.classList.toggle("active", isActive);
+    option.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+}
+
+function toggleLanguageMenu() {
+  const shouldOpen = ui.languageMenuList.hidden;
+  ui.languageMenuList.hidden = !shouldOpen;
+  ui.languageMenuBtn.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+}
+
+function closeLanguageMenu() {
+  ui.languageMenuList.hidden = true;
+  ui.languageMenuBtn.setAttribute("aria-expanded", "false");
+}
+
 function updateExportButtonLabel() {
-  ui.exportBtn.textContent = state.isExporting ? t("exportBusy") : t("exportButton");
+  ui.exportBtn.textContent =
+    state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
+  ui.shareBtn.textContent =
+    state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
 }
 
 function applyTheme(mode) {
@@ -601,9 +1269,58 @@ function applyTheme(mode) {
       : state.themeMode;
 
   ui.themeMode.value = state.themeMode;
+  ui.themeSwitch.checked = state.resolvedTheme === "dark";
   document.documentElement.dataset.themeMode = state.themeMode;
   document.documentElement.dataset.resolvedTheme = state.resolvedTheme;
   localStorage.setItem(STORAGE_KEYS.themeMode, state.themeMode);
+  syncTemplateThemeSwitch();
+  if (richTextEditor) {
+    void refreshContentEditorAppearance();
+  }
+}
+
+function normalizePreviewMode(mode) {
+  return ["app", "light", "dark", "split"].includes(mode) ? mode : "app";
+}
+
+function applyPreviewMode(mode, options = {}) {
+  state.previewMode = normalizePreviewMode(mode);
+  ui.previewMode.value = state.previewMode;
+  syncTemplateThemeSwitch();
+
+  if (options.persist !== false) {
+    localStorage.setItem(STORAGE_KEYS.previewMode, state.previewMode);
+  }
+}
+
+function syncTemplateThemeSwitch() {
+  const mode = normalizePreviewMode(state.previewMode);
+  ui.templateThemeSwitch.indeterminate = mode === "split";
+
+  const effectiveMode =
+    mode === "app"
+      ? state.resolvedTheme
+      : mode === "split"
+        ? state.resolvedTheme
+        : mode;
+
+  ui.templateThemeSwitch.checked = effectiveMode === "dark";
+}
+
+function openInfoModal() {
+  ui.infoModal.hidden = false;
+}
+
+function closeInfoModal() {
+  ui.infoModal.hidden = true;
+}
+
+function openPreviewModal() {
+  ui.previewModal.hidden = false;
+}
+
+function closePreviewModal() {
+  ui.previewModal.hidden = true;
 }
 
 function restoreDraft() {
@@ -619,7 +1336,16 @@ function restoreDraft() {
     state.fields.replyTo = saved.fields?.replyTo || "";
     state.fields.subject = saved.fields?.subject || "";
     state.fields.content = saved.fields?.content || "";
+    state.fields.quote = saved.fields?.quote || "";
     state.fields.signatureName = saved.fields?.signatureName || "";
+    state.enabled = {
+      ...OPTIONAL_FIELD_DEFAULTS,
+      ...(saved.enabled || {}),
+    };
+
+    if (saved.isReply !== undefined && saved.enabled?.quote === undefined) {
+      state.enabled.quote = Boolean(saved.isReply);
+    }
 
     if (saved.selectedTemplateId) {
       state.selectedTemplateId = saved.selectedTemplateId;
@@ -628,6 +1354,8 @@ function restoreDraft() {
     if (["auto", "light", "dark"].includes(saved.themeMode)) {
       state.themeMode = saved.themeMode;
     }
+
+    state.previewMode = normalizePreviewMode(saved.previewMode || state.previewMode);
 
     const draftLanguage = normalizeLanguage(saved.language);
     if (draftLanguage) {
@@ -644,7 +1372,9 @@ function saveDraft() {
     rememberDraft: state.rememberDraft,
     selectedTemplateId: state.selectedTemplateId,
     themeMode: state.themeMode,
+    previewMode: state.previewMode,
     language: state.language,
+    enabled: { ...state.enabled },
     fields: { ...state.fields },
   };
   localStorage.setItem(STORAGE_KEYS.draft, JSON.stringify(draft));
@@ -658,13 +1388,24 @@ function maybeSaveDraft() {
 
 function syncFieldInputs() {
   ui.rememberDraft.checked = state.rememberDraft;
+  ui.toggleTo.checked = Boolean(state.enabled.to);
+  ui.toggleCc.checked = Boolean(state.enabled.cc);
+  ui.toggleBcc.checked = Boolean(state.enabled.bcc);
+  ui.toggleReplyTo.checked = Boolean(state.enabled.replyTo);
+  ui.toggleSubject.checked = Boolean(state.enabled.subject);
+  ui.replyMode.checked = Boolean(state.enabled.quote);
+  ui.toggleSignatureName.checked = Boolean(state.enabled.signatureName);
+  ui.toggleDate.checked = Boolean(state.enabled.date);
   ui.fieldTo.value = state.fields.to;
   ui.fieldCc.value = state.fields.cc;
   ui.fieldBcc.value = state.fields.bcc;
   ui.fieldReplyTo.value = state.fields.replyTo;
   ui.fieldSubject.value = state.fields.subject;
   ui.fieldContent.value = state.fields.content;
+  ui.fieldQuote.value = state.fields.quote;
   ui.fieldSignatureName.value = state.fields.signatureName;
+  applyPreviewMode(state.previewMode, { persist: false });
+  applyTemplateFieldVisibility();
 }
 
 async function loadTemplates() {
@@ -695,10 +1436,16 @@ async function loadTemplates() {
 }
 
 function renderTemplateList() {
+  const sortedTemplates = [...state.templates].sort((a, b) =>
+    localizedTemplateName(a).localeCompare(localizedTemplateName(b), state.language)
+  );
+
+  renderMobileTemplateOptions(sortedTemplates);
+
   ui.templateList.innerHTML = "";
   const fragment = document.createDocumentFragment();
 
-  const visibleTemplates = state.templates.filter((template) => {
+  const visibleTemplates = sortedTemplates.filter((template) => {
     if (!state.searchQuery) return true;
     const haystack = `${localizedTemplateName(template)} ${localizedTemplateDescription(template)}`.toLowerCase();
     return haystack.includes(state.searchQuery);
@@ -751,6 +1498,20 @@ function renderTemplateList() {
   ui.templateList.append(fragment);
 }
 
+function renderMobileTemplateOptions(templates) {
+  ui.mobileTemplateSelect.innerHTML = "";
+  templates.forEach((template) => {
+    const option = document.createElement("option");
+    option.value = template.id;
+    option.textContent = localizedTemplateName(template);
+    ui.mobileTemplateSelect.append(option);
+  });
+
+  if (state.selectedTemplateId) {
+    ui.mobileTemplateSelect.value = state.selectedTemplateId;
+  }
+}
+
 function localizedTemplateName(template) {
   return localizedTemplateField(template, "name") || template.id;
 }
@@ -779,7 +1540,9 @@ async function selectTemplate(templateId) {
 
   state.selectedTemplateId = template.id;
   await ensureTemplateMarkup(template);
-  applyTemplateFieldVisibility(template);
+  applyTemplateFieldVisibility();
+  ui.mobileTemplateSelect.value = template.id;
+  await refreshContentEditorAppearance();
   ui.previewTemplateName.textContent = localizedTemplateName(template);
 
   renderTemplateList();
@@ -803,15 +1566,14 @@ async function ensureTemplateMarkup(template) {
   return markup;
 }
 
-function applyTemplateFieldVisibility(template) {
-  const fields = template.fields || {};
+function applyTemplateFieldVisibility() {
   ui.fields.forEach((node) => {
     const field = node.dataset.field;
     if (field === "content") {
       node.hidden = false;
       return;
     }
-    node.hidden = fields[field] === false;
+    node.hidden = !state.enabled[field];
   });
 }
 
@@ -823,6 +1585,14 @@ function renderPreview() {
   const template = getTemplateById(state.selectedTemplateId);
   if (!template) {
     ui.previewFrame.srcdoc = "";
+    ui.previewFrameDark.srcdoc = "";
+    ui.previewFrameDark.hidden = true;
+    ui.previewModalFrame.srcdoc = "";
+    ui.previewModalFrameDark.srcdoc = "";
+    ui.previewModalFrameDark.hidden = true;
+    ui.previewFields.innerHTML = "";
+    ui.mailCanvas.classList.remove("split");
+    ui.previewModalCanvas.classList.remove("split");
     ui.previewTemplateName.textContent = "";
     return;
   }
@@ -832,28 +1602,198 @@ function renderPreview() {
     return;
   }
 
-  const rendered = buildTemplateHtml(rawMarkup, template, {
-    forceMode: state.themeMode === "auto" ? null : state.themeMode,
-  });
+  const previewMode = normalizePreviewMode(state.previewMode);
 
-  ui.previewFrame.srcdoc = rendered;
+  if (previewMode === "split") {
+    ui.mailCanvas.classList.add("split");
+    ui.previewFrameDark.hidden = false;
+    ui.previewFrame.srcdoc = buildTemplateHtml(rawMarkup, template, {
+      forceMode: "light",
+      showPlaceholders: true,
+    });
+    ui.previewFrameDark.srcdoc = buildTemplateHtml(rawMarkup, template, {
+      forceMode: "dark",
+      showPlaceholders: true,
+    });
+    ui.previewModalCanvas.classList.add("split");
+    ui.previewModalFrameDark.hidden = false;
+    ui.previewModalFrame.srcdoc = ui.previewFrame.srcdoc;
+    ui.previewModalFrameDark.srcdoc = ui.previewFrameDark.srcdoc;
+  } else {
+    ui.mailCanvas.classList.remove("split");
+    ui.previewFrameDark.hidden = true;
+    ui.previewFrameDark.srcdoc = "";
+
+    const forceMode =
+      previewMode === "app"
+        ? state.resolvedTheme
+        : previewMode;
+
+    ui.previewFrame.srcdoc = buildTemplateHtml(rawMarkup, template, {
+      forceMode,
+      showPlaceholders: true,
+    });
+    ui.previewModalCanvas.classList.remove("split");
+    ui.previewModalFrameDark.hidden = true;
+    ui.previewModalFrameDark.srcdoc = "";
+    ui.previewModalFrame.srcdoc = ui.previewFrame.srcdoc;
+  }
+
+  renderPreviewFields();
   ui.previewTemplateName.textContent = localizedTemplateName(template);
 }
 
+function buildPreviewRows(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  const dateValue = new Intl.DateTimeFormat(t("dateLocale"), { dateStyle: "long" }).format(new Date());
+  const contentText = richHtmlToPlainText(state.fields.content);
+  const quoteText = normalizeMultilineText(state.fields.quote);
+  const signatureText = normalizeInlineText(state.fields.signatureName);
+
+  const rows = [
+    {
+      key: "to",
+      visible: state.enabled.to,
+      label: t("fieldToShort"),
+      value: normalizeInlineText(state.fields.to),
+      placeholder: ui.fieldTo.placeholder,
+    },
+    {
+      key: "cc",
+      visible: state.enabled.cc,
+      label: t("fieldCcShort"),
+      value: normalizeInlineText(state.fields.cc),
+      placeholder: ui.fieldCc.placeholder,
+    },
+    {
+      key: "bcc",
+      visible: state.enabled.bcc,
+      label: t("fieldBccShort"),
+      value: normalizeInlineText(state.fields.bcc),
+      placeholder: ui.fieldBcc.placeholder,
+    },
+    {
+      key: "replyTo",
+      visible: state.enabled.replyTo,
+      label: t("fieldReplyToShort"),
+      value: normalizeInlineText(state.fields.replyTo),
+      placeholder: ui.fieldReplyTo.placeholder,
+    },
+    {
+      key: "subject",
+      visible: state.enabled.subject,
+      label: t("fieldSubjectShort"),
+      value: normalizeInlineText(state.fields.subject),
+      placeholder: ui.fieldSubject.placeholder,
+    },
+    {
+      key: "content",
+      visible: true,
+      label: t("fieldContentLabel"),
+      value: contentText,
+      placeholder: ui.fieldContent.placeholder,
+    },
+    {
+      key: "quote",
+      visible: state.enabled.quote,
+      label: t("fieldQuoteShort"),
+      value: quoteText,
+      placeholder: ui.fieldQuote.placeholder,
+    },
+    {
+      key: "signatureName",
+      visible: state.enabled.signatureName,
+      label: t("fieldSignatureShort"),
+      value: signatureText,
+      placeholder: ui.fieldSignatureName.placeholder,
+    },
+    {
+      key: "date",
+      visible: state.enabled.date,
+      label: t("fieldDateShort"),
+      value: dateValue,
+      placeholder: dateValue,
+    },
+  ];
+
+  return rows.map((row) => {
+    const hasValue = Boolean(row.value);
+    return {
+      ...row,
+      displayValue: hasValue ? row.value : showPlaceholders ? row.placeholder : "",
+      isPlaceholder: !hasValue && showPlaceholders,
+    };
+  });
+}
+
+function buildEnvelopeRows(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  const previewRows = buildPreviewRows({ showPlaceholders });
+  const envelopeKeys = new Set(["to", "cc", "bcc", "replyTo", "subject", "date"]);
+  return previewRows.filter((row) => envelopeKeys.has(row.key));
+}
+
+function renderPreviewFields() {
+  ui.previewFields.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  const rows = buildPreviewRows({ showPlaceholders: true });
+
+  rows
+    .filter((row) => row.visible)
+    .forEach((row) => {
+      const rowNode = document.createElement("div");
+      rowNode.className = "preview-field-row";
+
+      const label = document.createElement("span");
+      label.className = "preview-field-label";
+      label.textContent = row.label;
+
+      const value = document.createElement("span");
+      value.className = "preview-field-value";
+
+      if (row.displayValue) {
+        value.textContent = row.displayValue;
+        if (row.isPlaceholder) {
+          value.classList.add("placeholder");
+        }
+      } else {
+        value.textContent = "";
+      }
+
+      rowNode.append(label, value);
+      fragment.append(rowNode);
+    });
+
+  ui.previewFields.append(fragment);
+}
+
 function buildTemplateHtml(rawMarkup, template, options = {}) {
-  const contentHtml = plainTextToSafeHtml(state.fields.content);
-  const signatureHtml = buildSignatureBlockHtml();
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  const contentHtmlRaw = normalizeEditorHtml(state.fields.content);
+  const hasContent = Boolean(contentHtmlRaw);
+  const contentHtml = hasContent
+    ? contentHtmlRaw
+    : showPlaceholders
+      ? `<p class="app-placeholder">${escapeHtml(ui.fieldContent.placeholder)}</p>`
+      : "";
+  const signatureHtml = buildSignatureBlockHtml({ showPlaceholders });
+  const quoteText = normalizeMultilineText(state.fields.quote);
+  const quoteHtml = quoteText ? plainTextToInlineHtml(quoteText) : "";
+  const quotePreviewHtml =
+    quoteHtml || (showPlaceholders ? escapeHtml(ui.fieldQuote.placeholder).replace(/\n/g, "<br>") : "");
+  const hasQuote = state.enabled.quote && Boolean(quoteHtml || showPlaceholders);
   const date = new Intl.DateTimeFormat(t("dateLocale"), { dateStyle: "long" }).format(new Date());
 
   const replacements = {
     content_block: contentHtml,
     signature_block: signatureHtml,
     greeting: escapeHtml(t("greeting")),
-    date: escapeHtml(date),
+    date: state.enabled.date ? escapeHtml(date) : "",
     template_title: escapeHtml(t("templateHeader")),
-    reply_header: escapeHtml(t("replyHeader")),
+    reply_header: escapeHtml(state.enabled.quote ? t("replyHeader") : t("templateHeader")),
     quote_label: escapeHtml(t("quoteLabel")),
-    quote_placeholder: escapeHtml(t("quotePlaceholder")),
+    quote_placeholder: hasQuote ? quotePreviewHtml : "",
   };
 
   const withTokens = rawMarkup.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
@@ -868,29 +1808,477 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   if (options.forceMode === "light") root.classList.add("forced-light");
   if (options.forceMode === "dark") root.classList.add("forced-dark");
 
-  if (!normalizeMultilineText(state.fields.content)) {
+  if (!hasContent && !showPlaceholders) {
     doc.querySelectorAll("[data-optional-content]").forEach((node) => node.remove());
   }
 
-  if (!normalizeInlineText(state.fields.signatureName)) {
+  const signatureText = normalizeInlineText(state.fields.signatureName);
+  if (!state.enabled.signatureName || (!signatureText && !showPlaceholders)) {
     doc.querySelectorAll("[data-optional-signature]").forEach((node) => node.remove());
+  }
+
+  if (!state.enabled.quote || (!quoteText && !showPlaceholders)) {
+    doc.querySelectorAll("[data-optional-quote]").forEach((node) => node.remove());
+  } else {
+    const quoteNodes = [...doc.querySelectorAll("[data-optional-quote]")];
+    if (quoteNodes.length) {
+      quoteNodes.forEach((node) => {
+        const blockquote = node.querySelector("blockquote");
+        if (blockquote) {
+          blockquote.innerHTML = quotePreviewHtml;
+        } else {
+          const fallbackBlockquote = doc.createElement("blockquote");
+          fallbackBlockquote.innerHTML = quotePreviewHtml;
+          node.append(fallbackBlockquote);
+        }
+      });
+    } else {
+      injectFallbackQuoteBlock(doc, quotePreviewHtml);
+    }
+  }
+
+  if (showPlaceholders) {
+    injectTemplateEnvelopePreview(doc);
   }
 
   const accent = template.theme?.accent || "#2e7dff";
   const themeStyle = doc.createElement("style");
-  themeStyle.textContent = `:root{--template-accent:${accent};}`;
+  themeStyle.textContent = `
+    :root {
+      --template-accent: ${accent};
+      --app-readable-text: #1b2733;
+      --app-readable-muted: #556a7d;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html:not(.forced-light) {
+        --app-readable-text: #e7eef6;
+        --app-readable-muted: #b5c4d4;
+      }
+    }
+
+    html.forced-light {
+      --app-readable-text: #1b2733;
+      --app-readable-muted: #556a7d;
+    }
+
+    html.forced-dark {
+      --app-readable-text: #e7eef6;
+      --app-readable-muted: #b5c4d4;
+    }
+
+    body {
+      color: var(--app-readable-text);
+    }
+
+    p,
+    li,
+    td,
+    .mail-content,
+    .section {
+      color: inherit;
+    }
+
+    .signature,
+    .quote-label,
+    .mail-head,
+    .fallback-quote-label,
+    .fallback-quote-block blockquote {
+      color: var(--app-readable-muted);
+    }
+
+    .app-placeholder {
+      color: var(--app-readable-muted);
+      font-style: italic;
+    }
+
+    .app-envelope-preview {
+      max-width: 700px;
+      margin: 0 auto 12px;
+      border: 1px solid #cdd8e2;
+      border-radius: 10px;
+      background: #f5f8fc;
+      padding: 10px 12px;
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .app-envelope-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 8px;
+      align-items: baseline;
+    }
+
+    .app-envelope-label {
+      color: var(--app-readable-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 11px;
+    }
+
+    .app-envelope-value {
+      color: var(--app-readable-text);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .app-envelope-value.placeholder {
+      color: var(--app-readable-muted);
+      font-style: italic;
+    }
+
+    html.forced-dark .app-envelope-preview {
+      border-color: #3a4f65;
+      background: #1b2733;
+    }
+
+    .signature-name,
+    strong,
+    h1,
+    h2,
+    h3 {
+      color: var(--app-readable-text);
+    }
+
+    .fallback-quote-block {
+      margin-top: 20px;
+      border: 1px solid #cdd8e2;
+      border-left: 4px solid var(--template-accent);
+      border-radius: 8px;
+      background: #f5f8fc;
+      padding: 12px 14px;
+    }
+
+    html.forced-dark .fallback-quote-block {
+      border-color: #3a4f65;
+      background: #1b2733;
+    }
+
+    .fallback-quote-label {
+      margin: 0 0 8px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .fallback-quote-block blockquote {
+      margin: 0;
+      padding-left: 10px;
+      border-left: 2px solid var(--template-accent);
+      font-style: italic;
+    }
+  `;
   doc.head.append(themeStyle);
 
   return `<!doctype html>\n${doc.documentElement.outerHTML}`;
 }
 
-function buildSignatureBlockHtml() {
-  const signatureName = normalizeInlineText(state.fields.signatureName);
-  if (!signatureName) {
+function injectTemplateEnvelopePreview(doc) {
+  const rows = buildEnvelopeRows({ showPlaceholders: true }).filter((row) => row.visible);
+  if (!rows.length) {
+    return;
+  }
+
+  const block = doc.createElement("section");
+  block.className = "app-envelope-preview";
+
+  rows.forEach((row) => {
+    const rowNode = doc.createElement("div");
+    rowNode.className = "app-envelope-row";
+
+    const label = doc.createElement("span");
+    label.className = "app-envelope-label";
+    label.textContent = row.label;
+
+    const value = doc.createElement("span");
+    value.className = "app-envelope-value";
+    value.textContent = row.displayValue || "";
+    if (row.isPlaceholder) {
+      value.classList.add("placeholder");
+    }
+
+    rowNode.append(label, value);
+    block.append(rowNode);
+  });
+
+  const firstWrapper =
+    doc.querySelector(".mail-wrap") ||
+    doc.querySelector(".wrapper") ||
+    doc.querySelector("main") ||
+    doc.body;
+
+  firstWrapper.prepend(block);
+}
+
+function injectFallbackQuoteBlock(doc, quoteHtml) {
+  const quoteBlock = doc.createElement("section");
+  quoteBlock.className = "fallback-quote-block";
+  quoteBlock.innerHTML = `
+    <p class="fallback-quote-label">${escapeHtml(t("quoteLabel"))}</p>
+    <blockquote>${quoteHtml}</blockquote>
+  `;
+
+  const signatureNode = doc.querySelector("[data-optional-signature]");
+  if (signatureNode?.parentNode) {
+    signatureNode.parentNode.insertBefore(quoteBlock, signatureNode);
+    return;
+  }
+
+  const contentTarget =
+    doc.querySelector(".mail-content") ||
+    doc.querySelector(".section") ||
+    doc.querySelector("article") ||
+    doc.body;
+
+  contentTarget.append(quoteBlock);
+}
+
+function buildSignatureBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  if (!state.enabled.signatureName) {
     return "";
   }
 
+  const signatureName = normalizeInlineText(state.fields.signatureName);
+  if (!signatureName && !showPlaceholders) {
+    return "";
+  }
+
+  if (!signatureName) {
+    return `${escapeHtml(t("closing"))}<div class="signature-name app-placeholder">${escapeHtml(
+      ui.fieldSignatureName.placeholder
+    )}</div>`;
+  }
+
   return `${escapeHtml(t("closing"))}<div class="signature-name">${escapeHtml(signatureName)}</div>`;
+}
+
+function normalizeEditorHtml(value) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return "";
+  }
+
+  if (!/[<>]/.test(raw)) {
+    return plainTextToSafeHtml(raw);
+  }
+
+  return sanitizeRichHtml(raw);
+}
+
+function sanitizeRichHtml(rawHtml) {
+  const parser = new DOMParser();
+  const sourceDoc = parser.parseFromString(`<div>${rawHtml}</div>`, "text/html");
+  const wrapper = sourceDoc.body.firstElementChild || sourceDoc.body;
+  const cleanDoc = document.implementation.createHTMLDocument("");
+  const cleanWrapper = cleanDoc.createElement("div");
+
+  wrapper.childNodes.forEach((node) => {
+    cleanWrapper.append(sanitizeRichNode(node, cleanDoc));
+  });
+
+  return cleanWrapper.innerHTML.trim();
+}
+
+function sanitizeRichNode(node, doc) {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return doc.createTextNode(node.textContent || "");
+  }
+
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return doc.createDocumentFragment();
+  }
+
+  const tag = node.tagName.toLowerCase();
+  const blockedTags = new Set([
+    "script",
+    "style",
+    "iframe",
+    "object",
+    "embed",
+    "form",
+    "input",
+    "button",
+    "meta",
+    "link",
+  ]);
+
+  if (blockedTags.has(tag)) {
+    return doc.createDocumentFragment();
+  }
+
+  const allowedTags = new Set([
+    "p",
+    "br",
+    "strong",
+    "b",
+    "em",
+    "i",
+    "u",
+    "s",
+    "strike",
+    "span",
+    "ul",
+    "ol",
+    "li",
+    "blockquote",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "a",
+    "table",
+    "thead",
+    "tbody",
+    "tr",
+    "td",
+    "th",
+    "img",
+  ]);
+
+  const element = allowedTags.has(tag) ? doc.createElement(tag) : doc.createDocumentFragment();
+
+  if (element.nodeType === Node.ELEMENT_NODE) {
+    [...node.attributes].forEach((attr) => {
+      const attrName = attr.name.toLowerCase();
+      const attrValue = attr.value || "";
+
+      if (attrName.startsWith("on")) return;
+      if (attrName === "style") {
+        const cleanStyle = sanitizeInlineStyle(attrValue);
+        if (cleanStyle) {
+          element.setAttribute("style", cleanStyle);
+        }
+        return;
+      }
+
+      if (tag === "a" && attrName === "href") {
+        const cleanHref = sanitizeUrl(attrValue, { allowDataImage: false });
+        if (cleanHref) {
+          element.setAttribute("href", cleanHref);
+          element.setAttribute("target", "_blank");
+          element.setAttribute("rel", "noopener noreferrer");
+        }
+        return;
+      }
+
+      if (tag === "img" && attrName === "src") {
+        const cleanSrc = sanitizeUrl(attrValue, { allowDataImage: true });
+        if (cleanSrc) {
+          element.setAttribute("src", cleanSrc);
+        }
+        return;
+      }
+
+      if (tag === "img" && ["alt", "width", "height", "title"].includes(attrName)) {
+        element.setAttribute(attrName, attrValue);
+      }
+    });
+  }
+
+  node.childNodes.forEach((child) => {
+    element.append(sanitizeRichNode(child, doc));
+  });
+
+  return element;
+}
+
+function sanitizeInlineStyle(styleValue) {
+  const allowedProperties = new Set([
+    "color",
+    "background",
+    "background-color",
+    "font-family",
+    "font-size",
+    "font-weight",
+    "font-style",
+    "font-variant",
+    "text-decoration",
+    "text-transform",
+    "letter-spacing",
+    "text-align",
+    "line-height",
+    "border",
+    "border-left",
+    "border-right",
+    "border-top",
+    "border-bottom",
+    "border-radius",
+    "padding",
+    "padding-left",
+    "padding-right",
+    "padding-top",
+    "padding-bottom",
+    "margin",
+    "margin-left",
+    "margin-right",
+    "margin-top",
+    "margin-bottom",
+    "display",
+    "width",
+    "height",
+    "max-width",
+    "min-width",
+    "vertical-align",
+  ]);
+
+  return String(styleValue || "")
+    .split(";")
+    .map((pair) => pair.trim())
+    .filter(Boolean)
+    .map((pair) => {
+      const [rawName, ...rest] = pair.split(":");
+      const name = String(rawName || "").trim().toLowerCase();
+      const value = rest.join(":").trim();
+
+      if (!allowedProperties.has(name)) return "";
+      if (!value) return "";
+      if (/url\(|expression|javascript:/i.test(value)) return "";
+      return `${name}: ${value}`;
+    })
+    .filter(Boolean)
+    .join("; ");
+}
+
+function sanitizeUrl(value, options = {}) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+
+  if (/^https?:\/\//i.test(raw)) return raw;
+  if (/^\//.test(raw)) return raw;
+  if (/^#/.test(raw)) return raw;
+  if (/^mailto:/i.test(raw)) return raw;
+  if (/^tel:/i.test(raw)) return raw;
+  if (options.allowDataImage && /^data:image\//i.test(raw)) return raw;
+
+  return "";
+}
+
+function richHtmlToPlainText(value) {
+  const html = normalizeEditorHtml(value);
+  if (!html) {
+    return "";
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
+  const root = doc.body.firstElementChild || doc.body;
+
+  root.querySelectorAll("br").forEach((node) => {
+    node.replaceWith("\n");
+  });
+
+  root.querySelectorAll("p,div,li,blockquote,h1,h2,h3,h4,h5,h6,tr").forEach((node) => {
+    node.append("\n");
+  });
+
+  return normalizeMultilineText(root.textContent || "");
 }
 
 function plainTextToSafeHtml(text) {
@@ -903,6 +2291,15 @@ function plainTextToSafeHtml(text) {
     .split(/\n{2,}/)
     .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`)
     .join("\n");
+}
+
+function plainTextToInlineHtml(text) {
+  const normalized = normalizeMultilineText(text);
+  if (!normalized) {
+    return "";
+  }
+
+  return escapeHtml(normalized).replace(/\n/g, "<br>");
 }
 
 function normalizeMultilineText(value) {
@@ -942,6 +2339,10 @@ function validateAddressFields() {
   const issues = [];
 
   definitions.forEach((definition) => {
+    if (!state.enabled[definition.key]) {
+      return;
+    }
+
     const addresses = parseAddressList(state.fields[definition.key]);
     const invalid = addresses.filter((address) => !isValidEmailAddress(address));
 
@@ -1146,12 +2547,18 @@ function removeAttachment(attachmentId) {
 }
 
 function buildPlainTextBody() {
-  const content = normalizeMultilineText(state.fields.content);
-  const signatureName = normalizeInlineText(state.fields.signatureName);
+  const content = richHtmlToPlainText(state.fields.content);
+  const quote = state.enabled.quote ? normalizeMultilineText(state.fields.quote) : "";
+  const signatureName =
+    state.enabled.signatureName ? normalizeInlineText(state.fields.signatureName) : "";
   const parts = [];
 
   if (content) {
     parts.push(`${t("greeting")}\n\n${content}`);
+  }
+
+  if (quote) {
+    parts.push(`${t("quoteLabel")}:\n${quote}`);
   }
 
   if (signatureName) {
@@ -1161,7 +2568,31 @@ function buildPlainTextBody() {
   return parts.join("\n\n").trim();
 }
 
-async function exportEml() {
+async function saveEmlFile() {
+  const { blob, filename } = await buildEmlFile();
+  triggerDownload(blob, filename);
+}
+
+async function shareEmlFile() {
+  const { blob, filename } = await buildEmlFile();
+  const subject = normalizeInlineText(state.fields.subject);
+
+  if (!("share" in navigator)) {
+    throw new Error("Web Share API not available");
+  }
+
+  const file = new File([blob], filename, { type: "message/rfc822" });
+  if (typeof navigator.canShare === "function" && !navigator.canShare({ files: [file] })) {
+    throw new Error("File sharing is not supported");
+  }
+
+  await navigator.share({
+    files: [file],
+    title: subject || filename,
+  });
+}
+
+async function buildEmlFile() {
   const template = getTemplateById(state.selectedTemplateId);
   if (!template) {
     throw new Error(t("noTemplateSelected"));
@@ -1178,11 +2609,11 @@ async function exportEml() {
     .toString(16)
     .slice(2)}`;
 
-  const subject = normalizeInlineText(state.fields.subject);
-  const toAddresses = parseAddressList(state.fields.to);
-  const ccAddresses = parseAddressList(state.fields.cc);
-  const bccAddresses = parseAddressList(state.fields.bcc);
-  const replyToAddresses = parseAddressList(state.fields.replyTo);
+  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
+  const toAddresses = state.enabled.to ? parseAddressList(state.fields.to) : [];
+  const ccAddresses = state.enabled.cc ? parseAddressList(state.fields.cc) : [];
+  const bccAddresses = state.enabled.bcc ? parseAddressList(state.fields.bcc) : [];
+  const replyToAddresses = state.enabled.replyTo ? parseAddressList(state.fields.replyTo) : [];
 
   const lines = [];
 
@@ -1255,7 +2686,7 @@ async function exportEml() {
   const emlContent = lines.join("\r\n");
   const blob = new Blob([emlContent], { type: "message/rfc822;charset=utf-8" });
   const filename = buildExportFilename();
-  triggerDownload(blob, filename);
+  return { blob, filename };
 }
 
 function sanitizeFilenameForHeader(filename) {

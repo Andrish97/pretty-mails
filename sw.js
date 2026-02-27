@@ -1,4 +1,4 @@
-const CACHE_NAME = "mail-templates-pwa-v3";
+const CACHE_NAME = "mail-templates-pwa-v4";
 
 const APP_SHELL = [
   "./",
@@ -11,7 +11,6 @@ const APP_SHELL = [
   "./templates/templates.json",
   "./templates/personal-minimal.html",
   "./templates/personal-card.html",
-  "./templates/reply-quote.html",
   "./templates/personal-sunset.html",
   "./templates/personal-outline.html",
   "./templates/personal-ribbon.html",
