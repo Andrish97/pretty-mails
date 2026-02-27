@@ -1,4 +1,4 @@
-const CACHE_NAME = "mail-templates-pwa-v14";
+const CACHE_NAME = "mail-templates-pwa-v15";
 
 const APP_SHELL = [
   "./",

@@ -16,6 +16,14 @@ const LANGUAGE_FLAGS = {
   uk: "🇺🇦",
 };
 
+const GOOGLE_AUTH_CONFIG = {
+  clientId: String(window.PRETTY_MAILS_GOOGLE_CLIENT_ID || "").trim(),
+  allowedEmail: String(window.PRETTY_MAILS_ALLOWED_EMAIL || "")
+    .trim()
+    .toLowerCase(),
+  scopes: "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email",
+};
+
 const OPTIONAL_DEFAULTS = {
   cc: false,
   bcc: false,
@@ -160,9 +168,12 @@ const I18N = {
 
     exportButton: "💾",
     exportBusy: "💾…",
+    gmailSendButton: "📨",
+    gmailSendBusy: "📨…",
     shareButton: "📋",
     shareBusy: "📋…",
     exportButtonAria: "Zapisz plik .eml",
+    gmailSendButtonAria: "Wyślij przez Gmail",
     shareButtonAria: "Kopiuj treść wiadomości",
 
     infoButtonAria: "Pokaż wskazówki",
@@ -170,8 +181,8 @@ const I18N = {
     infoModalCloseAria: "Zamknij",
     infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
     infoLine2: "💾 „Zapisz” pobiera plik na urządzenie.",
-    infoLine3: "📋 „Kopiuj” kopiuje samą treść wiadomości.",
-    infoLine4: "📮 „Zapisz” tworzy plik .eml z pełną wiadomością i załącznikami.",
+    infoLine3: "📨 „Wyślij Gmail” wysyła wiadomość przez konto Google po zalogowaniu.",
+    infoLine4: "📋 „Kopiuj” kopiuje samą treść wiadomości.",
 
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
@@ -225,6 +236,7 @@ const I18N = {
     noTemplateSelected: "Brak wybranego szablonu",
     bootFailed: "Nie udało się uruchomić aplikacji.",
     exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
+    gmailSendFailedAlert: "Nie udało się wysłać wiadomości przez Gmail.",
     shareFailedAlert: "Nie udało się skopiować treści wiadomości.",
     copyEmptyAlert: "Brak treści do skopiowania.",
     gmailConfigMissing:
@@ -357,9 +369,12 @@ const I18N = {
 
     exportButton: "💾",
     exportBusy: "💾…",
+    gmailSendButton: "📨",
+    gmailSendBusy: "📨…",
     shareButton: "📋",
     shareBusy: "📋…",
     exportButtonAria: "Save .eml file",
+    gmailSendButtonAria: "Send via Gmail",
     shareButtonAria: "Copy message body",
 
     infoButtonAria: "Show tips",
@@ -367,8 +382,8 @@ const I18N = {
     infoModalCloseAria: "Close",
     infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
     infoLine2: "💾 “Save” downloads the file to your device.",
-    infoLine3: "📋 “Copy” copies only the message body.",
-    infoLine4: "📮 “Save” still exports full .eml with attachments.",
+    infoLine3: "📨 “Send Gmail” sends the message through your Google account after sign-in.",
+    infoLine4: "📋 “Copy” copies only the message body.",
 
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
@@ -422,6 +437,7 @@ const I18N = {
     noTemplateSelected: "No template selected",
     bootFailed: "Failed to start application.",
     exportFailedAlert: "Failed to export .eml file",
+    gmailSendFailedAlert: "Could not send message via Gmail.",
     shareFailedAlert: "Could not copy message body.",
     copyEmptyAlert: "There is no content to copy.",
     gmailConfigMissing:
@@ -552,9 +568,12 @@ const I18N = {
 
     exportButton: "💾",
     exportBusy: "💾…",
+    gmailSendButton: "📨",
+    gmailSendBusy: "📨…",
     shareButton: "📋",
     shareBusy: "📋…",
     exportButtonAria: "Зберегти файл .eml",
+    gmailSendButtonAria: "Надіслати через Gmail",
     shareButtonAria: "Скопіювати вміст листа",
 
     infoButtonAria: "Показати підказки",
@@ -562,8 +581,8 @@ const I18N = {
     infoModalCloseAria: "Закрити",
     infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
     infoLine2: "💾 «Зберегти» завантажує файл на пристрій.",
-    infoLine3: "📋 «Копіювати» копіює лише текст листа.",
-    infoLine4: "📮 «Зберегти» експортує повний .eml із вкладеннями.",
+    infoLine3: "📨 «Надіслати Gmail» надсилає лист через Google-акаунт після входу.",
+    infoLine4: "📋 «Копіювати» копіює лише текст листа.",
 
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
@@ -617,6 +636,7 @@ const I18N = {
     noTemplateSelected: "Шаблон не вибрано",
     bootFailed: "Не вдалося запустити застосунок.",
     exportFailedAlert: "Не вдалося експортувати .eml файл",
+    gmailSendFailedAlert: "Не вдалося надіслати лист через Gmail.",
     shareFailedAlert: "Не вдалося скопіювати вміст листа.",
     copyEmptyAlert: "Немає вмісту для копіювання.",
     gmailConfigMissing:
@@ -676,6 +696,12 @@ const state = {
   socials: [],
   logoAttachment: null,
   attachments: [],
+  googleAuth: {
+    tokenClient: null,
+    accessToken: "",
+    email: "",
+    expiresAt: 0,
+  },
   isExporting: false,
   exportAction: "save",
   mobilePreviewOpen: false,
@@ -700,6 +726,7 @@ const ui = {
 
   mobilePreviewToggleBtn: document.querySelector("#mobilePreviewToggleBtn"),
   exportBtn: document.querySelector("#exportBtn"),
+  gmailSendBtn: document.querySelector("#gmailSendBtn"),
   shareBtn: document.querySelector("#shareBtn"),
 
   infoBtn: document.querySelector("#infoBtn"),
@@ -1129,6 +1156,24 @@ function bindEvents() {
     } catch (error) {
       console.error(error);
       alert(t("exportFailedAlert"));
+    } finally {
+      state.isExporting = false;
+      state.exportAction = "save";
+      updateActionButtons();
+    }
+  });
+
+  ui.gmailSendBtn.addEventListener("click", async () => {
+    if (!validateAddressFields()) return;
+
+    try {
+      state.isExporting = true;
+      state.exportAction = "gmail";
+      updateActionButtons();
+      await sendViaGmail();
+    } catch (error) {
+      console.error(error);
+      alert(error?.message || t("gmailSendFailedAlert"));
     } finally {
       state.isExporting = false;
       state.exportAction = "save";
@@ -1713,8 +1758,10 @@ function applyLanguage(language) {
 
   ui.mobilePreviewToggleBtn.textContent = t("openPreviewButton");
   ui.exportBtn.setAttribute("aria-label", t("exportButtonAria"));
+  ui.gmailSendBtn.setAttribute("aria-label", t("gmailSendButtonAria"));
   ui.shareBtn.setAttribute("aria-label", t("shareButtonAria"));
   ui.exportBtn.title = t("exportButtonAria");
+  ui.gmailSendBtn.title = t("gmailSendButtonAria");
   ui.shareBtn.title = t("shareButtonAria");
 
   ui.infoBtn.setAttribute("aria-label", t("infoButtonAria"));
@@ -2784,23 +2831,37 @@ function hasAnyExportData() {
 function updateActionButtons() {
   ui.exportBtn.textContent =
     state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
+  ui.gmailSendBtn.textContent =
+    state.isExporting && state.exportAction === "gmail" ? t("gmailSendBusy") : t("gmailSendButton");
   ui.shareBtn.textContent =
     state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
 
   if (state.isExporting) {
     ui.exportBtn.disabled = true;
+    ui.gmailSendBtn.disabled = true;
     ui.shareBtn.disabled = true;
     return;
   }
 
-  const canExport = collectValidationState().issues.length === 0 && hasAnyExportData();
+  const hasValidationErrors = collectValidationState().issues.length > 0;
+  const canExport = !hasValidationErrors && hasAnyExportData();
+  const canGmailSend = !hasValidationErrors && hasAnyExportData() && hasAnyRecipient();
   const canCopy = hasCopyContentData();
+  ui.gmailSendBtn.title = isGoogleAuthConfigured() ? t("gmailSendButtonAria") : t("gmailConfigMissing");
   ui.exportBtn.disabled = !canExport;
+  ui.gmailSendBtn.disabled = !canGmailSend || !isGoogleAuthConfigured();
   ui.shareBtn.disabled = !canCopy;
 }
 
 function hasCopyContentData() {
   return Boolean(normalizeMultilineText(richHtmlToPlainText(state.fields.content)));
+}
+
+function hasAnyRecipient() {
+  const toAddresses = parseAddressList(state.fields.to);
+  const ccAddresses = state.enabled.cc ? parseAddressList(state.fields.cc) : [];
+  const bccAddresses = state.enabled.bcc ? parseAddressList(state.fields.bcc) : [];
+  return toAddresses.length + ccAddresses.length + bccAddresses.length > 0;
 }
 
 function parseAddressList(rawValue) {
@@ -3344,7 +3405,30 @@ async function copyMessageContent() {
   }
 }
 
+async function sendViaGmail() {
+  if (!isGoogleAuthConfigured()) {
+    throw new Error(t("gmailConfigMissing"));
+  }
+
+  if (!hasAnyRecipient()) {
+    throw new Error(t("requiredRecipientMissing"));
+  }
+
+  const rawMessage = await buildMimeMessage({ draftMode: false });
+  const accessToken = await ensureGoogleAccessToken();
+  await sendGmailRawMessage(rawMessage, accessToken);
+}
+
 async function buildEmlFile() {
+  const emlContent = await buildMimeMessage({ draftMode: true });
+  const blob = new Blob([emlContent], { type: "message/rfc822;charset=utf-8" });
+  const filename = buildExportFilename();
+
+  return { blob, filename };
+}
+
+async function buildMimeMessage(options = {}) {
+  const draftMode = options.draftMode !== false;
   const template = getTemplateById(state.selectedTemplateId);
   if (!template) {
     throw new Error(t("noTemplateSelected"));
@@ -3384,8 +3468,10 @@ async function buildEmlFile() {
     lines.push(`Subject: ${encodeMimeHeader(subject)}`);
   }
 
-  lines.push("X-Unsent: 1");
-  lines.push("X-Uniform-Type-Identifier: com.apple.mail-draft");
+  if (draftMode) {
+    lines.push("X-Unsent: 1");
+    lines.push("X-Uniform-Type-Identifier: com.apple.mail-draft");
+  }
   lines.push(`Date: ${new Date().toUTCString()}`);
   lines.push("MIME-Version: 1.0");
   lines.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`);
@@ -3433,11 +3519,7 @@ async function buildEmlFile() {
   lines.push(`--${mixedBoundary}--`);
   lines.push("");
 
-  const emlContent = lines.join("\r\n");
-  const blob = new Blob([emlContent], { type: "message/rfc822;charset=utf-8" });
-  const filename = buildExportFilename();
-
-  return { blob, filename };
+  return lines.join("\r\n");
 }
 
 function buildExportFilename() {
@@ -3461,6 +3543,151 @@ function buildAttachmentContentId(attachment, index) {
   return `pm-${normalized || fallback}@pretty-mails.local`;
 }
 
+function isGoogleAuthConfigured() {
+  return Boolean(GOOGLE_AUTH_CONFIG.clientId);
+}
+
+async function ensureGoogleIdentityLoaded() {
+  if (window.google?.accounts?.oauth2) return;
+
+  await new Promise((resolve, reject) => {
+    let attempts = 0;
+    const intervalId = window.setInterval(() => {
+      if (window.google?.accounts?.oauth2) {
+        window.clearInterval(intervalId);
+        resolve();
+        return;
+      }
+
+      attempts += 1;
+      if (attempts > 80) {
+        window.clearInterval(intervalId);
+        reject(new Error(t("gmailAuthFailed")));
+      }
+    }, 125);
+  });
+}
+
+function ensureGoogleTokenClient() {
+  if (state.googleAuth.tokenClient) return state.googleAuth.tokenClient;
+
+  state.googleAuth.tokenClient = window.google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_AUTH_CONFIG.clientId,
+    scope: GOOGLE_AUTH_CONFIG.scopes,
+    callback: () => {},
+  });
+
+  return state.googleAuth.tokenClient;
+}
+
+async function ensureGoogleAccessToken() {
+  if (state.googleAuth.accessToken && Date.now() < state.googleAuth.expiresAt - 30_000) {
+    return state.googleAuth.accessToken;
+  }
+
+  return requestGoogleAccessToken();
+}
+
+async function requestGoogleAccessToken() {
+  if (!isGoogleAuthConfigured()) {
+    throw new Error(t("gmailConfigMissing"));
+  }
+
+  await ensureGoogleIdentityLoaded();
+  const tokenClient = ensureGoogleTokenClient();
+
+  return new Promise((resolve, reject) => {
+    tokenClient.callback = async (response) => {
+      if (response?.error || !response?.access_token) {
+        reject(new Error(t("gmailAuthFailed")));
+        return;
+      }
+
+      state.googleAuth.accessToken = response.access_token;
+      state.googleAuth.expiresAt = Date.now() + Math.max(0, Number(response.expires_in || 0)) * 1000;
+
+      try {
+        const email = await fetchGoogleUserEmail(response.access_token);
+        if (GOOGLE_AUTH_CONFIG.allowedEmail && email !== GOOGLE_AUTH_CONFIG.allowedEmail) {
+          state.googleAuth.accessToken = "";
+          state.googleAuth.expiresAt = 0;
+          state.googleAuth.email = "";
+          reject(new Error(t("gmailWrongAccount")));
+          return;
+        }
+        state.googleAuth.email = email;
+        resolve(response.access_token);
+      } catch (error) {
+        reject(error instanceof Error ? error : new Error(t("gmailAuthFailed")));
+      }
+    };
+
+    const requestOptions = {
+      prompt: state.googleAuth.accessToken ? "" : "consent",
+      scope: GOOGLE_AUTH_CONFIG.scopes,
+    };
+
+    if (GOOGLE_AUTH_CONFIG.allowedEmail) {
+      requestOptions.login_hint = GOOGLE_AUTH_CONFIG.allowedEmail;
+    }
+
+    tokenClient.requestAccessToken(requestOptions);
+  });
+}
+
+async function fetchGoogleUserEmail(accessToken) {
+  const response = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(t("gmailAuthFailed"));
+  }
+
+  const payload = await response.json();
+  const email = normalizeInlineText(payload?.email).toLowerCase();
+  if (!email) {
+    throw new Error(t("gmailAuthFailed"));
+  }
+  return email;
+}
+
+async function sendGmailRawMessage(rawMessage, accessToken, allowRetry = true) {
+  const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      raw: base64UrlFromUtf8(rawMessage),
+    }),
+  });
+
+  if (response.status === 401 && allowRetry) {
+    state.googleAuth.accessToken = "";
+    state.googleAuth.expiresAt = 0;
+    const refreshedToken = await ensureGoogleAccessToken();
+    return sendGmailRawMessage(rawMessage, refreshedToken, false);
+  }
+
+  if (!response.ok) {
+    let details = "";
+    try {
+      const payload = await response.json();
+      details = normalizeInlineText(payload?.error?.message);
+    } catch {
+      details = normalizeInlineText(await response.text());
+    }
+
+    throw new Error(
+      details ? `${t("gmailSendFailedAlert")} (${response.status}): ${details}` : t("gmailSendFailedAlert")
+    );
+  }
+}
+
 function sanitizeFilenameForHeader(filename) {
   return String(filename || "file").replace(/["\\\r\n]/g, "_");
 }
@@ -3482,6 +3709,10 @@ function base64FromUtf8(value) {
   }
 
   return btoa(binary);
+}
+
+function base64UrlFromUtf8(value) {
+  return base64FromUtf8(value).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
 function foldBase64(base64) {

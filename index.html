@@ -9,6 +9,14 @@
   <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.svg">
   <script src="https://cdn.tiny.cloud/1/rvwao9ib8mj0j8bfxbp4dml22na1rnlbgwu4wvfkitbd7dr3/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    // Ustaw swoje wartości:
+    // window.PRETTY_MAILS_GOOGLE_CLIENT_ID = "xxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com";
+    // window.PRETTY_MAILS_ALLOWED_EMAIL = "twoj-adres@gmail.com";
+    window.PRETTY_MAILS_GOOGLE_CLIENT_ID = window.PRETTY_MAILS_GOOGLE_CLIENT_ID || "";
+    window.PRETTY_MAILS_ALLOWED_EMAIL = window.PRETTY_MAILS_ALLOWED_EMAIL || "";
+  </script>
   <link rel="stylesheet" href="./app.css">
 </head>
 <body>
@@ -20,6 +28,7 @@
     <div class="topbar-section topbar-send">
       <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
       <button id="exportBtn" class="button button-primary" type="button" aria-label="Zapisz plik .eml">💾</button>
+      <button id="gmailSendBtn" class="button" type="button" aria-label="Wyślij przez Gmail">📨</button>
       <button id="shareBtn" class="button" type="button" aria-label="Udostępnij plik .eml">📤</button>
     </div>
 
