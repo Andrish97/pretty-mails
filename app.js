@@ -160,18 +160,18 @@ const I18N = {
 
     exportButton: "💾",
     exportBusy: "💾…",
-    shareButton: "📤",
-    shareBusy: "📤…",
+    shareButton: "📋",
+    shareBusy: "📋…",
     exportButtonAria: "Zapisz plik .eml",
-    shareButtonAria: "Udostępnij plik .eml",
+    shareButtonAria: "Kopiuj treść wiadomości",
 
     infoButtonAria: "Pokaż wskazówki",
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
     infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
     infoLine2: "💾 „Zapisz” pobiera plik na urządzenie.",
-    infoLine3: "📤 „Udostępnij” otwiera systemowe udostępnianie.",
-    infoLine4: "📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.",
+    infoLine3: "📋 „Kopiuj” kopiuje samą treść wiadomości.",
+    infoLine4: "📮 „Zapisz” tworzy plik .eml z pełną wiadomością i załącznikami.",
 
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
@@ -183,10 +183,11 @@ const I18N = {
     attachmentEstimated: "Szacowany rozmiar wiadomości: {size}",
     warningWarn: "Duża wiadomość. Wysyłka może potrwać dłużej.",
     warningDanger: "Bardzo duża wiadomość. Część skrzynek może ją odrzucić.",
-    emptyMailDisabled: "Dodaj przynajmniej jedną treść lub załącznik, aby zapisać/udostępnić.",
+    emptyMailDisabled: "Dodaj przynajmniej jedną treść lub załącznik, aby zapisać wiadomość.",
 
     addressValidationPrefix: "Uzupełnij lub popraw pola:",
     requiredToMissing: "Do: wpisz przynajmniej jeden poprawny adres e-mail.",
+    requiredRecipientMissing: "Wpisz przynajmniej jednego odbiorcę (Do, DW lub UDW).",
     requiredSenderMissing: "Nadawca: wpisz imię i nazwisko.",
     invalidAddressList: "{label}: {list}",
     contactEmailInvalid: "Adres e-mail w danych kontaktowych jest niepoprawny.",
@@ -224,7 +225,12 @@ const I18N = {
     noTemplateSelected: "Brak wybranego szablonu",
     bootFailed: "Nie udało się uruchomić aplikacji.",
     exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
-    shareFailedAlert: "Nie udało się udostępnić pliku .eml. Zapisuję plik lokalnie.",
+    shareFailedAlert: "Nie udało się skopiować treści wiadomości.",
+    copyEmptyAlert: "Brak treści do skopiowania.",
+    gmailConfigMissing:
+      "Brak konfiguracji Google OAuth. Ustaw window.PRETTY_MAILS_GOOGLE_CLIENT_ID w index.html.",
+    gmailAuthFailed: "Logowanie Google nie powiodło się.",
+    gmailWrongAccount: "To konto Google nie jest dozwolone dla tej aplikacji.",
 
     fileKindFile: "PLIK",
     fileKindImage: "IMG",
@@ -351,18 +357,18 @@ const I18N = {
 
     exportButton: "💾",
     exportBusy: "💾…",
-    shareButton: "📤",
-    shareBusy: "📤…",
+    shareButton: "📋",
+    shareBusy: "📋…",
     exportButtonAria: "Save .eml file",
-    shareButtonAria: "Share .eml file",
+    shareButtonAria: "Copy message body",
 
     infoButtonAria: "Show tips",
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
     infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
     infoLine2: "💾 “Save” downloads the file to your device.",
-    infoLine3: "📤 “Share” opens the system share sheet.",
-    infoLine4: "📮 Sending happens in your mail app with your account.",
+    infoLine3: "📋 “Copy” copies only the message body.",
+    infoLine4: "📮 “Save” still exports full .eml with attachments.",
 
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
@@ -374,10 +380,11 @@ const I18N = {
     attachmentEstimated: "Estimated message size: {size}",
     warningWarn: "Large message. Sending may take longer.",
     warningDanger: "Very large message. Some mailboxes may reject it.",
-    emptyMailDisabled: "Add at least one content block or attachment to save/share.",
+    emptyMailDisabled: "Add at least one content block or attachment to save the message.",
 
     addressValidationPrefix: "Complete or fix fields:",
     requiredToMissing: "To: enter at least one valid email address.",
+    requiredRecipientMissing: "Enter at least one recipient (To, Cc or Bcc).",
     requiredSenderMissing: "Sender: enter full name.",
     invalidAddressList: "{label}: {list}",
     contactEmailInvalid: "Contact email address is invalid.",
@@ -415,7 +422,12 @@ const I18N = {
     noTemplateSelected: "No template selected",
     bootFailed: "Failed to start application.",
     exportFailedAlert: "Failed to export .eml file",
-    shareFailedAlert: "Could not share .eml file. Saving locally instead.",
+    shareFailedAlert: "Could not copy message body.",
+    copyEmptyAlert: "There is no content to copy.",
+    gmailConfigMissing:
+      "Google OAuth is not configured. Set window.PRETTY_MAILS_GOOGLE_CLIENT_ID in index.html.",
+    gmailAuthFailed: "Google sign-in failed.",
+    gmailWrongAccount: "This Google account is not allowed for this app.",
 
     fileKindFile: "FILE",
     fileKindImage: "IMG",
@@ -540,18 +552,18 @@ const I18N = {
 
     exportButton: "💾",
     exportBusy: "💾…",
-    shareButton: "📤",
-    shareBusy: "📤…",
+    shareButton: "📋",
+    shareBusy: "📋…",
     exportButtonAria: "Зберегти файл .eml",
-    shareButtonAria: "Поділитися файлом .eml",
+    shareButtonAria: "Скопіювати вміст листа",
 
     infoButtonAria: "Показати підказки",
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
     infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
     infoLine2: "💾 «Зберегти» завантажує файл на пристрій.",
-    infoLine3: "📤 «Поділитися» відкриває системне меню поширення.",
-    infoLine4: "📮 Надсилання виконується у вашій поштовій програмі.",
+    infoLine3: "📋 «Копіювати» копіює лише текст листа.",
+    infoLine4: "📮 «Зберегти» експортує повний .eml із вкладеннями.",
 
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
@@ -563,10 +575,11 @@ const I18N = {
     attachmentEstimated: "Орієнтовний розмір листа: {size}",
     warningWarn: "Великий лист. Надсилання може тривати довше.",
     warningDanger: "Дуже великий лист. Частина скриньок може відхилити.",
-    emptyMailDisabled: "Додайте хоча б один блок тексту або вкладення для збереження/поширення.",
+    emptyMailDisabled: "Додайте хоча б один блок тексту або вкладення, щоб зберегти лист.",
 
     addressValidationPrefix: "Заповніть або виправте поля:",
     requiredToMissing: "Кому: введіть хоча б одну коректну email-адресу.",
+    requiredRecipientMissing: "Додайте хоча б одного одержувача (Кому, Копія або Прихована копія).",
     requiredSenderMissing: "Відправник: введіть ім'я та прізвище.",
     invalidAddressList: "{label}: {list}",
     contactEmailInvalid: "Контактна email-адреса некоректна.",
@@ -604,7 +617,12 @@ const I18N = {
     noTemplateSelected: "Шаблон не вибрано",
     bootFailed: "Не вдалося запустити застосунок.",
     exportFailedAlert: "Не вдалося експортувати .eml файл",
-    shareFailedAlert: "Не вдалося поділитися .eml файлом. Зберігаю локально.",
+    shareFailedAlert: "Не вдалося скопіювати вміст листа.",
+    copyEmptyAlert: "Немає вмісту для копіювання.",
+    gmailConfigMissing:
+      "Google OAuth не налаштовано. Вкажіть window.PRETTY_MAILS_GOOGLE_CLIENT_ID у index.html.",
+    gmailAuthFailed: "Вхід через Google не вдався.",
+    gmailWrongAccount: "Цей Google-акаунт не дозволено для цього застосунку.",
 
     fileKindFile: "ФАЙЛ",
     fileKindImage: "IMG",
@@ -1119,17 +1137,14 @@ function bindEvents() {
   });
 
   ui.shareBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) return;
-
     try {
       state.isExporting = true;
       state.exportAction = "share";
       updateActionButtons();
-      await shareEmlFile();
+      await copyMessageContent();
     } catch (error) {
       console.error(error);
-      alert(t("shareFailedAlert"));
-      await saveEmlFile();
+      alert(error?.message || t("shareFailedAlert"));
     } finally {
       state.isExporting = false;
       state.exportAction = "save";
@@ -2222,7 +2237,10 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     greeting_block: buildGreetingBlockHtml({ showPlaceholders }),
     content_block: buildContentBlockHtml({ showPlaceholders }),
     quote_block: buildQuoteBlockHtml({ showPlaceholders }),
-    attachments_block: buildAttachmentsBlockHtml({ showPlaceholders }),
+    attachments_block: buildAttachmentsBlockHtml({
+      showPlaceholders,
+      linkMode: showPlaceholders ? "preview" : "cid",
+    }),
     signature_block: buildSignatureBlockHtml({ showPlaceholders }),
   };
 
@@ -2255,10 +2273,36 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     .mail-quote-body > :last-child{
       margin-bottom: 0;
     }
+    .mail-main,
+    .mail-stack,
+    .mail-grid,
+    .mail-content-wrap,
+    .mail-inner,
+    .mail-shell-inner{
+      gap: 10px !important;
+      row-gap: 10px !important;
+      column-gap: 10px !important;
+    }
+    .mail-greeting,
+    .mail-content,
+    .mail-quote,
+    .mail-attachments,
+    .mail-signature-block{
+      margin: 0 !important;
+    }
     .mail-attachments-list{
       margin: 0;
       padding: 0;
       list-style: none;
+    }
+    .mail-attachment-name{
+      color: inherit;
+      text-decoration: none;
+      word-break: break-word;
+    }
+    .mail-attachment-name[href]{
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
     .mail-attachment-name,
     .contact-chip-value{
@@ -2366,6 +2410,7 @@ function buildQuoteBlockHtml(options = {}) {
 }
 
 function buildAttachmentsBlockHtml(options = {}) {
+  const linkMode = options.linkMode || "none";
   const attachments = state.attachments;
 
   if (!attachments.length) {
@@ -2373,14 +2418,27 @@ function buildAttachmentsBlockHtml(options = {}) {
   }
 
   const items = attachments
-    .map((item) => {
+    .map((item, index) => {
       const kind = fileKindLabel(item.kind);
       const name = escapeHtml(item.file.name);
       const size = escapeHtml(formatBytes(item.file.size));
+      const href =
+        linkMode === "preview"
+          ? item.previewUrl
+          : linkMode === "cid"
+            ? `cid:${buildAttachmentContentId(item, index)}`
+            : "";
+      const nameNode = href
+        ? `<a class="mail-attachment-name" href="${escapeHtml(href)}"${
+            linkMode === "preview"
+              ? ` download="${name}" target="_blank" rel="noopener noreferrer"`
+              : ""
+          }>${name}</a>`
+        : `<span class="mail-attachment-name">${name}</span>`;
       return `
         <li class="mail-attachment-item">
           <span class="mail-attachment-kind">${kind}</span>
-          <span class="mail-attachment-name">${name}</span>
+          ${nameNode}
           <span class="mail-attachment-size">${size}</span>
         </li>
       `;
@@ -2736,8 +2794,13 @@ function updateActionButtons() {
   }
 
   const canExport = collectValidationState().issues.length === 0 && hasAnyExportData();
+  const canCopy = hasCopyContentData();
   ui.exportBtn.disabled = !canExport;
-  ui.shareBtn.disabled = !canExport;
+  ui.shareBtn.disabled = !canCopy;
+}
+
+function hasCopyContentData() {
+  return Boolean(normalizeMultilineText(richHtmlToPlainText(state.fields.content)));
 }
 
 function parseAddressList(rawValue) {
@@ -3244,22 +3307,41 @@ async function saveEmlFile() {
   triggerDownload(blob, filename);
 }
 
-async function shareEmlFile() {
-  const { blob, filename } = await buildEmlFile();
-  const file = new File([blob], filename, { type: "message/rfc822" });
+async function copyMessageContent() {
+  const html = normalizeEditorHtml(state.fields.content);
+  const plain = richHtmlToPlainText(state.fields.content);
 
-  if (typeof navigator.canShare === "function" && !navigator.canShare({ files: [file] })) {
-    throw new Error("Navigator cannot share this file type");
+  if (!normalizeMultilineText(plain) && !normalizeInlineText(html)) {
+    throw new Error(t("copyEmptyAlert"));
   }
 
-  if (typeof navigator.share !== "function") {
-    throw new Error("Web Share API is unavailable");
+  if (navigator.clipboard && window.ClipboardItem) {
+    const clipboardItem = new ClipboardItem({
+      "text/plain": new Blob([plain || ""], { type: "text/plain" }),
+      "text/html": new Blob([html || `<p>${escapeHtml(plain || "")}</p>`], { type: "text/html" }),
+    });
+    await navigator.clipboard.write([clipboardItem]);
+    return;
   }
 
-  await navigator.share({
-    files: [file],
-    title: filename,
-  });
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(plain || "");
+    return;
+  }
+
+  const fallback = document.createElement("textarea");
+  fallback.value = plain || "";
+  fallback.setAttribute("readonly", "readonly");
+  fallback.style.position = "fixed";
+  fallback.style.left = "-9999px";
+  document.body.append(fallback);
+  fallback.select();
+  const copied = document.execCommand("copy");
+  fallback.remove();
+
+  if (!copied) {
+    throw new Error("Copy command failed");
+  }
 }
 
 async function buildEmlFile() {
@@ -3302,6 +3384,8 @@ async function buildEmlFile() {
     lines.push(`Subject: ${encodeMimeHeader(subject)}`);
   }
 
+  lines.push("X-Unsent: 1");
+  lines.push("X-Uniform-Type-Identifier: com.apple.mail-draft");
   lines.push(`Date: ${new Date().toUTCString()}`);
   lines.push("MIME-Version: 1.0");
   lines.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`);
@@ -3328,18 +3412,19 @@ async function buildEmlFile() {
   lines.push(`--${alternativeBoundary}--`);
   lines.push("");
 
-  for (const attachment of getAllExportAttachments()) {
+  const exportAttachments = getAllExportAttachments();
+  for (const [index, attachment] of exportAttachments.entries()) {
     const base64 = await fileToBase64(attachment.file);
     const mimeType = attachment.file.type || "application/octet-stream";
     const safeName = sanitizeFilenameForHeader(attachment.file.name);
     const encodedName = encodeURIComponent(attachment.file.name).replace(/'/g, "%27");
+    const contentId = buildAttachmentContentId(attachment, index);
 
     lines.push(`--${mixedBoundary}`);
     lines.push(`Content-Type: ${mimeType}; name=\"${safeName}\"; name*=UTF-8''${encodedName}`);
     lines.push("Content-Transfer-Encoding: base64");
-    lines.push(
-      `Content-Disposition: attachment; filename=\"${safeName}\"; filename*=UTF-8''${encodedName}`
-    );
+    lines.push(`Content-ID: <${contentId}>`);
+    lines.push(`Content-Disposition: inline; filename=\"${safeName}\"; filename*=UTF-8''${encodedName}`);
     lines.push("");
     lines.push(foldBase64(base64));
     lines.push("");
@@ -3363,6 +3448,17 @@ function buildExportFilename() {
   const hour = String(now.getHours()).padStart(2, "0");
   const minute = String(now.getMinutes()).padStart(2, "0");
   return `mail-${year}${month}${day}-${hour}${minute}.eml`;
+}
+
+function buildAttachmentContentId(attachment, index) {
+  const fallback = `file-${index + 1}`;
+  const source = attachment?.id || attachment?.file?.name || fallback;
+  const normalized = String(source)
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  return `pm-${normalized || fallback}@pretty-mails.local`;
 }
 
 function sanitizeFilenameForHeader(filename) {
