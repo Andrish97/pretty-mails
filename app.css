@@ -85,6 +85,7 @@ code {
 
 .app-header {
   display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1.1fr) auto auto;
   gap: 0.7rem;
   align-items: end;
   margin-bottom: 1rem;
