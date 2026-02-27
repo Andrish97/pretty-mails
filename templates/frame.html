@@ -8,68 +8,64 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f0f0fb;
+      --bg: #eef5fb;
       --card: #ffffff;
-      --text: #1e2131;
-      --muted: #656a87;
-      --line: #dbdbec;
-      --accent: var(--template-accent, #7057d6);
-      --quote-bg: #f4f1ff;
-      --shell-grad: linear-gradient(130deg, rgba(112, 87, 214, 0.1), rgba(53, 157, 191, 0.05));
+      --text: #1a2735;
+      --muted: #5b7083;
+      --line: #d2dfea;
+      --accent: var(--template-accent, #2f7df5);
+      --accent-2: var(--template-accent-2, #6daaf8);
+      --accent-3: var(--template-accent-3, #1f57ba);
+      --quote-bg: #eff6ff;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #131522;
-        --card: #1d2030;
-        --text: #e8e9f6;
-        --muted: #b6b9d7;
-        --line: #3a3e57;
-        --quote-bg: #2b2a45;
-        --shell-grad: linear-gradient(130deg, rgba(112, 87, 214, 0.2), rgba(53, 157, 191, 0.14));
+        --bg: #101824;
+        --card: #172332;
+        --text: #e7edf5;
+        --muted: #aec0d1;
+        --line: #30475b;
+        --quote-bg: #1b2d45;
       }
     }
 
     html.forced-light {
-      --bg: #f0f0fb;
+      --bg: #eef5fb;
       --card: #ffffff;
-      --text: #1e2131;
-      --muted: #656a87;
-      --line: #dbdbec;
-      --quote-bg: #f4f1ff;
-      --shell-grad: linear-gradient(130deg, rgba(112, 87, 214, 0.1), rgba(53, 157, 191, 0.05));
+      --text: #1a2735;
+      --muted: #5b7083;
+      --line: #d2dfea;
+      --quote-bg: #eff6ff;
     }
 
     html.forced-dark {
-      --bg: #131522;
-      --card: #1d2030;
-      --text: #e8e9f6;
-      --muted: #b6b9d7;
-      --line: #3a3e57;
-      --quote-bg: #2b2a45;
-      --shell-grad: linear-gradient(130deg, rgba(112, 87, 214, 0.2), rgba(53, 157, 191, 0.14));
+      --bg: #101824;
+      --card: #172332;
+      --text: #e7edf5;
+      --muted: #aec0d1;
+      --line: #30475b;
+      --quote-bg: #1b2d45;
     }
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 16px/1.58 "IBM Plex Sans", "Segoe UI", sans-serif;
       padding: 24px 12px;
+      font: 16px/1.58 "Inter", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
     }
 
     .mail-shell {
       max-width: 740px;
       margin: 0 auto;
+      border-radius: 16px;
       border: 1px solid var(--line);
-      border-radius: 14px;
       background: var(--card);
-      background-image: var(--shell-grad);
       padding: 24px;
-    }
-
-    .mail-content {
-      min-height: 20px;
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--accent-2) 18%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--accent-2) 32%, transparent);
     }
 
     .mail-greeting,
@@ -78,28 +74,32 @@
       margin: 0 0 14px;
     }
 
+    .mail-content {
+      min-height: 20px;
+    }
+
     .mail-quote {
       margin: 20px 0;
+      padding: 12px 14px;
       border: 1px solid var(--line);
       border-left: 4px solid var(--accent);
       border-radius: 10px;
       background: var(--quote-bg);
-      padding: 12px 14px;
     }
 
     .mail-quote-label {
       margin: 0 0 8px;
-      color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+      color: var(--muted);
       font-weight: 700;
     }
 
     .mail-signature-block {
       margin-top: 22px;
       padding-top: 16px;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid color-mix(in srgb, var(--accent-3) 24%, var(--line));
     }
 
     .mail-contact-block {

@@ -19,11 +19,11 @@ const LANGUAGE_FLAGS = {
 const OPTIONAL_DEFAULTS = {
   cc: false,
   bcc: false,
-  subject: true,
+  subject: false,
   quote: false,
-  greeting: true,
-  content: true,
-  closing: true,
+  greeting: false,
+  content: false,
+  closing: false,
   contactName: false,
   contactRole: false,
   contactCompany: false,
@@ -33,7 +33,7 @@ const OPTIONAL_DEFAULTS = {
   contactWebsite: false,
   contactAddress: false,
   socials: false,
-  sentAt: true,
+  sentAt: false,
   sentFrom: false,
 };
 
@@ -139,16 +139,20 @@ const I18N = {
     fieldSentFromLabel: "Wysłano z",
     fieldSentFromHint: "Urządzenie rozpoznawane automatycznie.",
 
-    toggleShow: "Pokaż",
+    toggleShow: "",
 
     rememberDraftLabel: "Zapamiętaj brudnopis lokalnie (bez załączników)",
     mutedNoteHtml: "Odznaczone pola nie będą widoczne w podglądzie ani eksporcie.",
 
     previewTitle: "Podgląd",
     previewEnvelopeTitle: "Informacje wysyłkowe",
+    previewControlsTitle: "Układ i kolory",
     previewContentTitle: "Treść maila",
     previewFrameTitle: "Podgląd wiadomości",
     previewFrameDarkTitle: "Podgląd wiadomości - ciemny",
+    accentColor1Label: "Akcent 1",
+    accentColor2Label: "Akcent 2",
+    accentColor3Label: "Akcent 3",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -178,6 +182,7 @@ const I18N = {
     attachmentEstimated: "Szacowany rozmiar wiadomości: {size}",
     warningWarn: "Duża wiadomość. Wysyłka może potrwać dłużej.",
     warningDanger: "Bardzo duża wiadomość. Część skrzynek może ją odrzucić.",
+    emptyMailDisabled: "Dodaj przynajmniej jedną treść lub załącznik, aby zapisać/udostępnić.",
 
     addressValidationPrefix: "Uzupełnij lub popraw pola:",
     requiredToMissing: "Do: wpisz przynajmniej jeden poprawny adres e-mail.",
@@ -325,16 +330,20 @@ const I18N = {
     fieldSentFromLabel: "Sent from",
     fieldSentFromHint: "Device is detected automatically.",
 
-    toggleShow: "Show",
+    toggleShow: "",
 
     rememberDraftLabel: "Remember draft locally (without attachments)",
     mutedNoteHtml: "Unchecked fields are hidden in preview and export.",
 
     previewTitle: "Preview",
     previewEnvelopeTitle: "Sending info",
+    previewControlsTitle: "Layout and colors",
     previewContentTitle: "Mail body",
     previewFrameTitle: "Message preview",
     previewFrameDarkTitle: "Message preview - dark",
+    accentColor1Label: "Accent 1",
+    accentColor2Label: "Accent 2",
+    accentColor3Label: "Accent 3",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -364,6 +373,7 @@ const I18N = {
     attachmentEstimated: "Estimated message size: {size}",
     warningWarn: "Large message. Sending may take longer.",
     warningDanger: "Very large message. Some mailboxes may reject it.",
+    emptyMailDisabled: "Add at least one content block or attachment to save/share.",
 
     addressValidationPrefix: "Complete or fix fields:",
     requiredToMissing: "To: enter at least one valid email address.",
@@ -509,16 +519,20 @@ const I18N = {
     fieldSentFromLabel: "Надіслано з",
     fieldSentFromHint: "Пристрій визначається автоматично.",
 
-    toggleShow: "Показати",
+    toggleShow: "",
 
     rememberDraftLabel: "Зберігати чернетку локально (без вкладень)",
     mutedNoteHtml: "Вимкнені поля не потрапляють у перегляд і експорт.",
 
     previewTitle: "Перегляд",
     previewEnvelopeTitle: "Дані відправлення",
+    previewControlsTitle: "Макет і кольори",
     previewContentTitle: "Тіло листа",
     previewFrameTitle: "Перегляд листа",
     previewFrameDarkTitle: "Перегляд листа - темний",
+    accentColor1Label: "Акцент 1",
+    accentColor2Label: "Акцент 2",
+    accentColor3Label: "Акцент 3",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -548,6 +562,7 @@ const I18N = {
     attachmentEstimated: "Орієнтовний розмір листа: {size}",
     warningWarn: "Великий лист. Надсилання може тривати довше.",
     warningDanger: "Дуже великий лист. Частина скриньок може відхилити.",
+    emptyMailDisabled: "Додайте хоча б один блок тексту або вкладення для збереження/поширення.",
 
     addressValidationPrefix: "Заповніть або виправте поля:",
     requiredToMissing: "Кому: введіть хоча б одну коректну email-адресу.",
@@ -610,6 +625,7 @@ const I18N = {
 const state = {
   templates: [],
   templateMarkup: new Map(),
+  templatePalettes: {},
   selectedTemplateId: null,
   language: detectInitialLanguage(),
   themeMode: localStorage.getItem(STORAGE_KEYS.themeMode) || "auto",
@@ -797,8 +813,15 @@ const ui = {
 
   previewTitle: document.querySelector("#previewTitle"),
   previewTemplateName: document.querySelector("#previewTemplateName"),
+  previewControlsTitle: document.querySelector("#previewControlsTitle"),
   previewModeLabel: document.querySelector("#previewModeLabel"),
   previewMode: document.querySelector("#previewMode"),
+  accentColor1Label: document.querySelector("#accentColor1Label"),
+  accentColor2Label: document.querySelector("#accentColor2Label"),
+  accentColor3Label: document.querySelector("#accentColor3Label"),
+  accentColor1: document.querySelector("#accentColor1"),
+  accentColor2: document.querySelector("#accentColor2"),
+  accentColor3: document.querySelector("#accentColor3"),
   previewEnvelopeTitle: document.querySelector("#previewEnvelopeTitle"),
   previewContentTitle: document.querySelector("#previewContentTitle"),
   previewFields: document.querySelector("#previewFields"),
@@ -921,6 +944,7 @@ function bindEvents() {
 
   mobileMedia.addEventListener("change", () => {
     syncMobilePreviewMode();
+    void refreshTinyEditors();
   });
 
   ui.mobileTemplateSelect.addEventListener("change", async () => {
@@ -934,6 +958,18 @@ function bindEvents() {
     localStorage.setItem(STORAGE_KEYS.previewMode, state.previewMode);
     renderPreview();
     maybeSaveDraft();
+  });
+
+  [ui.accentColor1, ui.accentColor2, ui.accentColor3].forEach((input, index) => {
+    input.addEventListener("input", () => {
+      const template = getTemplateById(state.selectedTemplateId);
+      if (!template) return;
+      const palette = ensureTemplatePalette(template);
+      const key = index === 0 ? "accent" : index === 1 ? "accent2" : "accent3";
+      palette[key] = normalizeHexColor(input.value, palette[key]);
+      maybeSaveDraft();
+      renderPreview();
+    });
   });
 
   ui.mobilePreviewToggleBtn.addEventListener("click", () => {
@@ -1183,6 +1219,44 @@ function normalizePreviewMode(value) {
   return ["app", "light", "dark", "both"].includes(normalized) ? normalized : "app";
 }
 
+function normalizeHexColor(value, fallback = "#2e7dff") {
+  const raw = String(value || "").trim();
+  if (/^#[0-9a-f]{6}$/i.test(raw)) {
+    return raw.toLowerCase();
+  }
+  return String(fallback || "#2e7dff");
+}
+
+function getTemplateDefaultPalette(template) {
+  const defaults = template?.paletteDefaults || {};
+  const accent = normalizeHexColor(defaults.accent || template?.theme?.accent || "#2e7dff", "#2e7dff");
+  const accent2 = normalizeHexColor(defaults.accent2 || accent, accent);
+  const accent3 = normalizeHexColor(defaults.accent3 || accent2, accent2);
+  return { accent, accent2, accent3 };
+}
+
+function ensureTemplatePalette(template) {
+  if (!template) {
+    return { accent: "#2e7dff", accent2: "#2e7dff", accent3: "#2e7dff" };
+  }
+
+  const existing = state.templatePalettes[template.id];
+  if (existing) {
+    existing.accent = normalizeHexColor(existing.accent, "#2e7dff");
+    existing.accent2 = normalizeHexColor(existing.accent2, existing.accent);
+    existing.accent3 = normalizeHexColor(existing.accent3, existing.accent2);
+    return existing;
+  }
+
+  const palette = getTemplateDefaultPalette(template);
+  state.templatePalettes[template.id] = { ...palette };
+  return state.templatePalettes[template.id];
+}
+
+function getTemplatePalette(template) {
+  return ensureTemplatePalette(template);
+}
+
 function applyLanguage(language) {
   state.language = normalizeLanguage(language) || "pl";
   localStorage.setItem(STORAGE_KEYS.language, state.language);
@@ -1300,14 +1374,43 @@ function applyLanguage(language) {
     if (labelNode) labelNode.textContent = t("toggleShow");
   });
 
+  [
+    [ui.toggleCc, t("fieldCcLabel")],
+    [ui.toggleBcc, t("fieldBccLabel")],
+    [ui.toggleSubject, t("fieldSubjectLabel")],
+    [ui.toggleQuote, t("fieldQuoteLabel")],
+    [ui.toggleGreeting, t("fieldGreetingLabel")],
+    [ui.toggleContent, t("fieldContentLabel")],
+    [ui.toggleClosing, t("fieldClosingLabel")],
+    [ui.toggleContactName, t("fieldContactNameLabel")],
+    [ui.toggleContactRole, t("fieldContactRoleLabel")],
+    [ui.toggleContactCompany, t("fieldContactCompanyLabel")],
+    [ui.toggleContactLogo, t("fieldContactLogoLabel")],
+    [ui.toggleContactPhone, t("fieldContactPhoneLabel")],
+    [ui.toggleContactEmail, t("fieldContactEmailLabel")],
+    [ui.toggleContactWebsite, t("fieldContactWebsiteLabel")],
+    [ui.toggleContactAddress, t("fieldContactAddressLabel")],
+    [ui.toggleSocials, t("fieldSocialsLabel")],
+    [ui.toggleSentAt, t("fieldSentAtLabel")],
+    [ui.toggleSentFrom, t("fieldSentFromLabel")],
+  ].forEach(([toggle, label]) => {
+    if (toggle) {
+      toggle.setAttribute("aria-label", label);
+    }
+  });
+
   ui.rememberDraftLabel.textContent = t("rememberDraftLabel");
   ui.mutedNote.innerHTML = t("mutedNoteHtml");
 
   ui.previewTitle.textContent = t("previewTitle");
   ui.previewEnvelopeTitle.textContent = t("previewEnvelopeTitle");
+  ui.previewControlsTitle.textContent = t("previewControlsTitle");
   ui.previewContentTitle.textContent = t("previewContentTitle");
   ui.previewFrame.title = t("previewFrameTitle");
   ui.previewFrameDark.title = t("previewFrameDarkTitle");
+  ui.accentColor1Label.textContent = t("accentColor1Label");
+  ui.accentColor2Label.textContent = t("accentColor2Label");
+  ui.accentColor3Label.textContent = t("accentColor3Label");
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
   ui.addFilesBtn.textContent = t("addFilesButton");
@@ -1566,6 +1669,18 @@ function restoreDraft() {
           .filter((item) => Boolean(item.network))
       : [];
 
+    state.templatePalettes = {};
+    if (saved.templatePalettes && typeof saved.templatePalettes === "object") {
+      Object.entries(saved.templatePalettes).forEach(([templateId, palette]) => {
+        if (!palette || typeof palette !== "object") return;
+        state.templatePalettes[templateId] = {
+          accent: normalizeHexColor(palette.accent, "#2e7dff"),
+          accent2: normalizeHexColor(palette.accent2, palette.accent || "#2e7dff"),
+          accent3: normalizeHexColor(palette.accent3, palette.accent2 || palette.accent || "#2e7dff"),
+        };
+      });
+    }
+
     if (saved.selectedTemplateId) {
       state.selectedTemplateId = String(saved.selectedTemplateId);
     }
@@ -1585,6 +1700,7 @@ function saveDraft() {
     enabled: { ...state.enabled },
     fields: { ...state.fields },
     socials: state.socials.map((item) => ({ ...item })),
+    templatePalettes: { ...state.templatePalettes },
   };
 
   localStorage.setItem(STORAGE_KEYS.draft, JSON.stringify(draft));
@@ -1608,6 +1724,17 @@ async function loadTemplates() {
 
   state.templates = templates.map((template) => ({
     ...template,
+    paletteDefaults: {
+      accent: normalizeHexColor(template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff", "#2e7dff"),
+      accent2: normalizeHexColor(
+        template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
+        template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff"
+      ),
+      accent3: normalizeHexColor(
+        template?.paletteDefaults?.accent3 || template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
+        template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff"
+      ),
+    },
     templateResolvedUrl: new URL(template.templateUrl, TEMPLATE_INDEX_URL).toString(),
   }));
 
@@ -1645,11 +1772,20 @@ async function selectTemplate(templateId) {
   state.selectedTemplateId = template.id;
   ui.mobileTemplateSelect.value = template.id;
   ui.previewTemplateName.textContent = localizedTemplateName(template);
+  ensureTemplatePalette(template);
+  syncPaletteInputs(template);
 
   await ensureTemplateMarkup(template);
   renderPreview();
   maybeSaveDraft();
   void refreshTinyEditors();
+}
+
+function syncPaletteInputs(template) {
+  const palette = getTemplatePalette(template);
+  ui.accentColor1.value = palette.accent;
+  ui.accentColor2.value = palette.accent2;
+  ui.accentColor3.value = palette.accent3;
 }
 
 function localizedTemplateName(template) {
@@ -1813,9 +1949,12 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   if (options.forceMode === "light") root.classList.add("forced-light");
   if (options.forceMode === "dark") root.classList.add("forced-dark");
 
-  const accent = template?.theme?.accent || "#2e7dff";
+  const palette = getTemplatePalette(template);
   const themeStyle = doc.createElement("style");
-  themeStyle.textContent = `:root{--template-accent:${accent};}`;
+  themeStyle.textContent =
+    `:root{--template-accent:${palette.accent};` +
+    `--template-accent-2:${palette.accent2};` +
+    `--template-accent-3:${palette.accent3};}`;
   doc.head.append(themeStyle);
 
   return `<!doctype html>\n${doc.documentElement.outerHTML}`;
@@ -2143,25 +2282,14 @@ function collectValidationState() {
   const issues = [];
   const invalidInputs = new Set();
 
-  const toAddresses = parseAddressList(state.fields.to);
-  if (!toAddresses.length) {
-    issues.push(t("requiredToMissing"));
-    invalidInputs.add(ui.fieldTo);
-  } else {
-    const invalidTo = toAddresses.filter((address) => !isValidEmailAddress(address));
-    if (invalidTo.length) {
-      issues.push(t("invalidAddressList", { label: t("fieldToShort"), list: [...new Set(invalidTo)].join(", ") }));
-      invalidInputs.add(ui.fieldTo);
-    }
-  }
-
-  const optionalEmailDefs = [
-    { key: "cc", label: t("fieldCcShort"), input: ui.fieldCc },
-    { key: "bcc", label: t("fieldBccShort"), input: ui.fieldBcc },
+  const emailDefs = [
+    { key: "to", label: t("fieldToShort"), input: ui.fieldTo, enabled: true },
+    { key: "cc", label: t("fieldCcShort"), input: ui.fieldCc, enabled: state.enabled.cc },
+    { key: "bcc", label: t("fieldBccShort"), input: ui.fieldBcc, enabled: state.enabled.bcc },
   ];
 
-  optionalEmailDefs.forEach((def) => {
-    if (!state.enabled[def.key]) return;
+  emailDefs.forEach((def) => {
+    if (!def.enabled) return;
     const value = state.fields[def.key];
     if (!normalizeInlineText(value)) return;
 
@@ -2172,11 +2300,6 @@ function collectValidationState() {
       invalidInputs.add(def.input);
     }
   });
-
-  if (!normalizeInlineText(state.fields.senderName)) {
-    issues.push(t("requiredSenderMissing"));
-    invalidInputs.add(ui.fieldSenderName);
-  }
 
   if (state.enabled.contactEmail) {
     const contactEmail = normalizeInlineText(state.fields.contactEmail);
@@ -2201,16 +2324,34 @@ function validateAddressFields(showMessage = true) {
   clearAddressValidation();
 
   const { issues, invalidInputs } = collectValidationState();
+  const hasData = hasAnyExportData();
 
   invalidInputs.forEach((input) => {
     input?.setAttribute("aria-invalid", "true");
   });
 
-  if (showMessage && issues.length) {
-    ui.addressValidation.textContent = `${t("addressValidationPrefix")} ${issues.join("; ")}`;
+  if (showMessage) {
+    if (issues.length) {
+      ui.addressValidation.textContent = `${t("addressValidationPrefix")} ${issues.join("; ")}`;
+    } else if (!hasData) {
+      ui.addressValidation.textContent = t("emptyMailDisabled");
+    }
   }
 
-  return issues.length === 0;
+  return issues.length === 0 && hasData;
+}
+
+function hasAnyExportData() {
+  const envelopeFilled =
+    Boolean(normalizeInlineText(state.fields.to)) ||
+    (state.enabled.cc && Boolean(normalizeInlineText(state.fields.cc))) ||
+    (state.enabled.bcc && Boolean(normalizeInlineText(state.fields.bcc))) ||
+    (state.enabled.subject && Boolean(normalizeInlineText(state.fields.subject)));
+
+  const bodyFilled = Boolean(normalizeMultilineText(buildPlainTextBody()));
+  const attachmentFilled = getAllExportAttachments().length > 0;
+
+  return envelopeFilled || bodyFilled || attachmentFilled;
 }
 
 function updateActionButtons() {
@@ -2225,7 +2366,7 @@ function updateActionButtons() {
     return;
   }
 
-  const canExport = collectValidationState().issues.length === 0;
+  const canExport = collectValidationState().issues.length === 0 && hasAnyExportData();
   ui.exportBtn.disabled = !canExport;
   ui.shareBtn.disabled = !canExport;
 }
@@ -3148,13 +3289,13 @@ async function initTinyEditors(options = {}) {
       await initSingleTinyEditor({
         target: ui.fieldContent,
         key: "content",
-        height: 320,
+        height: mobileMedia.matches ? 420 : 320,
       });
 
       await initSingleTinyEditor({
         target: ui.fieldQuote,
         key: "quote",
-        height: 210,
+        height: mobileMedia.matches ? 300 : 210,
       });
 
       if (tinyEditors.content) {

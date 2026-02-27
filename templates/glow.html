@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="x-apple-disable-message-reformatting">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #eef0fa;
+      --card: #ffffff;
+      --text: #1a1f30;
+      --muted: #616887;
+      --line: #d8dced;
+      --accent: var(--template-accent, #5d57d9);
+      --accent-2: var(--template-accent-2, #8f89ea);
+      --accent-3: var(--template-accent-3, #3d39a5);
+      --quote-bg: #f2f1ff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111425;
+        --card: #1a2034;
+        --text: #e8eaf7;
+        --muted: #b8bde0;
+        --line: #383f61;
+        --quote-bg: #2a2c4a;
+      }
+    }
+
+    html.forced-light {
+      --bg: #eef0fa;
+      --card: #ffffff;
+      --text: #1a1f30;
+      --muted: #616887;
+      --line: #d8dced;
+      --quote-bg: #f2f1ff;
+    }
+
+    html.forced-dark {
+      --bg: #111425;
+      --card: #1a2034;
+      --text: #e8eaf7;
+      --muted: #b8bde0;
+      --line: #383f61;
+      --quote-bg: #2a2c4a;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 12px;
+      font: 16px/1.58 "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .mail-shell {
+      max-width: 740px;
+      margin: 0 auto;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 24px;
+      box-shadow:
+        0 10px 30px color-mix(in srgb, var(--accent-3) 18%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--accent-2) 20%, transparent);
+    }
+
+    .mail-greeting,
+    .mail-closing,
+    .mail-sender {
+      margin: 0 0 14px;
+    }
+
+    .mail-content {
+      min-height: 20px;
+    }
+
+    .mail-quote {
+      margin: 20px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      background: var(--quote-bg);
+    }
+
+    .mail-quote-label {
+      margin: 0 0 8px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .mail-signature-block {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid color-mix(in srgb, var(--accent-2) 32%, var(--line));
+    }
+
+    .mail-contact-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact-line {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px;
+    }
+
+    .contact-label {
+      font-weight: 600;
+    }
+
+    .contact-socials {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-socials a,
+    .contact-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .mail-sent-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .app-placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <main class="mail-shell">
+    {{greeting_block}}
+    <section class="mail-content">{{content_block}}</section>
+    {{quote_block}}
+    {{signature_block}}
+  </main>
+</body>
+</html>

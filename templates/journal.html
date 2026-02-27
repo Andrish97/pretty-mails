@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="x-apple-disable-message-reformatting">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f2ea;
+      --card: #fffaf3;
+      --text: #35281f;
+      --muted: #736052;
+      --line: #dfd2c4;
+      --accent: var(--template-accent, #8e5f3c);
+      --accent-2: var(--template-accent-2, #c49570);
+      --accent-3: var(--template-accent-3, #5e3f27);
+      --quote-bg: #f4e8da;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #191513;
+        --card: #241d19;
+        --text: #f2e5d9;
+        --muted: #c8b19a;
+        --line: #493a30;
+        --quote-bg: #342920;
+      }
+    }
+
+    html.forced-light {
+      --bg: #f7f2ea;
+      --card: #fffaf3;
+      --text: #35281f;
+      --muted: #736052;
+      --line: #dfd2c4;
+      --quote-bg: #f4e8da;
+    }
+
+    html.forced-dark {
+      --bg: #191513;
+      --card: #241d19;
+      --text: #f2e5d9;
+      --muted: #c8b19a;
+      --line: #493a30;
+      --quote-bg: #342920;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 17px/1.62 "Lora", "Georgia", serif;
+      padding: 22px 12px;
+    }
+
+    .mail-shell {
+      max-width: 730px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .mail-shell::before {
+      content: "";
+      display: block;
+      height: 4px;
+      margin: -24px -24px 18px;
+      background: linear-gradient(90deg, var(--accent-3), var(--accent-2));
+    }
+
+    .mail-content {
+      min-height: 20px;
+    }
+
+    .mail-content p {
+      margin: 0 0 0.65em;
+    }
+
+    .mail-greeting,
+    .mail-closing,
+    .mail-sender {
+      margin: 0 0 14px;
+    }
+
+    .mail-quote {
+      margin: 20px 0;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 8px;
+      background: var(--quote-bg);
+      padding: 12px 14px;
+    }
+
+    .mail-quote-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      font-family: "Inter", "Segoe UI", sans-serif;
+    }
+
+    .mail-signature-block {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--line);
+      font-family: "Inter", "Segoe UI", sans-serif;
+    }
+
+    .mail-contact-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact-line {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px;
+    }
+
+    .contact-label {
+      font-weight: 600;
+    }
+
+    .contact-socials {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-socials a,
+    .contact-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .mail-sent-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .app-placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <main class="mail-shell">
+    {{greeting_block}}
+    <section class="mail-content">{{content_block}}</section>
+    {{quote_block}}
+    {{signature_block}}
+  </main>
+</body>
+</html>

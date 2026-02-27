@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="x-apple-disable-message-reformatting">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f0f0fb;
+      --card: #ffffff;
+      --text: #1e2131;
+      --muted: #656a87;
+      --line: #dbdbec;
+      --accent: var(--template-accent, #7057d6);
+      --accent-2: var(--template-accent-2, #9b86ec);
+      --accent-3: var(--template-accent-3, #4d3ca0);
+      --quote-bg: #f4f1ff;
+      --shell-grad: linear-gradient(
+        130deg,
+        color-mix(in srgb, var(--accent-3) 16%, transparent),
+        color-mix(in srgb, var(--accent-2) 12%, transparent)
+      );
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #131522;
+        --card: #1d2030;
+        --text: #e8e9f6;
+        --muted: #b6b9d7;
+        --line: #3a3e57;
+        --quote-bg: #2b2a45;
+        --shell-grad: linear-gradient(
+          130deg,
+          color-mix(in srgb, var(--accent-3) 26%, transparent),
+          color-mix(in srgb, var(--accent-2) 20%, transparent)
+        );
+      }
+    }
+
+    html.forced-light {
+      --bg: #f0f0fb;
+      --card: #ffffff;
+      --text: #1e2131;
+      --muted: #656a87;
+      --line: #dbdbec;
+      --quote-bg: #f4f1ff;
+      --shell-grad: linear-gradient(
+        130deg,
+        color-mix(in srgb, var(--accent-3) 16%, transparent),
+        color-mix(in srgb, var(--accent-2) 12%, transparent)
+      );
+    }
+
+    html.forced-dark {
+      --bg: #131522;
+      --card: #1d2030;
+      --text: #e8e9f6;
+      --muted: #b6b9d7;
+      --line: #3a3e57;
+      --quote-bg: #2b2a45;
+      --shell-grad: linear-gradient(
+        130deg,
+        color-mix(in srgb, var(--accent-3) 26%, transparent),
+        color-mix(in srgb, var(--accent-2) 20%, transparent)
+      );
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.58 "IBM Plex Sans", "Segoe UI", sans-serif;
+      padding: 24px 12px;
+    }
+
+    .mail-shell {
+      max-width: 740px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      background-image: var(--shell-grad);
+      background-blend-mode: soft-light;
+      padding: 24px;
+      box-shadow: 0 10px 30px color-mix(in srgb, var(--accent-3) 14%, transparent);
+    }
+
+    .mail-content {
+      min-height: 20px;
+    }
+
+    .mail-greeting,
+    .mail-closing,
+    .mail-sender {
+      margin: 0 0 14px;
+    }
+
+    .mail-quote {
+      margin: 20px 0;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 10px;
+      background: var(--quote-bg);
+      padding: 12px 14px;
+    }
+
+    .mail-quote-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .mail-signature-block {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .mail-contact-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact-line {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px;
+    }
+
+    .contact-label {
+      font-weight: 600;
+    }
+
+    .contact-socials {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-socials a,
+    .contact-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .mail-sent-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .app-placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <main class="mail-shell">
+    {{greeting_block}}
+    <section class="mail-content">{{content_block}}</section>
+    {{quote_block}}
+    {{signature_block}}
+  </main>
+</body>
+</html>

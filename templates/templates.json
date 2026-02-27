@@ -1,26 +1,31 @@
 [
   {
-    "id": "personal-clean",
-    "name": "Personal - clean",
-    "description": "Neutralny prywatny układ z miękką kartą.",
+    "id": "clean",
+    "name": "Clean",
+    "description": "Prosty układ na jednej karcie.",
     "i18n": {
       "pl": {
-        "name": "Prywatny - clean",
-        "description": "Neutralny prywatny układ z miękką kartą."
+        "name": "Clean",
+        "description": "Prosty układ na jednej karcie."
       },
       "en": {
-        "name": "Personal - clean",
-        "description": "Neutral personal layout with a soft card style."
+        "name": "Clean",
+        "description": "Simple one-card layout."
       },
       "uk": {
-        "name": "Приватний - clean",
-        "description": "Нейтральний приватний макет із м'якою карткою."
+        "name": "Clean",
+        "description": "Простий макет на одній картці."
       }
     },
-    "templateUrl": "./personal-clean.html",
+    "templateUrl": "./clean.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#2e7dff"
+    },
+    "paletteDefaults": {
+      "accent": "#2e7dff",
+      "accent2": "#59a3ff",
+      "accent3": "#1d4fb8"
     },
     "editorFonts": {
       "body": "\"Inter\", \"Avenir Next\", sans-serif",
@@ -37,27 +42,32 @@
     ]
   },
   {
-    "id": "personal-card",
-    "name": "Personal - card",
-    "description": "Lekki styl kartowy z wyraźnym nagłówkiem.",
+    "id": "card",
+    "name": "Card",
+    "description": "Układ z podkreślonym nagłówkiem.",
     "i18n": {
       "pl": {
-        "name": "Prywatny - card",
-        "description": "Lekki styl kartowy z wyraźnym nagłówkiem."
+        "name": "Card",
+        "description": "Układ z podkreślonym nagłówkiem."
       },
       "en": {
-        "name": "Personal - card",
-        "description": "Light card style with a clear header bar."
+        "name": "Card",
+        "description": "Layout with a highlighted header."
       },
       "uk": {
-        "name": "Приватний - card",
-        "description": "Легкий картковий стиль із виразним заголовком."
+        "name": "Card",
+        "description": "Макет з акцентним заголовком."
       }
     },
-    "templateUrl": "./personal-card.html",
+    "templateUrl": "./card.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#0f766e"
+    },
+    "paletteDefaults": {
+      "accent": "#0f766e",
+      "accent2": "#56b8ae",
+      "accent3": "#0c4f4a"
     },
     "editorFonts": {
       "body": "\"Manrope\", \"Segoe UI\", sans-serif",
@@ -74,27 +84,32 @@
     ]
   },
   {
-    "id": "personal-journal",
-    "name": "Personal - journal",
-    "description": "Ciepły, spokojny układ inspirowany notatnikiem.",
+    "id": "journal",
+    "name": "Journal",
+    "description": "Czytelniczy układ z serifową typografią.",
     "i18n": {
       "pl": {
-        "name": "Prywatny - journal",
-        "description": "Ciepły, spokojny układ inspirowany notatnikiem."
+        "name": "Journal",
+        "description": "Czytelniczy układ z serifową typografią."
       },
       "en": {
-        "name": "Personal - journal",
-        "description": "Warm, calm layout inspired by a journal page."
+        "name": "Journal",
+        "description": "Editorial layout with serif typography."
       },
       "uk": {
-        "name": "Приватний - journal",
-        "description": "Теплий спокійний макет у стилі щоденника."
+        "name": "Journal",
+        "description": "Макет у редакційному стилі із serif-типографікою."
       }
     },
-    "templateUrl": "./personal-journal.html",
+    "templateUrl": "./journal.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#8e5f3c"
+    },
+    "paletteDefaults": {
+      "accent": "#8e5f3c",
+      "accent2": "#c49570",
+      "accent3": "#5e3f27"
     },
     "editorFonts": {
       "body": "\"Lora\", \"Georgia\", serif",
@@ -111,27 +126,32 @@
     ]
   },
   {
-    "id": "business-classic",
-    "name": "Business - classic",
-    "description": "Formalny układ biznesowy z wyważonym kontrastem.",
+    "id": "classic",
+    "name": "Classic",
+    "description": "Formalny układ z pasem nagłówka.",
     "i18n": {
       "pl": {
-        "name": "Biznesowy - classic",
-        "description": "Formalny układ biznesowy z wyważonym kontrastem."
+        "name": "Classic",
+        "description": "Formalny układ z pasem nagłówka."
       },
       "en": {
-        "name": "Business - classic",
-        "description": "Formal business layout with balanced contrast."
+        "name": "Classic",
+        "description": "Formal layout with a top stripe header."
       },
       "uk": {
-        "name": "Бізнесовий - classic",
-        "description": "Формальний бізнес-макет зі збалансованим контрастом."
+        "name": "Classic",
+        "description": "Формальний макет із верхньою смугою заголовка."
       }
     },
-    "templateUrl": "./business-classic.html",
+    "templateUrl": "./classic.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#245fbd"
+    },
+    "paletteDefaults": {
+      "accent": "#245fbd",
+      "accent2": "#5f92df",
+      "accent3": "#1f4681"
     },
     "editorFonts": {
       "body": "\"Source Sans 3\", \"Segoe UI\", sans-serif",
@@ -148,27 +168,32 @@
     ]
   },
   {
-    "id": "business-stripe",
-    "name": "Business - stripe",
-    "description": "Nowoczesny wariant z pionowym paskiem akcentu.",
+    "id": "stripe",
+    "name": "Stripe",
+    "description": "Makieta z pionowym paskiem akcentu.",
     "i18n": {
       "pl": {
-        "name": "Biznesowy - stripe",
-        "description": "Nowoczesny wariant z pionowym paskiem akcentu."
+        "name": "Stripe",
+        "description": "Makieta z pionowym paskiem akcentu."
       },
       "en": {
-        "name": "Business - stripe",
-        "description": "Modern variant with a vertical accent stripe."
+        "name": "Stripe",
+        "description": "Layout with a vertical accent stripe."
       },
       "uk": {
-        "name": "Бізнесовий - stripe",
-        "description": "Сучасний варіант із вертикальною акцентною смугою."
+        "name": "Stripe",
+        "description": "Макет із вертикальною акцентною смугою."
       }
     },
-    "templateUrl": "./business-stripe.html",
+    "templateUrl": "./stripe.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#2a9d8f"
+    },
+    "paletteDefaults": {
+      "accent": "#2a9d8f",
+      "accent2": "#63c5ba",
+      "accent3": "#226c64"
     },
     "editorFonts": {
       "body": "\"Plus Jakarta Sans\", \"Segoe UI\", sans-serif",
@@ -185,27 +210,200 @@
     ]
   },
   {
-    "id": "business-soft",
-    "name": "Business - soft",
-    "description": "Profesjonalny styl z łagodnym gradientem tła.",
+    "id": "soft",
+    "name": "Soft",
+    "description": "Układ z łagodnym gradientem i miękką kartą.",
     "i18n": {
       "pl": {
-        "name": "Biznesowy - soft",
-        "description": "Profesjonalny styl z łagodnym gradientem tła."
+        "name": "Soft",
+        "description": "Układ z łagodnym gradientem i miękką kartą."
       },
       "en": {
-        "name": "Business - soft",
-        "description": "Professional style with a soft gradient background."
+        "name": "Soft",
+        "description": "Layout with a soft gradient and card style."
       },
       "uk": {
-        "name": "Бізнесовий - soft",
-        "description": "Професійний стиль із м'яким градієнтним фоном."
+        "name": "Soft",
+        "description": "Макет із м'яким градієнтом і картковим стилем."
       }
     },
-    "templateUrl": "./business-soft.html",
+    "templateUrl": "./soft.html",
     "theme": {
       "defaultMode": "auto",
       "accent": "#7057d6"
+    },
+    "paletteDefaults": {
+      "accent": "#7057d6",
+      "accent2": "#9b86ec",
+      "accent3": "#4d3ca0"
+    },
+    "editorFonts": {
+      "body": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif",
+      "headings": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "frame",
+    "name": "Frame",
+    "description": "Obramowany układ z wyraźnym akcentem.",
+    "i18n": {
+      "pl": {
+        "name": "Frame",
+        "description": "Obramowany układ z wyraźnym akcentem."
+      },
+      "en": {
+        "name": "Frame",
+        "description": "Framed layout with strong accents."
+      },
+      "uk": {
+        "name": "Frame",
+        "description": "Рамковий макет із виразними акцентами."
+      }
+    },
+    "templateUrl": "./frame.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#2f7df5"
+    },
+    "paletteDefaults": {
+      "accent": "#2f7df5",
+      "accent2": "#6daaf8",
+      "accent3": "#1f57ba"
+    },
+    "editorFonts": {
+      "body": "\"Inter\", \"Segoe UI\", sans-serif",
+      "headings": "\"Inter\", \"Segoe UI\", sans-serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "band",
+    "name": "Band",
+    "description": "Top band z trzema tonami akcentu.",
+    "i18n": {
+      "pl": {
+        "name": "Band",
+        "description": "Top band z trzema tonami akcentu."
+      },
+      "en": {
+        "name": "Band",
+        "description": "Top stripe using all three accent tones."
+      },
+      "uk": {
+        "name": "Band",
+        "description": "Верхня смуга з трьома відтінками акценту."
+      }
+    },
+    "templateUrl": "./band.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#168f88"
+    },
+    "paletteDefaults": {
+      "accent": "#168f88",
+      "accent2": "#5bc8c0",
+      "accent3": "#0f5e59"
+    },
+    "editorFonts": {
+      "body": "\"Plus Jakarta Sans\", \"Segoe UI\", sans-serif",
+      "headings": "\"Plus Jakarta Sans\", \"Segoe UI\", sans-serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "ledger",
+    "name": "Ledger",
+    "description": "Papierowy styl z subtelną liniaturą.",
+    "i18n": {
+      "pl": {
+        "name": "Ledger",
+        "description": "Papierowy styl z subtelną liniaturą."
+      },
+      "en": {
+        "name": "Ledger",
+        "description": "Paper-like style with subtle ruled lines."
+      },
+      "uk": {
+        "name": "Ledger",
+        "description": "Паперовий стиль із тонкою лінійкою."
+      }
+    },
+    "templateUrl": "./ledger.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#9a6a40"
+    },
+    "paletteDefaults": {
+      "accent": "#9a6a40",
+      "accent2": "#d0a175",
+      "accent3": "#634126"
+    },
+    "editorFonts": {
+      "body": "\"Lora\", \"Georgia\", serif",
+      "headings": "\"Lora\", \"Georgia\", serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "glow",
+    "name": "Glow",
+    "description": "Kontrastowa karta z delikatną poświatą.",
+    "i18n": {
+      "pl": {
+        "name": "Glow",
+        "description": "Kontrastowa karta z delikatną poświatą."
+      },
+      "en": {
+        "name": "Glow",
+        "description": "High-contrast card with subtle glow."
+      },
+      "uk": {
+        "name": "Glow",
+        "description": "Контрастна картка з м'яким сяйвом."
+      }
+    },
+    "templateUrl": "./glow.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#5d57d9"
+    },
+    "paletteDefaults": {
+      "accent": "#5d57d9",
+      "accent2": "#8f89ea",
+      "accent3": "#3d39a5"
     },
     "editorFonts": {
       "body": "\"IBM Plex Sans\", \"Segoe UI\", sans-serif",

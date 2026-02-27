@@ -17,17 +17,21 @@
       <h1>Pretty-Mails</h1>
     </div>
 
-    <div class="topbar-section topbar-template">
-      <div class="mobile-template-picker">
-        <label id="mobileTemplateLabel" for="mobileTemplateSelect">Szablon</label>
-        <select id="mobileTemplateSelect" aria-label="Wybierz szablon"></select>
-      </div>
-    </div>
-
     <div class="topbar-section topbar-send">
       <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
       <button id="exportBtn" class="button button-primary" type="button" aria-label="Zapisz plik .eml">💾</button>
       <button id="shareBtn" class="button" type="button" aria-label="Udostępnij plik .eml">📤</button>
+    </div>
+
+    <div class="topbar-section topbar-theme">
+      <div class="theme-picker">
+        <label id="themeModeLabel" for="themeMode">Motyw</label>
+        <select id="themeMode">
+          <option value="auto">Auto</option>
+          <option value="light">Jasny</option>
+          <option value="dark">Ciemny</option>
+        </select>
+      </div>
     </div>
 
     <div class="topbar-section topbar-locale">
@@ -64,15 +68,6 @@
         <option value="en">English</option>
         <option value="uk">Українська</option>
       </select>
-
-      <div class="theme-picker">
-        <label id="themeModeLabel" for="themeMode">Motyw</label>
-        <select id="themeMode">
-          <option value="auto">Auto</option>
-          <option value="light">Jasny</option>
-          <option value="dark">Ciemny</option>
-        </select>
-      </div>
 
       <button id="infoBtn" class="button" type="button" aria-haspopup="dialog" aria-controls="infoModal">ℹ️</button>
     </div>
@@ -315,21 +310,45 @@
       <section class="card preview-panel">
         <div class="preview-head">
           <h2 id="previewTitle">Podgląd</h2>
-          <div class="preview-head-right">
-            <span id="previewTemplateName" class="preview-template-name"></span>
-            <label id="previewModeLabel" for="previewMode" class="preview-mode-label">Tryb podglądu</label>
-            <select id="previewMode">
-              <option value="app">Jak na stronie</option>
-              <option value="light">Jasny</option>
-              <option value="dark">Ciemny</option>
-              <option value="both">Oba</option>
-            </select>
-          </div>
+          <span id="previewTemplateName" class="preview-template-name"></span>
         </div>
 
         <div class="preview-section">
           <h3 id="previewEnvelopeTitle">Informacje wysyłkowe</h3>
           <div id="previewFields" class="preview-fields" aria-live="polite"></div>
+        </div>
+
+        <div class="preview-section">
+          <h3 id="previewControlsTitle">Układ i kolory</h3>
+          <div class="preview-controls-grid">
+            <div class="preview-control">
+              <label id="mobileTemplateLabel" for="mobileTemplateSelect">Szablon</label>
+              <select id="mobileTemplateSelect" aria-label="Wybierz szablon"></select>
+            </div>
+            <div class="preview-control">
+              <label id="previewModeLabel" for="previewMode" class="preview-mode-label">Tryb podglądu</label>
+              <select id="previewMode">
+                <option value="app">Jak na stronie</option>
+                <option value="light">Jasny</option>
+                <option value="dark">Ciemny</option>
+                <option value="both">Oba</option>
+              </select>
+            </div>
+          </div>
+          <div class="preview-colors">
+            <div class="preview-color">
+              <label id="accentColor1Label" for="accentColor1">Akcent 1</label>
+              <input id="accentColor1" type="color" value="#2e7dff">
+            </div>
+            <div class="preview-color">
+              <label id="accentColor2Label" for="accentColor2">Akcent 2</label>
+              <input id="accentColor2" type="color" value="#59a3ff">
+            </div>
+            <div class="preview-color">
+              <label id="accentColor3Label" for="accentColor3">Akcent 3</label>
+              <input id="accentColor3" type="color" value="#1d4fb8">
+            </div>
+          </div>
         </div>
 
         <div class="preview-section">

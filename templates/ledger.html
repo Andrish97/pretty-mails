@@ -8,68 +8,78 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f7f2ea;
-      --card: #fffaf3;
-      --text: #35281f;
-      --muted: #736052;
-      --line: #dfd2c4;
-      --accent: var(--template-accent, #8e5f3c);
-      --quote-bg: #f4e8da;
+      --bg: #f4f1ea;
+      --card: #fffdf8;
+      --text: #32291f;
+      --muted: #706152;
+      --line: #ddd2c2;
+      --accent: var(--template-accent, #9a6a40);
+      --accent-2: var(--template-accent-2, #d0a175);
+      --accent-3: var(--template-accent-3, #634126);
+      --quote-bg: #f6ebde;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #191513;
-        --card: #241d19;
-        --text: #f2e5d9;
-        --muted: #c8b19a;
-        --line: #493a30;
-        --quote-bg: #342920;
+        --bg: #181410;
+        --card: #231c16;
+        --text: #f2e7da;
+        --muted: #c6b29e;
+        --line: #49392d;
+        --quote-bg: #32251c;
       }
     }
 
     html.forced-light {
-      --bg: #f7f2ea;
-      --card: #fffaf3;
-      --text: #35281f;
-      --muted: #736052;
-      --line: #dfd2c4;
-      --quote-bg: #f4e8da;
+      --bg: #f4f1ea;
+      --card: #fffdf8;
+      --text: #32291f;
+      --muted: #706152;
+      --line: #ddd2c2;
+      --quote-bg: #f6ebde;
     }
 
     html.forced-dark {
-      --bg: #191513;
-      --card: #241d19;
-      --text: #f2e5d9;
-      --muted: #c8b19a;
-      --line: #493a30;
-      --quote-bg: #342920;
+      --bg: #181410;
+      --card: #231c16;
+      --text: #f2e7da;
+      --muted: #c6b29e;
+      --line: #49392d;
+      --quote-bg: #32251c;
     }
 
     body {
       margin: 0;
-      background: var(--bg);
+      padding: 24px 12px;
+      font: 16px/1.64 "Lora", "Georgia", serif;
       color: var(--text);
-      font: 17px/1.62 "Lora", "Georgia", serif;
-      padding: 22px 12px;
+      background: var(--bg);
     }
 
     .mail-shell {
-      max-width: 730px;
+      max-width: 740px;
       margin: 0 auto;
-      background: var(--card);
       border: 1px solid var(--line);
       border-radius: 10px;
+      background: var(--card);
       padding: 24px;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
     }
 
-    .mail-content {
-      min-height: 20px;
+    .mail-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(to bottom, color-mix(in srgb, var(--accent-2) 18%, transparent) 1px, transparent 1px);
+      background-size: 100% 34px;
+      opacity: 0.28;
     }
 
-    .mail-content p {
-      margin: 0 0 0.65em;
+    .mail-shell > * {
+      position: relative;
+      z-index: 1;
     }
 
     .mail-greeting,
@@ -78,21 +88,25 @@
       margin: 0 0 14px;
     }
 
+    .mail-content {
+      min-height: 20px;
+    }
+
     .mail-quote {
       margin: 20px 0;
+      padding: 12px 14px;
       border: 1px solid var(--line);
       border-left: 4px solid var(--accent);
       border-radius: 8px;
       background: var(--quote-bg);
-      padding: 12px 14px;
     }
 
     .mail-quote-label {
       margin: 0 0 8px;
-      color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
+      color: var(--muted);
       font-weight: 700;
       font-family: "Inter", "Segoe UI", sans-serif;
     }
@@ -100,7 +114,7 @@
     .mail-signature-block {
       margin-top: 22px;
       padding-top: 16px;
-      border-top: 1px dashed var(--line);
+      border-top: 1px dashed color-mix(in srgb, var(--accent-3) 35%, var(--line));
       font-family: "Inter", "Segoe UI", sans-serif;
     }
 

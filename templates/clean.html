@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="x-apple-disable-message-reformatting">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f3f7fb;
+      --card: #ffffff;
+      --text: #1a2a37;
+      --muted: #5c6f80;
+      --line: #d4dfea;
+      --accent: var(--template-accent, #2e7dff);
+      --accent-2: var(--template-accent-2, #59a3ff);
+      --accent-3: var(--template-accent-3, #1d4fb8);
+      --quote-bg: #f4f8ff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111a23;
+        --card: #1a2731;
+        --text: #e7edf4;
+        --muted: #adc0d0;
+        --line: #324757;
+        --quote-bg: #1a2c3e;
+      }
+    }
+
+    html.forced-light {
+      --bg: #f3f7fb;
+      --card: #ffffff;
+      --text: #1a2a37;
+      --muted: #5c6f80;
+      --line: #d4dfea;
+      --quote-bg: #f4f8ff;
+    }
+
+    html.forced-dark {
+      --bg: #111a23;
+      --card: #1a2731;
+      --text: #e7edf4;
+      --muted: #adc0d0;
+      --line: #324757;
+      --quote-bg: #1a2c3e;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.58 "Inter", "Avenir Next", "Segoe UI", sans-serif;
+      padding: 22px 12px;
+    }
+
+    .mail-shell {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--accent-3) 10%, transparent);
+      overflow: hidden;
+    }
+
+    .mail-shell::before {
+      content: "";
+      display: block;
+      height: 6px;
+      margin: -24px -24px 18px;
+      background: linear-gradient(90deg, var(--accent-3), var(--accent), var(--accent-2));
+    }
+
+    .mail-greeting,
+    .mail-closing,
+    .mail-sender {
+      margin: 0 0 14px;
+    }
+
+    .mail-content {
+      min-height: 20px;
+    }
+
+    .mail-quote {
+      margin: 20px 0;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 10px;
+      background: var(--quote-bg);
+      padding: 12px 14px;
+    }
+
+    .mail-quote-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .mail-signature-block {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .mail-contact-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact-line {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px;
+    }
+
+    .contact-label {
+      font-weight: 600;
+    }
+
+    .contact-socials {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-socials a,
+    .contact-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .mail-sent-block {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .app-placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <main class="mail-shell">
+    {{greeting_block}}
+    <section class="mail-content">{{content_block}}</section>
+    {{quote_block}}
+    {{signature_block}}
+  </main>
+</body>
+</html>

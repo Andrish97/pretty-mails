@@ -8,70 +8,72 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #edf4f7;
+      --bg: #edf4f3;
       --card: #ffffff;
-      --text: #122533;
-      --muted: #5b6b79;
-      --line: #d6e0e7;
-      --accent: var(--template-accent, #0f766e);
-      --quote-bg: #eff8f6;
+      --text: #14272b;
+      --muted: #587277;
+      --line: #d5e3e1;
+      --accent: var(--template-accent, #168f88);
+      --accent-2: var(--template-accent-2, #5bc8c0);
+      --accent-3: var(--template-accent-3, #0f5e59);
+      --quote-bg: #eef9f8;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #101a1f;
-        --card: #17252c;
-        --text: #e5eef4;
-        --muted: #a7bcc9;
-        --line: #314550;
-        --quote-bg: #1c323a;
+        --bg: #101b1d;
+        --card: #172629;
+        --text: #e8f0f0;
+        --muted: #a9c2c0;
+        --line: #305153;
+        --quote-bg: #1c3637;
       }
     }
 
     html.forced-light {
-      --bg: #edf4f7;
+      --bg: #edf4f3;
       --card: #ffffff;
-      --text: #122533;
-      --muted: #5b6b79;
-      --line: #d6e0e7;
-      --quote-bg: #eff8f6;
+      --text: #14272b;
+      --muted: #587277;
+      --line: #d5e3e1;
+      --quote-bg: #eef9f8;
     }
 
     html.forced-dark {
-      --bg: #101a1f;
-      --card: #17252c;
-      --text: #e5eef4;
-      --muted: #a7bcc9;
-      --line: #314550;
-      --quote-bg: #1c323a;
+      --bg: #101b1d;
+      --card: #172629;
+      --text: #e8f0f0;
+      --muted: #a9c2c0;
+      --line: #305153;
+      --quote-bg: #1c3637;
     }
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 16px/1.56 "Manrope", "Segoe UI", sans-serif;
       padding: 24px 12px;
+      font: 16px/1.58 "Plus Jakarta Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
     }
 
     .mail-shell {
-      max-width: 730px;
+      max-width: 742px;
       margin: 0 auto;
-      background: var(--card);
+      border-radius: 14px;
       border: 1px solid var(--line);
-      border-radius: 16px;
+      background: var(--card);
       overflow: hidden;
-    }
-
-    .mail-shell-inner {
-      padding: 22px 24px 24px;
     }
 
     .mail-shell::before {
       content: "";
       display: block;
-      height: 8px;
-      background: linear-gradient(90deg, var(--accent), #9bc8c3);
+      height: 12px;
+      background: linear-gradient(90deg, var(--accent-3), var(--accent), var(--accent-2));
+    }
+
+    .mail-inner {
+      padding: 22px 24px 24px;
     }
 
     .mail-greeting,
@@ -86,18 +88,19 @@
 
     .mail-quote {
       margin: 20px 0;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--quote-bg);
       padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      background: var(--quote-bg);
     }
 
     .mail-quote-label {
       margin: 0 0 8px;
-      color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+      color: var(--muted);
       font-weight: 700;
     }
 
@@ -154,7 +157,7 @@
 </head>
 <body>
   <main class="mail-shell">
-    <div class="mail-shell-inner">
+    <div class="mail-inner">
       {{greeting_block}}
       <section class="mail-content">{{content_block}}</section>
       {{quote_block}}

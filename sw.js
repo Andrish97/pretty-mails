@@ -1,4 +1,4 @@
-const CACHE_NAME = "mail-templates-pwa-v9";
+const CACHE_NAME = "mail-templates-pwa-v11";
 
 const APP_SHELL = [
   "./",
@@ -9,12 +9,16 @@ const APP_SHELL = [
   "./assets/icon-192.svg",
   "./assets/icon-512.svg",
   "./templates/templates.json",
-  "./templates/personal-clean.html",
-  "./templates/personal-card.html",
-  "./templates/personal-journal.html",
-  "./templates/business-classic.html",
-  "./templates/business-stripe.html",
-  "./templates/business-soft.html",
+  "./templates/clean.html",
+  "./templates/card.html",
+  "./templates/journal.html",
+  "./templates/classic.html",
+  "./templates/stripe.html",
+  "./templates/soft.html",
+  "./templates/frame.html",
+  "./templates/band.html",
+  "./templates/ledger.html",
+  "./templates/glow.html",
 ];
 
 self.addEventListener("install", (event) => {
