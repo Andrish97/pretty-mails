@@ -115,7 +115,7 @@ const I18N = {
     fieldContactNameLabel: "Imię i nazwisko",
     fieldContactNamePlaceholder: "Imię i nazwisko",
     fieldContactRoleLabel: "Stanowisko",
-    fieldContactRolePlaceholder: "Np. Project Manager",
+    fieldContactRolePlaceholder: "Stanowisko",
     fieldContactCompanyLabel: "Nazwa firmy",
     fieldContactCompanyPlaceholder: "Nazwa firmy",
     fieldContactLogoLabel: "Logo firmy (załącznik)",
@@ -306,7 +306,7 @@ const I18N = {
     fieldContactNameLabel: "Full name",
     fieldContactNamePlaceholder: "Full name",
     fieldContactRoleLabel: "Job title",
-    fieldContactRolePlaceholder: "e.g. Project Manager",
+    fieldContactRolePlaceholder: "Role",
     fieldContactCompanyLabel: "Company",
     fieldContactCompanyPlaceholder: "Company name",
     fieldContactLogoLabel: "Company logo (attachment)",
@@ -495,7 +495,7 @@ const I18N = {
     fieldContactNameLabel: "Ім'я та прізвище",
     fieldContactNamePlaceholder: "Ім'я та прізвище",
     fieldContactRoleLabel: "Посада",
-    fieldContactRolePlaceholder: "Напр. Project Manager",
+    fieldContactRolePlaceholder: "Посада",
     fieldContactCompanyLabel: "Назва компанії",
     fieldContactCompanyPlaceholder: "Назва компанії",
     fieldContactLogoLabel: "Логотип компанії (вкладення)",
@@ -845,6 +845,9 @@ let tinyEditors = {
 };
 let tinySignature = "";
 let tinyInitPromise = null;
+const customSelectInstances = [];
+const customSelectMap = new WeakMap();
+let customSelectGlobalsBound = false;
 
 const OPTIONAL_BINDINGS = {
   cc: { toggle: () => ui.toggleCc, controls: () => [ui.fieldCc] },
@@ -883,6 +886,8 @@ async function boot() {
   applyThemeMode(state.themeMode, { persist: false, refreshEditors: false });
   syncInputsFromState();
   renderSocialRows();
+  initCustomSelects(document);
+  refreshAllCustomSelects();
   applyOptionalFieldStates();
   syncMobilePreviewMode();
   renderAttachments();
@@ -915,11 +920,16 @@ function bindEvents() {
     if (!ui.languageMenu.contains(event.target)) {
       closeLanguageMenu();
     }
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target || !target.closest(".custom-select")) {
+      closeAllCustomSelects();
+    }
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
     closeLanguageMenu();
+    closeAllCustomSelects();
     closeInfoModal();
     if (state.mobilePreviewOpen) {
       state.mobilePreviewOpen = false;
@@ -1019,16 +1029,26 @@ function bindEvents() {
     const social = state.socials.find((item) => item.id === socialId);
     if (!social) return;
 
-    if (event.target.classList.contains("social-network")) {
-      social.network = event.target.value;
-    }
-
     if (event.target.classList.contains("social-url")) {
       social.url = event.target.value;
     }
 
     maybeSaveDraft();
     renderPreview();
+  });
+
+  ui.socialsList.addEventListener("change", (event) => {
+    const row = event.target.closest(".social-row");
+    if (!row) return;
+    const socialId = row.dataset.socialId;
+    const social = state.socials.find((item) => item.id === socialId);
+    if (!social) return;
+
+    if (event.target.classList.contains("social-network")) {
+      social.network = event.target.value;
+      maybeSaveDraft();
+      renderPreview();
+    }
   });
 
   ui.contactLogoInput.addEventListener("change", async () => {
@@ -1184,6 +1204,254 @@ function bindFieldEvents() {
       renderPreview();
       renderAttachments();
     });
+  });
+}
+
+function initCustomSelects(root = document) {
+  if (!root || typeof root.querySelectorAll !== "function") return;
+
+  bindCustomSelectGlobals();
+
+  root.querySelectorAll("select").forEach((selectElement) => {
+    if (selectElement.classList.contains("visually-hidden")) return;
+    if (selectElement.dataset.nativeSelect === "true") return;
+    if (customSelectMap.has(selectElement)) return;
+    createCustomSelect(selectElement);
+  });
+}
+
+function bindCustomSelectGlobals() {
+  if (customSelectGlobalsBound) return;
+  customSelectGlobalsBound = true;
+
+  window.addEventListener("resize", () => {
+    closeAllCustomSelects();
+  });
+
+  window.addEventListener("scroll", () => {
+    closeAllCustomSelects();
+  });
+}
+
+function createCustomSelect(selectElement) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "custom-select";
+
+  selectElement.parentNode.insertBefore(wrapper, selectElement);
+  wrapper.append(selectElement);
+  selectElement.classList.add("custom-select-native");
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "custom-select-trigger";
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+
+  const value = document.createElement("span");
+  value.className = "custom-select-value";
+
+  const caret = document.createElement("span");
+  caret.className = "custom-select-caret";
+  caret.textContent = "▾";
+  caret.setAttribute("aria-hidden", "true");
+
+  trigger.append(value, caret);
+
+  const list = document.createElement("div");
+  list.className = "custom-select-list";
+  list.setAttribute("role", "listbox");
+  list.hidden = true;
+
+  wrapper.append(trigger, list);
+
+  const instance = {
+    selectElement,
+    wrapper,
+    trigger,
+    value,
+    list,
+    observer: null,
+  };
+
+  const syncFromSelect = () => {
+    const selectedOption = selectElement.selectedOptions?.[0] || selectElement.options[0] || null;
+    value.textContent = selectedOption?.textContent?.trim() || "—";
+
+    list.querySelectorAll(".custom-select-option").forEach((optionButton) => {
+      const isActive = optionButton.dataset.value === selectElement.value;
+      optionButton.classList.toggle("is-active", isActive);
+      optionButton.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    const isDisabled = selectElement.disabled || selectElement.options.length === 0;
+    trigger.disabled = isDisabled;
+    wrapper.classList.toggle("is-disabled", isDisabled);
+  };
+
+  const rebuildOptions = () => {
+    list.innerHTML = "";
+
+    Array.from(selectElement.options).forEach((option) => {
+      const optionButton = document.createElement("button");
+      optionButton.type = "button";
+      optionButton.className = "custom-select-option";
+      optionButton.setAttribute("role", "option");
+      optionButton.dataset.value = option.value;
+      optionButton.textContent = option.textContent;
+      optionButton.disabled = option.disabled;
+      list.append(optionButton);
+    });
+
+    syncFromSelect();
+  };
+
+  const close = () => {
+    wrapper.classList.remove("is-open");
+    list.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+  };
+
+  const open = (focusSelected = false) => {
+    if (trigger.disabled) return;
+    closeAllCustomSelects(instance);
+    wrapper.classList.add("is-open");
+    list.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+
+    if (focusSelected) {
+      const selectedButton = list.querySelector(".custom-select-option.is-active:not(:disabled)");
+      const fallbackButton = list.querySelector(".custom-select-option:not(:disabled)");
+      (selectedButton || fallbackButton)?.focus();
+    }
+  };
+
+  const selectValue = (nextValue) => {
+    if (selectElement.value !== nextValue) {
+      selectElement.value = nextValue;
+      selectElement.dispatchEvent(new Event("change", { bubbles: true }));
+    } else {
+      syncFromSelect();
+    }
+    close();
+    trigger.focus();
+  };
+
+  trigger.addEventListener("click", () => {
+    if (wrapper.classList.contains("is-open")) {
+      close();
+    } else {
+      open();
+    }
+  });
+
+  trigger.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      open(true);
+    }
+  });
+
+  list.addEventListener("click", (event) => {
+    const optionButton = event.target.closest(".custom-select-option");
+    if (!optionButton || optionButton.disabled) return;
+    selectValue(optionButton.dataset.value);
+  });
+
+  list.addEventListener("keydown", (event) => {
+    const enabledOptions = Array.from(list.querySelectorAll(".custom-select-option:not(:disabled)"));
+    if (!enabledOptions.length) return;
+
+    const currentIndex = enabledOptions.indexOf(document.activeElement);
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      const nextIndex = currentIndex < 0 ? 0 : Math.min(enabledOptions.length - 1, currentIndex + 1);
+      enabledOptions[nextIndex].focus();
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      const nextIndex = currentIndex < 0 ? enabledOptions.length - 1 : Math.max(0, currentIndex - 1);
+      enabledOptions[nextIndex].focus();
+      return;
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      enabledOptions[0].focus();
+      return;
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      enabledOptions[enabledOptions.length - 1].focus();
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+      trigger.focus();
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const activeButton = document.activeElement.closest(".custom-select-option");
+      if (activeButton && !activeButton.disabled) {
+        selectValue(activeButton.dataset.value);
+      }
+    }
+  });
+
+  selectElement.addEventListener("change", () => {
+    syncFromSelect();
+  });
+
+  instance.observer = new MutationObserver(() => {
+    rebuildOptions();
+  });
+
+  instance.observer.observe(selectElement, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ["disabled"],
+  });
+
+  instance.rebuildOptions = rebuildOptions;
+  instance.syncFromSelect = syncFromSelect;
+  instance.close = close;
+
+  customSelectMap.set(selectElement, instance);
+  customSelectInstances.push(instance);
+  rebuildOptions();
+}
+
+function refreshCustomSelect(selectElement) {
+  const instance = customSelectMap.get(selectElement);
+  if (!instance || !instance.selectElement.isConnected) return;
+  instance.rebuildOptions();
+}
+
+function refreshAllCustomSelects() {
+  for (let index = customSelectInstances.length - 1; index >= 0; index -= 1) {
+    const instance = customSelectInstances[index];
+    if (!instance.selectElement.isConnected) {
+      instance.observer?.disconnect();
+      customSelectInstances.splice(index, 1);
+      continue;
+    }
+    instance.rebuildOptions();
+  }
+}
+
+function closeAllCustomSelects(exceptInstance = null) {
+  customSelectInstances.forEach((instance) => {
+    if (!instance.selectElement.isConnected) return;
+    if (exceptInstance && instance === exceptInstance) return;
+    instance.close();
   });
 }
 
@@ -1459,6 +1727,7 @@ function setSelectOptionLabel(selectElement, value, text) {
   const option = selectElement.querySelector(`option[value="${value}"]`);
   if (option) {
     option.textContent = text;
+    refreshCustomSelect(selectElement);
   }
 }
 
@@ -1501,6 +1770,8 @@ function fillSelectWithOptions(selectElement, options, selectedValue) {
     }
     selectElement.append(option);
   });
+
+  refreshCustomSelect(selectElement);
 
   return currentValue;
 }
@@ -1549,6 +1820,7 @@ function applyThemeMode(mode, options = {}) {
   document.documentElement.dataset.themeMode = state.themeMode;
   document.documentElement.dataset.resolvedTheme = state.resolvedTheme;
   ui.themeMode.value = state.themeMode;
+  refreshCustomSelect(ui.themeMode);
 
   if (refreshEditors) {
     void refreshTinyEditors();
@@ -1608,6 +1880,7 @@ function syncInputsFromState() {
 
   syncCustomPresetVisibility();
   applyOptionalFieldStates();
+  refreshAllCustomSelects();
 }
 
 function applyOptionalFieldStates() {
@@ -1644,6 +1917,7 @@ function applyOptionalFieldStates() {
   ui.socialsList.querySelectorAll("select,input,button").forEach((control) => {
     control.disabled = !state.enabled.socials;
   });
+  refreshAllCustomSelects();
 }
 
 function restoreDraft() {
@@ -1774,6 +2048,8 @@ function renderTemplateSelectOptions() {
   if (previousValue && state.templates.some((item) => item.id === previousValue)) {
     ui.mobileTemplateSelect.value = previousValue;
   }
+
+  refreshCustomSelect(ui.mobileTemplateSelect);
 }
 
 async function selectTemplate(templateId) {
@@ -1782,6 +2058,7 @@ async function selectTemplate(templateId) {
 
   state.selectedTemplateId = template.id;
   ui.mobileTemplateSelect.value = template.id;
+  refreshCustomSelect(ui.mobileTemplateSelect);
   ui.previewTemplateName.textContent = localizedTemplateName(template);
   ensureTemplatePalette(template);
   syncPaletteInputs(template);
@@ -1987,6 +2264,12 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     .contact-chip-value{
       word-break: break-word;
     }
+    .contact-chip-plain{
+      grid-template-columns: 1fr !important;
+    }
+    .contact-chip-plain .contact-chip-tag{
+      display: none !important;
+    }
     .contact-logo-img{
       max-height: 56px;
       width: auto;
@@ -2174,19 +2457,19 @@ function buildContactBlockHtml(options = {}) {
   const defs = [
     {
       key: "contactName",
-      shortLabel: "os.",
+      shortLabel: "",
       value: normalizeInlineText(state.fields.contactName),
       placeholder: ui.fieldContactName.placeholder,
     },
     {
       key: "contactRole",
-      shortLabel: "rola",
+      shortLabel: "",
       value: normalizeInlineText(state.fields.contactRole),
       placeholder: ui.fieldContactRole.placeholder,
     },
     {
       key: "contactCompany",
-      shortLabel: "firma",
+      shortLabel: "",
       value: normalizeInlineText(state.fields.contactCompany),
       placeholder: ui.fieldContactCompany.placeholder,
     },
@@ -2235,8 +2518,8 @@ function buildContactBlockHtml(options = {}) {
     if (def.key === "contactWebsite" && def.value) {
       const safeUrl = normalizeWebsiteUrl(def.value);
       lines.push(`
-        <div class="contact-line contact-chip${isPlaceholder ? " app-placeholder" : ""}">
-          <span class="contact-chip-tag">${escapeHtml(def.shortLabel)}</span>
+        <div class="contact-line contact-chip${def.shortLabel ? "" : " contact-chip-plain"}${isPlaceholder ? " app-placeholder" : ""}">
+          ${def.shortLabel ? `<span class="contact-chip-tag">${escapeHtml(def.shortLabel)}</span>` : ""}
           <a class="contact-chip-value" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
             def.value
           )}</a>
@@ -2246,8 +2529,8 @@ function buildContactBlockHtml(options = {}) {
     }
 
     lines.push(`
-      <div class="contact-line contact-chip${isPlaceholder ? " app-placeholder" : ""}">
-        <span class="contact-chip-tag">${escapeHtml(def.shortLabel)}</span>
+      <div class="contact-line contact-chip${def.shortLabel ? "" : " contact-chip-plain"}${isPlaceholder ? " app-placeholder" : ""}">
+        ${def.shortLabel ? `<span class="contact-chip-tag">${escapeHtml(def.shortLabel)}</span>` : ""}
         <span class="contact-chip-value">${escapeHtml(displayValue).replace(/\n/g, "<br>")}</span>
       </div>
     `);
@@ -2588,6 +2871,8 @@ function renderSocialRows() {
     ui.socialsList.append(fragment);
   }
 
+  initCustomSelects(ui.socialsList);
+  refreshAllCustomSelects();
   applyOptionalFieldStates();
 }
 
@@ -3481,7 +3766,7 @@ async function initSingleTinyEditor(config) {
       body {
         font-family: ${bodyFont};
         color: ${isDark ? "#e7eef5" : "#12202a"};
-        background: transparent;
+        background-color: ${isDark ? "#16232d" : "#ffffff"};
       }
       h1,h2,h3,h4 {
         font-family: ${headingFont};
