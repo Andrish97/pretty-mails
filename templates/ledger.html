@@ -8,167 +8,231 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f4f1ea;
-      --card: #fffdf8;
-      --text: #32291f;
-      --muted: #706152;
-      --line: #ddd2c2;
-      --accent: var(--template-accent, #9a6a40);
-      --accent-2: var(--template-accent-2, #d0a175);
-      --accent-3: var(--template-accent-3, #634126);
-      --quote-bg: #f6ebde;
+      --c1: var(--template-accent-1, #9a6a40);
+      --c2: var(--template-accent-2, #d0a175);
+      --c3: var(--template-accent-3, #634126);
+      --bg: color-mix(in srgb, var(--c2) 10%, #ffffff);
+      --paper: color-mix(in srgb, var(--c1) 6%, #ffffff);
+      --line: color-mix(in srgb, var(--c3) 20%, #d0d5dd);
+      --text: color-mix(in srgb, var(--c3) 58%, #1a140f);
+      --muted: color-mix(in srgb, var(--c3) 40%, #766354);
+      --row: color-mix(in srgb, var(--c2) 12%, transparent);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #181410;
-        --card: #231c16;
-        --text: #f2e7da;
-        --muted: #c6b29e;
-        --line: #49392d;
-        --quote-bg: #32251c;
+        --bg: color-mix(in srgb, var(--c3) 34%, #0f0c09);
+        --paper: color-mix(in srgb, var(--c3) 30%, #1a1410);
+        --line: color-mix(in srgb, var(--c2) 24%, #4a3d30);
+        --text: color-mix(in srgb, var(--c2) 16%, #f3e9dc);
+        --muted: color-mix(in srgb, var(--c2) 32%, #c8b59f);
+        --row: color-mix(in srgb, var(--c2) 16%, transparent);
       }
     }
 
     html.forced-light {
-      --bg: #f4f1ea;
-      --card: #fffdf8;
-      --text: #32291f;
-      --muted: #706152;
-      --line: #ddd2c2;
-      --quote-bg: #f6ebde;
+      --bg: color-mix(in srgb, var(--c2) 10%, #ffffff);
+      --paper: color-mix(in srgb, var(--c1) 6%, #ffffff);
+      --line: color-mix(in srgb, var(--c3) 20%, #d0d5dd);
+      --text: color-mix(in srgb, var(--c3) 58%, #1a140f);
+      --muted: color-mix(in srgb, var(--c3) 40%, #766354);
+      --row: color-mix(in srgb, var(--c2) 12%, transparent);
     }
 
     html.forced-dark {
-      --bg: #181410;
-      --card: #231c16;
-      --text: #f2e7da;
-      --muted: #c6b29e;
-      --line: #49392d;
-      --quote-bg: #32251c;
+      --bg: color-mix(in srgb, var(--c3) 34%, #0f0c09);
+      --paper: color-mix(in srgb, var(--c3) 30%, #1a1410);
+      --line: color-mix(in srgb, var(--c2) 24%, #4a3d30);
+      --text: color-mix(in srgb, var(--c2) 16%, #f3e9dc);
+      --muted: color-mix(in srgb, var(--c2) 32%, #c8b59f);
+      --row: color-mix(in srgb, var(--c2) 16%, transparent);
     }
 
     body {
       margin: 0;
       padding: 24px 12px;
-      font: 16px/1.64 "Lora", "Georgia", serif;
-      color: var(--text);
+      font: 16px/1.62 "Lora", "Georgia", serif;
       background: var(--bg);
+      color: var(--text);
     }
 
     .mail-shell {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      background: var(--card);
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: 54px 1fr;
     }
 
-    .mail-shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background-image: linear-gradient(to bottom, color-mix(in srgb, var(--accent-2) 18%, transparent) 1px, transparent 1px);
-      background-size: 100% 34px;
-      opacity: 0.28;
+    .mail-gutter {
+      border-right: 1px solid var(--line);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--c2) 22%, transparent),
+          color-mix(in srgb, var(--c2) 22%, transparent) 1px,
+          transparent 1px,
+          transparent 34px
+        );
     }
 
-    .mail-shell > * {
-      position: relative;
-      z-index: 1;
+    .mail-main {
+      padding: 18px 16px;
+      display: grid;
+      gap: 10px;
+      counter-reset: part;
     }
 
-    .mail-greeting,
-    .mail-closing,
-    .mail-sender {
-      margin: 0 0 14px;
-    }
-
-    .mail-content {
-      min-height: 20px;
-    }
-
-    .mail-quote {
-      margin: 20px 0;
-      padding: 12px 14px;
+    .mail-main > .mail-greeting,
+    .mail-main > .mail-content,
+    .mail-main > .mail-quote,
+    .mail-main > .mail-attachments,
+    .mail-main > .mail-signature-block {
+      margin: 0;
       border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
-      border-radius: 8px;
-      background: var(--quote-bg);
+      background: var(--row);
+      padding: 10px 12px 10px 56px;
+      position: relative;
+      counter-increment: part;
+      min-height: 22px;
     }
 
-    .mail-quote-label {
-      margin: 0 0 8px;
-      font-size: 12px;
+    .mail-main > .mail-greeting::before,
+    .mail-main > .mail-content::before,
+    .mail-main > .mail-quote::before,
+    .mail-main > .mail-attachments::before,
+    .mail-main > .mail-signature-block::before {
+      content: counter(part, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 44px;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font: 700 11px/1.2 "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      font-weight: 700;
-      font-family: "Inter", "Segoe UI", sans-serif;
     }
 
-    .mail-signature-block {
-      margin-top: 22px;
-      padding-top: 16px;
-      border-top: 1px dashed color-mix(in srgb, var(--accent-3) 35%, var(--line));
-      font-family: "Inter", "Segoe UI", sans-serif;
+    .mail-content > :first-child,
+    .mail-quote-body > :first-child {
+      margin-top: 0;
     }
 
-    .mail-contact-block {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
+    .mail-content > :last-child,
+    .mail-quote-body > :last-child {
+      margin-bottom: 0;
+    }
+
+    .mail-attachments-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       display: grid;
       gap: 6px;
     }
 
-    .contact-line {
+    .mail-attachment-item {
       display: grid;
-      grid-template-columns: 150px 1fr;
+      grid-template-columns: 62px 1fr auto;
       gap: 8px;
+      align-items: center;
+      font: 13px/1.45 "Inter", "Segoe UI", sans-serif;
     }
 
-    .contact-label {
-      font-weight: 600;
+    .mail-attachment-kind {
+      color: var(--c3);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .mail-attachment-size,
+    .mail-sent-block,
+    .contact-chip-tag {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mail-contact-block {
+      margin-top: 8px;
+      display: grid;
+      gap: 6px;
+      font: 13px/1.45 "Inter", "Segoe UI", sans-serif;
+    }
+
+    .contact-chip {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .contact-chip:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .contact-chip-value {
+      color: var(--text);
+      word-break: break-word;
     }
 
     .contact-socials {
-      margin-top: 6px;
+      margin-top: 3px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .contact-socials a,
-    .contact-line a {
-      color: var(--accent);
+    .contact-social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
     }
 
-    .mail-sent-block {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 12px;
-      display: grid;
-      gap: 3px;
+    .contact-social-link svg {
+      width: 13px;
+      height: 13px;
+      color: var(--c1);
     }
 
     .app-placeholder {
       color: var(--muted);
       font-style: italic;
     }
+
+    @media (max-width: 680px) {
+      .mail-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .mail-gutter {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="mail-shell">
-    {{greeting_block}}
-    <section class="mail-content">{{content_block}}</section>
-    {{quote_block}}
-    {{signature_block}}
+    <aside class="mail-gutter" aria-hidden="true"></aside>
+    <section class="mail-main">
+      {{greeting_block}}
+      {{content_block}}
+      {{quote_block}}
+      {{attachments_block}}
+      {{signature_block}}
+    </section>
   </main>
 </body>
 </html>

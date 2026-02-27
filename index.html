@@ -170,9 +170,12 @@
               <input id="fieldClosingCustom" type="text" placeholder="Np. Dzięki i do usłyszenia">
             </div>
 
-            <div class="field-block">
+            <div class="field-block" data-optional-key="senderName">
               <label class="field-main-label" id="fieldSenderNameLabel" for="fieldSenderName">Nadawca</label>
-              <input id="fieldSenderName" type="text" placeholder="Imię i nazwisko" autocomplete="name">
+              <div class="field-toggle-row">
+                <label class="field-toggle-inline"><input id="toggleSenderName" type="checkbox"><span id="toggleSenderNameLabel">Pokaż</span></label>
+                <input id="fieldSenderName" type="text" placeholder="Imię i nazwisko" autocomplete="name">
+              </div>
             </div>
           </section>
 

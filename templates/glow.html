@@ -8,133 +8,211 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #eef0fa;
-      --card: #ffffff;
-      --text: #1a1f30;
-      --muted: #616887;
-      --line: #d8dced;
-      --accent: var(--template-accent, #5d57d9);
-      --accent-2: var(--template-accent-2, #8f89ea);
-      --accent-3: var(--template-accent-3, #3d39a5);
-      --quote-bg: #f2f1ff;
+      --c1: var(--template-accent-1, #5d57d9);
+      --c2: var(--template-accent-2, #8f89ea);
+      --c3: var(--template-accent-3, #3d39a5);
+      --bg: color-mix(in srgb, var(--c1) 9%, #ffffff);
+      --panel: #ffffff;
+      --line: color-mix(in srgb, var(--c3) 20%, #d0d3ee);
+      --text: color-mix(in srgb, var(--c3) 58%, #121428);
+      --muted: color-mix(in srgb, var(--c3) 40%, #6a6f91);
+      --halo: color-mix(in srgb, var(--c2) 32%, transparent);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #111425;
-        --card: #1a2034;
-        --text: #e8eaf7;
-        --muted: #b8bde0;
-        --line: #383f61;
-        --quote-bg: #2a2c4a;
+        --bg: color-mix(in srgb, var(--c3) 36%, #090a15);
+        --panel: color-mix(in srgb, var(--c3) 30%, #121529);
+        --line: color-mix(in srgb, var(--c2) 24%, #3b3f66);
+        --text: color-mix(in srgb, var(--c2) 16%, #f0f1fb);
+        --muted: color-mix(in srgb, var(--c2) 32%, #b9bcde);
+        --halo: color-mix(in srgb, var(--c2) 42%, transparent);
       }
     }
 
     html.forced-light {
-      --bg: #eef0fa;
-      --card: #ffffff;
-      --text: #1a1f30;
-      --muted: #616887;
-      --line: #d8dced;
-      --quote-bg: #f2f1ff;
+      --bg: color-mix(in srgb, var(--c1) 9%, #ffffff);
+      --panel: #ffffff;
+      --line: color-mix(in srgb, var(--c3) 20%, #d0d3ee);
+      --text: color-mix(in srgb, var(--c3) 58%, #121428);
+      --muted: color-mix(in srgb, var(--c3) 40%, #6a6f91);
+      --halo: color-mix(in srgb, var(--c2) 32%, transparent);
     }
 
     html.forced-dark {
-      --bg: #111425;
-      --card: #1a2034;
-      --text: #e8eaf7;
-      --muted: #b8bde0;
-      --line: #383f61;
-      --quote-bg: #2a2c4a;
+      --bg: color-mix(in srgb, var(--c3) 36%, #090a15);
+      --panel: color-mix(in srgb, var(--c3) 30%, #121529);
+      --line: color-mix(in srgb, var(--c2) 24%, #3b3f66);
+      --text: color-mix(in srgb, var(--c2) 16%, #f0f1fb);
+      --muted: color-mix(in srgb, var(--c2) 32%, #b9bcde);
+      --halo: color-mix(in srgb, var(--c2) 42%, transparent);
     }
 
     body {
       margin: 0;
       padding: 24px 12px;
       font: 16px/1.58 "IBM Plex Sans", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--c2) 16%, transparent), transparent 42%),
+        radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 48%),
+        var(--bg);
       color: var(--text);
-      background: var(--bg);
     }
 
     .mail-shell {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto;
-      border-radius: 16px;
       border: 1px solid var(--line);
-      background: var(--card);
-      padding: 24px;
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 16px;
       box-shadow:
-        0 10px 30px color-mix(in srgb, var(--accent-3) 18%, transparent),
-        0 0 0 1px color-mix(in srgb, var(--accent-2) 20%, transparent);
+        0 0 0 1px color-mix(in srgb, var(--c2) 20%, transparent),
+        0 16px 36px color-mix(in srgb, var(--c3) 20%, transparent);
+      display: grid;
+      gap: 12px;
     }
 
-    .mail-greeting,
-    .mail-closing,
-    .mail-sender {
-      margin: 0 0 14px;
-    }
-
-    .mail-content {
-      min-height: 20px;
-    }
-
-    .mail-quote {
-      margin: 20px 0;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
-      border-radius: 10px;
-      background: var(--quote-bg);
-    }
-
-    .mail-quote-label {
-      margin: 0 0 8px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
+    .mail-content,
+    .mail-quote,
+    .mail-attachments,
     .mail-signature-block {
-      margin-top: 22px;
-      padding-top: 16px;
-      border-top: 1px solid color-mix(in srgb, var(--accent-2) 32%, var(--line));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: color-mix(in srgb, var(--c3) 8%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--halo) 45%, transparent);
     }
 
-    .mail-contact-block {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
-      display: grid;
-      gap: 6px;
-    }
-
-    .contact-line {
-      display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 8px;
-    }
-
-    .contact-label {
+    .mail-greeting {
+      margin: 0;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--c3) 18%, transparent), color-mix(in srgb, var(--c2) 18%, transparent));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
       font-weight: 600;
     }
 
-    .contact-socials {
-      margin-top: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .mail-content {
+      margin: 0;
+      min-height: 28px;
     }
 
-    .contact-socials a,
-    .contact-line a {
-      color: var(--accent);
+    .mail-content > :first-child,
+    .mail-quote-body > :first-child {
+      margin-top: 0;
+    }
+
+    .mail-content > :last-child,
+    .mail-quote-body > :last-child {
+      margin-bottom: 0;
+    }
+
+    .mail-quote {
+      margin: 0;
+      background: color-mix(in srgb, var(--c2) 14%, transparent);
+    }
+
+    .mail-attachments {
+      margin: 0;
+    }
+
+    .mail-attachments-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mail-attachment-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+      background: color-mix(in srgb, var(--c1) 12%, transparent);
+    }
+
+    .mail-attachment-kind {
+      color: var(--c2);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .mail-attachment-size {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mail-signature-block {
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mail-contact-block {
+      margin-top: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .contact-chip {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 7px 9px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      background: color-mix(in srgb, var(--c2) 14%, transparent);
+    }
+
+    .contact-chip-tag {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .contact-chip-value {
+      color: var(--text);
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .contact-socials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .contact-social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--c3) 18%, transparent);
+    }
+
+    .contact-social-link svg {
+      width: 13px;
+      height: 13px;
+      color: var(--c2);
     }
 
     .mail-sent-block {
-      margin-top: 12px;
       color: var(--muted);
       font-size: 12px;
       display: grid;
@@ -150,8 +228,9 @@
 <body>
   <main class="mail-shell">
     {{greeting_block}}
-    <section class="mail-content">{{content_block}}</section>
+    {{content_block}}
     {{quote_block}}
+    {{attachments_block}}
     {{signature_block}}
   </main>
 </body>

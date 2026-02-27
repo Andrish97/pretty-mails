@@ -38,6 +38,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -80,6 +81,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -122,6 +124,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -164,6 +167,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -206,6 +210,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -248,6 +253,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -290,6 +296,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -332,6 +339,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -374,6 +382,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   },
@@ -416,6 +425,7 @@
       "{{greeting_block}}",
       "{{content_block}}",
       "{{quote_block}}",
+      "{{attachments_block}}",
       "{{signature_block}}"
     ]
   }

@@ -8,147 +8,227 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #ecf4f3;
+      --c1: var(--template-accent-1, #2a9d8f);
+      --c2: var(--template-accent-2, #63c5ba);
+      --c3: var(--template-accent-3, #226c64);
+      --bg: color-mix(in srgb, var(--c1) 9%, #ffffff);
       --card: #ffffff;
-      --text: #15252a;
-      --muted: #597077;
-      --line: #d3e2e0;
-      --accent: var(--template-accent, #2a9d8f);
-      --accent-2: var(--template-accent-2, #63c5ba);
-      --accent-3: var(--template-accent-3, #226c64);
-      --quote-bg: #eff9f7;
+      --panel: color-mix(in srgb, var(--c2) 10%, #ffffff);
+      --line: color-mix(in srgb, var(--c3) 20%, #c6ddd9);
+      --text: color-mix(in srgb, var(--c3) 56%, #102020);
+      --muted: color-mix(in srgb, var(--c3) 40%, #607272);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #101a1b;
-        --card: #172729;
-        --text: #e7f0f0;
-        --muted: #a8c3c0;
-        --line: #315252;
-        --quote-bg: #1c3736;
+        --bg: color-mix(in srgb, var(--c3) 33%, #090f10);
+        --card: color-mix(in srgb, var(--c3) 28%, #121b1d);
+        --panel: color-mix(in srgb, var(--c2) 15%, #162124);
+        --line: color-mix(in srgb, var(--c2) 24%, #31484b);
+        --text: color-mix(in srgb, var(--c2) 14%, #edf7f6);
+        --muted: color-mix(in srgb, var(--c2) 30%, #b3c9c7);
       }
     }
 
     html.forced-light {
-      --bg: #ecf4f3;
+      --bg: color-mix(in srgb, var(--c1) 9%, #ffffff);
       --card: #ffffff;
-      --text: #15252a;
-      --muted: #597077;
-      --line: #d3e2e0;
-      --quote-bg: #eff9f7;
+      --panel: color-mix(in srgb, var(--c2) 10%, #ffffff);
+      --line: color-mix(in srgb, var(--c3) 20%, #c6ddd9);
+      --text: color-mix(in srgb, var(--c3) 56%, #102020);
+      --muted: color-mix(in srgb, var(--c3) 40%, #607272);
     }
 
     html.forced-dark {
-      --bg: #101a1b;
-      --card: #172729;
-      --text: #e7f0f0;
-      --muted: #a8c3c0;
-      --line: #315252;
-      --quote-bg: #1c3736;
+      --bg: color-mix(in srgb, var(--c3) 33%, #090f10);
+      --card: color-mix(in srgb, var(--c3) 28%, #121b1d);
+      --panel: color-mix(in srgb, var(--c2) 15%, #162124);
+      --line: color-mix(in srgb, var(--c2) 24%, #31484b);
+      --text: color-mix(in srgb, var(--c2) 14%, #edf7f6);
+      --muted: color-mix(in srgb, var(--c2) 30%, #b3c9c7);
     }
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 16px/1.58 "Plus Jakarta Sans", "Segoe UI", sans-serif;
       padding: 24px 12px;
+      font: 16px/1.58 "Plus Jakarta Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
     }
 
     .mail-shell {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       background: var(--card);
-      padding: 22px;
-      position: relative;
       overflow: hidden;
-      box-shadow: 0 10px 26px color-mix(in srgb, var(--accent-3) 12%, transparent);
+      display: grid;
+      grid-template-columns: 10px 1fr;
     }
 
-    .mail-shell::before {
+    .mail-stripe {
+      background: linear-gradient(180deg, var(--c3), var(--c1), var(--c2));
+    }
+
+    .mail-stack {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .mail-greeting {
+      margin: 0;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: linear-gradient(120deg, color-mix(in srgb, var(--c1) 22%, transparent), color-mix(in srgb, var(--c2) 20%, transparent));
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+
+    .mail-content {
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c2) 10%, transparent);
+    }
+
+    .mail-content > :first-child,
+    .mail-quote-body > :first-child {
+      margin-top: 0;
+    }
+
+    .mail-content > :last-child,
+    .mail-quote-body > :last-child {
+      margin-bottom: 0;
+    }
+
+    .mail-quote {
+      margin: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--c2) 16%, transparent);
+      position: relative;
+    }
+
+    .mail-quote::before {
       content: "";
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
-      width: 8px;
-      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      width: 4px;
+      border-radius: 12px 0 0 12px;
+      background: var(--c1);
     }
 
-    .mail-shell-inner {
-      padding-left: 10px;
+    .mail-attachments {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
     }
 
-    .mail-content {
-      min-height: 20px;
-    }
-
-    .mail-greeting,
-    .mail-closing,
-    .mail-sender {
-      margin: 0 0 14px;
-    }
-
-    .mail-quote {
-      margin: 20px 0;
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent-2);
-      border-radius: 8px;
-      background: var(--quote-bg);
-      padding: 12px 14px;
-    }
-
-    .mail-quote-label {
-      margin: 0 0 8px;
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-    }
-
-    .mail-signature-block {
-      margin-top: 22px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
-    }
-
-    .mail-contact-block {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
+    .mail-attachments-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       display: grid;
-      gap: 6px;
-    }
-
-    .contact-line {
-      display: grid;
-      grid-template-columns: 150px 1fr;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 8px;
     }
 
-    .contact-label {
-      font-weight: 600;
+    .mail-attachment-item {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      display: grid;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .mail-attachment-kind {
+      color: var(--c1);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .mail-attachment-size {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mail-signature-block {
+      margin: 0;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(140deg, color-mix(in srgb, var(--c3) 16%, transparent), color-mix(in srgb, var(--c2) 8%, transparent));
+      display: grid;
+      gap: 8px;
+    }
+
+    .mail-contact-block {
+      margin-top: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .contact-chip {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 8px;
+      align-items: center;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--c2) 18%, transparent);
+      padding: 6px 8px;
+    }
+
+    .contact-chip-tag {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .contact-chip-value {
+      color: var(--text);
+      word-break: break-word;
+      font-size: 13px;
     }
 
     .contact-socials {
-      margin-top: 6px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 4px;
     }
 
-    .contact-socials a,
-    .contact-line a {
-      color: var(--accent);
+    .contact-social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--c1) 18%, transparent);
+    }
+
+    .contact-social-link svg {
+      width: 13px;
+      height: 13px;
     }
 
     .mail-sent-block {
-      margin-top: 12px;
       color: var(--muted);
       font-size: 12px;
       display: grid;
@@ -163,12 +243,14 @@
 </head>
 <body>
   <main class="mail-shell">
-    <div class="mail-shell-inner">
+    <aside class="mail-stripe" aria-hidden="true"></aside>
+    <section class="mail-stack">
       {{greeting_block}}
-      <section class="mail-content">{{content_block}}</section>
+      {{content_block}}
       {{quote_block}}
+      {{attachments_block}}
       {{signature_block}}
-    </div>
+    </section>
   </main>
 </body>
 </html>

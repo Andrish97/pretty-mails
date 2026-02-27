@@ -24,6 +24,7 @@ const OPTIONAL_DEFAULTS = {
   greeting: false,
   content: false,
   closing: false,
+  senderName: false,
   contactName: false,
   contactRole: false,
   contactCompany: false,
@@ -38,14 +39,14 @@ const OPTIONAL_DEFAULTS = {
 };
 
 const SOCIAL_NETWORKS = [
-  { value: "linkedin", icon: "💼", labelKey: "socialLinkedin" },
-  { value: "facebook", icon: "📘", labelKey: "socialFacebook" },
-  { value: "instagram", icon: "📸", labelKey: "socialInstagram" },
-  { value: "x", icon: "𝕏", labelKey: "socialX" },
-  { value: "youtube", icon: "▶️", labelKey: "socialYoutube" },
-  { value: "tiktok", icon: "🎵", labelKey: "socialTiktok" },
-  { value: "github", icon: "🐙", labelKey: "socialGithub" },
-  { value: "website", icon: "🌐", labelKey: "socialWebsite" },
+  { value: "linkedin", labelKey: "socialLinkedin", short: "in" },
+  { value: "facebook", labelKey: "socialFacebook", short: "fb" },
+  { value: "instagram", labelKey: "socialInstagram", short: "ig" },
+  { value: "x", labelKey: "socialX", short: "x" },
+  { value: "youtube", labelKey: "socialYoutube", short: "yt" },
+  { value: "tiktok", labelKey: "socialTiktok", short: "tt" },
+  { value: "github", labelKey: "socialGithub", short: "gh" },
+  { value: "website", labelKey: "socialWebsite", short: "www" },
 ];
 
 const I18N = {
@@ -118,7 +119,7 @@ const I18N = {
     fieldContactCompanyLabel: "Nazwa firmy",
     fieldContactCompanyPlaceholder: "Nazwa firmy",
     fieldContactLogoLabel: "Logo firmy (załącznik)",
-    fieldContactLogoHint: "Logo dodawane jest jako osobny załącznik.",
+    fieldContactLogoHint: "Logo pojawi się w podpisie wiadomości.",
     fieldContactPhoneLabel: "Numer telefonu",
     fieldContactPhonePlaceholder: "+48 000 000 000",
     fieldContactEmailLabel: "Adres e-mail",
@@ -309,7 +310,7 @@ const I18N = {
     fieldContactCompanyLabel: "Company",
     fieldContactCompanyPlaceholder: "Company name",
     fieldContactLogoLabel: "Company logo (attachment)",
-    fieldContactLogoHint: "Logo is added as a separate attachment.",
+    fieldContactLogoHint: "Logo is embedded in the message signature.",
     fieldContactPhoneLabel: "Phone number",
     fieldContactPhonePlaceholder: "+1 000 000 000",
     fieldContactEmailLabel: "Email address",
@@ -498,7 +499,7 @@ const I18N = {
     fieldContactCompanyLabel: "Назва компанії",
     fieldContactCompanyPlaceholder: "Назва компанії",
     fieldContactLogoLabel: "Логотип компанії (вкладення)",
-    fieldContactLogoHint: "Логотип додається як окреме вкладення.",
+    fieldContactLogoHint: "Логотип вбудовується у підпис листа.",
     fieldContactPhoneLabel: "Номер телефону",
     fieldContactPhonePlaceholder: "+380 00 000 00 00",
     fieldContactEmailLabel: "Електронна пошта",
@@ -771,6 +772,8 @@ const ui = {
   toggleContentLabel: document.querySelector("#toggleContentLabel"),
   toggleClosing: document.querySelector("#toggleClosing"),
   toggleClosingLabel: document.querySelector("#toggleClosingLabel"),
+  toggleSenderName: document.querySelector("#toggleSenderName"),
+  toggleSenderNameLabel: document.querySelector("#toggleSenderNameLabel"),
 
   toggleContactName: document.querySelector("#toggleContactName"),
   toggleContactNameLabel: document.querySelector("#toggleContactNameLabel"),
@@ -854,6 +857,7 @@ const OPTIONAL_BINDINGS = {
   },
   content: { toggle: () => ui.toggleContent, controls: () => [ui.fieldContent] },
   closing: { toggle: () => ui.toggleClosing, controls: () => [ui.fieldClosingPreset, ui.fieldClosingCustom] },
+  senderName: { toggle: () => ui.toggleSenderName, controls: () => [ui.fieldSenderName] },
   contactName: { toggle: () => ui.toggleContactName, controls: () => [ui.fieldContactName] },
   contactRole: { toggle: () => ui.toggleContactRole, controls: () => [ui.fieldContactRole] },
   contactCompany: { toggle: () => ui.toggleContactCompany, controls: () => [ui.fieldContactCompany] },
@@ -1027,9 +1031,14 @@ function bindEvents() {
     renderPreview();
   });
 
-  ui.contactLogoInput.addEventListener("change", () => {
+  ui.contactLogoInput.addEventListener("change", async () => {
     const file = ui.contactLogoInput.files?.[0] || null;
-    setLogoAttachment(file);
+    try {
+      await setLogoAttachment(file);
+    } catch (error) {
+      console.error(error);
+      clearLogoAttachment();
+    }
   });
 
   ui.addFilesBtn.addEventListener("click", () => {
@@ -1359,6 +1368,7 @@ function applyLanguage(language) {
     ui.toggleGreetingLabel,
     ui.toggleContentLabel,
     ui.toggleClosingLabel,
+    ui.toggleSenderNameLabel,
     ui.toggleContactNameLabel,
     ui.toggleContactRoleLabel,
     ui.toggleContactCompanyLabel,
@@ -1382,6 +1392,7 @@ function applyLanguage(language) {
     [ui.toggleGreeting, t("fieldGreetingLabel")],
     [ui.toggleContent, t("fieldContentLabel")],
     [ui.toggleClosing, t("fieldClosingLabel")],
+    [ui.toggleSenderName, t("fieldSenderNameLabel")],
     [ui.toggleContactName, t("fieldContactNameLabel")],
     [ui.toggleContactRole, t("fieldContactRoleLabel")],
     [ui.toggleContactCompany, t("fieldContactCompanyLabel")],
@@ -1934,6 +1945,7 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     greeting_block: buildGreetingBlockHtml({ showPlaceholders }),
     content_block: buildContentBlockHtml({ showPlaceholders }),
     quote_block: buildQuoteBlockHtml({ showPlaceholders }),
+    attachments_block: buildAttachmentsBlockHtml({ showPlaceholders }),
     signature_block: buildSignatureBlockHtml({ showPlaceholders }),
   };
 
@@ -1951,10 +1963,46 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
 
   const palette = getTemplatePalette(template);
   const themeStyle = doc.createElement("style");
-  themeStyle.textContent =
-    `:root{--template-accent:${palette.accent};` +
-    `--template-accent-2:${palette.accent2};` +
-    `--template-accent-3:${palette.accent3};}`;
+  themeStyle.textContent = `
+    :root{
+      --template-accent:${palette.accent};
+      --template-accent-1:${palette.accent};
+      --template-accent-2:${palette.accent2};
+      --template-accent-3:${palette.accent3};
+    }
+    .mail-content > :first-child,
+    .mail-quote-body > :first-child{
+      margin-top: 0;
+    }
+    .mail-content > :last-child,
+    .mail-quote-body > :last-child{
+      margin-bottom: 0;
+    }
+    .mail-attachments-list{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .mail-attachment-name,
+    .contact-chip-value{
+      word-break: break-word;
+    }
+    .contact-logo-img{
+      max-height: 56px;
+      width: auto;
+      max-width: 220px;
+      display: block;
+      border-radius: 6px;
+    }
+    .contact-social-link svg{
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+    .app-placeholder{
+      opacity: .9;
+    }
+  `;
   doc.head.append(themeStyle);
 
   return `<!doctype html>\n${doc.documentElement.outerHTML}`;
@@ -2003,14 +2051,16 @@ function buildContentBlockHtml(options = {}) {
 
   const contentHtml = normalizeEditorHtml(state.fields.content);
   if (contentHtml) {
-    return contentHtml;
+    return `<section class="mail-content">${contentHtml}</section>`;
   }
 
   if (!showPlaceholders) {
     return "";
   }
 
-  return `<p class="app-placeholder">${escapeHtml(ui.fieldContent.placeholder)}</p>`;
+  return `<section class="mail-content"><p class="app-placeholder">${escapeHtml(
+    ui.fieldContent.placeholder
+  )}</p></section>`;
 }
 
 function buildQuoteBlockHtml(options = {}) {
@@ -2027,8 +2077,36 @@ function buildQuoteBlockHtml(options = {}) {
   const body = quoteHtml || `<p class="app-placeholder">${escapeHtml(ui.fieldQuote.placeholder)}</p>`;
   return `
     <section class="mail-quote">
-      <p class="mail-quote-label">${escapeHtml(t("fieldQuoteLabel"))}</p>
       <div class="mail-quote-body">${body}</div>
+    </section>
+  `;
+}
+
+function buildAttachmentsBlockHtml(options = {}) {
+  const attachments = state.attachments;
+
+  if (!attachments.length) {
+    return "";
+  }
+
+  const items = attachments
+    .map((item) => {
+      const kind = fileKindLabel(item.kind);
+      const name = escapeHtml(item.file.name);
+      const size = escapeHtml(formatBytes(item.file.size));
+      return `
+        <li class="mail-attachment-item">
+          <span class="mail-attachment-kind">${kind}</span>
+          <span class="mail-attachment-name">${name}</span>
+          <span class="mail-attachment-size">${size}</span>
+        </li>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="mail-attachments">
+      <ul class="mail-attachments-list">${items}</ul>
     </section>
   `;
 }
@@ -2039,7 +2117,7 @@ function buildSignatureBlockHtml(options = {}) {
   const closingText = resolveClosingText();
   const senderName = normalizeInlineText(state.fields.senderName);
   const hasClosing = state.enabled.closing && Boolean(closingText || showPlaceholders);
-  const hasSender = Boolean(senderName || showPlaceholders);
+  const hasSender = state.enabled.senderName && Boolean(senderName || showPlaceholders);
 
   const closingLine = hasClosing
     ? `<p class="mail-closing${closingText ? "" : " app-placeholder"}">${escapeHtml(
@@ -2091,47 +2169,48 @@ function resolveClosingText() {
 
 function buildContactBlockHtml(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
+  const senderValue = state.enabled.senderName ? normalizeInlineText(state.fields.senderName) : "";
 
   const defs = [
     {
       key: "contactName",
-      label: t("fieldContactNameLabel"),
+      shortLabel: "os.",
       value: normalizeInlineText(state.fields.contactName),
       placeholder: ui.fieldContactName.placeholder,
     },
     {
       key: "contactRole",
-      label: t("fieldContactRoleLabel"),
+      shortLabel: "rola",
       value: normalizeInlineText(state.fields.contactRole),
       placeholder: ui.fieldContactRole.placeholder,
     },
     {
       key: "contactCompany",
-      label: t("fieldContactCompanyLabel"),
+      shortLabel: "firma",
       value: normalizeInlineText(state.fields.contactCompany),
       placeholder: ui.fieldContactCompany.placeholder,
     },
     {
       key: "contactPhone",
-      label: t("fieldContactPhoneLabel"),
+      shortLabel: "tel",
       value: normalizeInlineText(state.fields.contactPhone),
       placeholder: ui.fieldContactPhone.placeholder,
     },
     {
       key: "contactEmail",
-      label: t("fieldContactEmailLabel"),
+      shortLabel: "mail",
       value: normalizeInlineText(state.fields.contactEmail),
       placeholder: ui.fieldContactEmail.placeholder,
     },
     {
       key: "contactWebsite",
-      label: t("fieldContactWebsiteLabel"),
+      shortLabel: "www",
       value: normalizeInlineText(state.fields.contactWebsite),
       placeholder: ui.fieldContactWebsite.placeholder,
     },
     {
       key: "contactAddress",
-      label: t("fieldContactAddressLabel"),
+      shortLabel: "adr",
       value: normalizeMultilineText(state.fields.contactAddress),
       placeholder: ui.fieldContactAddress.placeholder,
     },
@@ -2141,6 +2220,7 @@ function buildContactBlockHtml(options = {}) {
 
   defs.forEach((def) => {
     if (!state.enabled[def.key]) return;
+    if (def.key === "contactName" && def.value && senderValue && valuesLikelyDuplicate(def.value, senderValue)) return;
 
     if (!def.value && !showPlaceholders) return;
 
@@ -2155,31 +2235,33 @@ function buildContactBlockHtml(options = {}) {
     if (def.key === "contactWebsite" && def.value) {
       const safeUrl = normalizeWebsiteUrl(def.value);
       lines.push(`
-        <div class="contact-line${isPlaceholder ? " app-placeholder" : ""}">
-          <span class="contact-label">${escapeHtml(def.label)}:</span>
-          <span class="contact-value"><a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
-        def.value
-      )}</a></span>
+        <div class="contact-line contact-chip${isPlaceholder ? " app-placeholder" : ""}">
+          <span class="contact-chip-tag">${escapeHtml(def.shortLabel)}</span>
+          <a class="contact-chip-value" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+            def.value
+          )}</a>
         </div>
       `);
       return;
     }
 
     lines.push(`
-      <div class="contact-line${isPlaceholder ? " app-placeholder" : ""}">
-        <span class="contact-label">${escapeHtml(def.label)}:</span>
-        <span class="contact-value">${escapeHtml(displayValue).replace(/\n/g, "<br>")}</span>
+      <div class="contact-line contact-chip${isPlaceholder ? " app-placeholder" : ""}">
+        <span class="contact-chip-tag">${escapeHtml(def.shortLabel)}</span>
+        <span class="contact-chip-value">${escapeHtml(displayValue).replace(/\n/g, "<br>")}</span>
       </div>
     `);
   });
 
   if (state.enabled.contactLogo) {
-    const logoName = state.logoAttachment?.file?.name || "";
-    if (logoName || showPlaceholders) {
+    const logoUrl = state.logoAttachment?.dataUrl || "";
+    if (logoUrl || showPlaceholders) {
+      const logo = logoUrl
+        ? `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(t("fieldContactLogoLabel"))}" class="contact-logo-img">`
+        : `<span class="app-placeholder">${escapeHtml(t("logoPlaceholder"))}</span>`;
       lines.push(`
-        <div class="contact-line${logoName ? "" : " app-placeholder"}">
-          <span class="contact-label">${escapeHtml(t("fieldContactLogoLabel"))}:</span>
-          <span class="contact-value">${escapeHtml(logoName || t("logoPlaceholder"))}</span>
+        <div class="contact-line contact-logo-wrap${logoUrl ? "" : " app-placeholder"}">
+          ${logo}
         </div>
       `);
     }
@@ -2192,9 +2274,12 @@ function buildContactBlockHtml(options = {}) {
         if (!url) return null;
         const network = SOCIAL_NETWORKS.find((entry) => entry.value === item.network) || SOCIAL_NETWORKS[0];
         const safeUrl = normalizeWebsiteUrl(url);
-        return `<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
-          `${network.icon} ${t(network.labelKey)}`
-        )}</a>`;
+        return `
+          <a class="contact-social-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">
+            ${socialIconSvg(network.value)}
+            <span>${escapeHtml(t(network.labelKey))}</span>
+          </a>
+        `;
       })
       .filter(Boolean);
 
@@ -2350,8 +2435,9 @@ function hasAnyExportData() {
 
   const bodyFilled = Boolean(normalizeMultilineText(buildPlainTextBody()));
   const attachmentFilled = getAllExportAttachments().length > 0;
+  const logoFilled = state.enabled.contactLogo && Boolean(state.logoAttachment?.dataUrl);
 
-  return envelopeFilled || bodyFilled || attachmentFilled;
+  return envelopeFilled || bodyFilled || attachmentFilled || logoFilled;
 }
 
 function updateActionButtons() {
@@ -2402,6 +2488,35 @@ function normalizeMultilineText(value) {
   return String(value || "").replace(/\r\n?/g, "\n").trim();
 }
 
+function valuesLikelyDuplicate(left, right) {
+  const normalize = (value) => normalizeInlineText(value).toLowerCase().replace(/\s+/g, " ");
+  const a = normalize(left);
+  const b = normalize(right);
+  return Boolean(a) && a === b;
+}
+
+function socialIconSvg(networkValue) {
+  const icons = {
+    linkedin:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM0 8h5v16H0Zm8 0h4.8v2.2h.07c.67-1.27 2.32-2.6 4.78-2.6 5.1 0 6.05 3.36 6.05 7.73V24h-5v-7.67c0-1.83-.03-4.19-2.55-4.19-2.56 0-2.95 2-2.95 4.06V24H8Z"/></svg>',
+    facebook:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.03 4.39 11.03 10.12 11.93v-8.44H7.08v-3.5h3.04V9.41c0-3.03 1.79-4.7 4.54-4.7 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.5 0-1.97.94-1.97 1.9v2.28h3.35l-.54 3.5h-2.81V24C19.61 23.1 24 18.1 24 12.07Z"/></svg>',
+    instagram:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95Zm8.9 1.35a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.77 7.73L23 22h-6.1l-4.77-6.23L6.67 22H3.55l7.24-8.27L1 2h6.25l4.3 5.67L18.9 2Zm-1.07 18h1.69L6.33 3.9H4.52Z"/></svg>',
+    youtube:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 7.2a3 3 0 0 0-2.1-2.12C19.52 4.5 12 4.5 12 4.5s-7.52 0-9.4.58A3 3 0 0 0 .5 7.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.12c1.88.58 9.4.58 9.4.58s7.52 0 9.4-.58a3 3 0 0 0 2.1-2.12A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-4.8ZM9.6 15.3V8.7l6 3.3-6 3.3Z"/></svg>',
+    tiktok:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.2 2h3.05c.2 1.7 1.17 3.1 2.75 3.86v3.07a7.8 7.8 0 0 1-2.77-.73v6.3a6.5 6.5 0 1 1-6.49-6.5c.45 0 .9.05 1.33.15v3.2a3.3 3.3 0 0 0-1.33-.28 3.35 3.35 0 1 0 3.45 3.35V2Z"/></svg>',
+    github:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 .5 12.27c0 5.2 3.36 9.6 8.02 11.15.58.1.79-.26.79-.57v-2.2c-3.26.73-3.95-1.6-3.95-1.6-.53-1.38-1.3-1.75-1.3-1.75-1.07-.75.08-.73.08-.73 1.18.09 1.8 1.23 1.8 1.23 1.05 1.84 2.76 1.3 3.43 1 .1-.78.41-1.3.74-1.6-2.6-.3-5.33-1.33-5.33-5.93 0-1.3.46-2.37 1.22-3.2-.12-.3-.53-1.53.12-3.18 0 0 1-.33 3.3 1.23a11.15 11.15 0 0 1 6 0c2.3-1.56 3.3-1.23 3.3-1.23.65 1.65.24 2.88.12 3.18.76.83 1.22 1.9 1.22 3.2 0 4.62-2.74 5.62-5.35 5.92.42.37.8 1.08.8 2.2v3.24c0 .32.2.68.8.57a11.78 11.78 0 0 0 8.01-11.15A11.5 11.5 0 0 0 12 .5Z"/></svg>',
+    website:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm7.9 9h-3.1a15.7 15.7 0 0 0-1.5-6A8.23 8.23 0 0 1 19.9 11ZM12 4.05c.95 1.14 1.8 3.22 2.05 5.95H9.95C10.2 7.27 11.05 5.2 12 4.05ZM4.1 13h3.1c.15 2.13.67 4.24 1.5 6A8.23 8.23 0 0 1 4.1 13Zm3.1-2H4.1A8.23 8.23 0 0 1 8.7 5a15.7 15.7 0 0 0-1.5 6Zm4.8 8.95c-.95-1.14-1.8-3.22-2.05-5.95h4.1c-.25 2.73-1.1 4.8-2.05 5.95Zm2.27-6.95H9.73a19.84 19.84 0 0 1 0-2h4.54a19.84 19.84 0 0 1 0 2Zm1.03 6c.83-1.76 1.35-3.87 1.5-6h3.1a8.23 8.23 0 0 1-4.6 6Z"/></svg>',
+  };
+
+  return icons[networkValue] || icons.website;
+}
+
 function addSocialEntry() {
   state.socials.push({
     id: crypto.randomUUID(),
@@ -2449,7 +2564,7 @@ function renderSocialRows() {
       SOCIAL_NETWORKS.forEach((network) => {
         const option = document.createElement("option");
         option.value = network.value;
-        option.textContent = `${network.icon} ${t(network.labelKey)}`;
+        option.textContent = t(network.labelKey);
         option.selected = network.value === item.network;
         networkSelect.append(option);
       });
@@ -2476,7 +2591,7 @@ function renderSocialRows() {
   applyOptionalFieldStates();
 }
 
-function setLogoAttachment(file) {
+async function setLogoAttachment(file) {
   if (state.logoAttachment?.previewUrl) {
     URL.revokeObjectURL(state.logoAttachment.previewUrl);
   }
@@ -2490,11 +2605,12 @@ function setLogoAttachment(file) {
   }
 
   const isImage = file.type.startsWith("image/");
+  const dataUrl = isImage ? await readFileAsDataUrl(file) : "";
   state.logoAttachment = {
-    id: "logo",
     file,
     previewUrl: isImage ? URL.createObjectURL(file) : "",
-    kind: isImage ? "logo" : detectFileKind(file),
+    dataUrl,
+    kind: isImage ? "image" : detectFileKind(file),
   };
 
   renderAttachments();
@@ -2554,11 +2670,7 @@ function clearLogoAttachment() {
 }
 
 function getAllExportAttachments() {
-  const files = [...state.attachments];
-  if (state.enabled.contactLogo && state.logoAttachment) {
-    files.unshift(state.logoAttachment);
-  }
-  return files;
+  return [...state.attachments];
 }
 
 function buildAttachmentEnvelopeValue() {
@@ -2592,7 +2704,7 @@ function renderAttachments() {
       const visual = document.createElement("div");
       visual.className = "attachment-visual";
 
-      if (attachment.kind === "image" || attachment.kind === "logo") {
+      if (attachment.kind === "image") {
         const image = document.createElement("img");
         image.src = attachment.previewUrl;
         image.alt = attachment.file.name;
@@ -2621,16 +2733,9 @@ function renderAttachments() {
       removeButton.type = "button";
       removeButton.className = "button remove-attachment";
       removeButton.textContent = t("removeAttachment");
-
-      if (attachment.id === "logo") {
-        removeButton.addEventListener("click", () => {
-          clearLogoAttachment();
-        });
-      } else {
-        removeButton.addEventListener("click", () => {
-          removeAttachment(attachment.id);
-        });
-      }
+      removeButton.addEventListener("click", () => {
+        removeAttachment(attachment.id);
+      });
 
       tile.append(visual, meta, removeButton);
       fragment.append(tile);
@@ -2758,8 +2863,13 @@ function buildPlainTextBody() {
   if (state.enabled.quote) {
     const quote = richHtmlToPlainText(state.fields.quote);
     if (quote) {
-      parts.push(`${t("fieldQuoteLabel")}:\n${quote}`);
+      parts.push(quote);
     }
+  }
+
+  const attachmentsText = buildAttachmentsPlainText();
+  if (attachmentsText) {
+    parts.push(attachmentsText);
   }
 
   const signature = buildSignaturePlainText();
@@ -2776,6 +2886,12 @@ function buildGreetingPlainText() {
   return recipient ? `${greeting} ${recipient},` : `${greeting},`;
 }
 
+function buildAttachmentsPlainText() {
+  if (!state.attachments.length) return "";
+  const lines = state.attachments.map((attachment) => `${attachment.file.name} (${formatBytes(attachment.file.size)})`);
+  return lines.join("\n");
+}
+
 function buildSignaturePlainText() {
   const lines = [];
 
@@ -2785,7 +2901,7 @@ function buildSignaturePlainText() {
   }
 
   const sender = normalizeInlineText(state.fields.senderName);
-  if (sender) {
+  if (state.enabled.senderName && sender) {
     lines.push(sender);
   }
 
@@ -2807,33 +2923,31 @@ function buildSignaturePlainText() {
 
 function buildContactPlainLines() {
   const lines = [];
+  const senderValue = state.enabled.senderName ? normalizeInlineText(state.fields.senderName) : "";
   const defs = [
-    ["contactName", t("fieldContactNameLabel"), state.fields.contactName],
-    ["contactRole", t("fieldContactRoleLabel"), state.fields.contactRole],
-    ["contactCompany", t("fieldContactCompanyLabel"), state.fields.contactCompany],
-    ["contactPhone", t("fieldContactPhoneLabel"), state.fields.contactPhone],
-    ["contactEmail", t("fieldContactEmailLabel"), state.fields.contactEmail],
-    ["contactWebsite", t("fieldContactWebsiteLabel"), state.fields.contactWebsite],
-    ["contactAddress", t("fieldContactAddressLabel"), state.fields.contactAddress],
+    ["contactName", state.fields.contactName],
+    ["contactRole", state.fields.contactRole],
+    ["contactCompany", state.fields.contactCompany],
+    ["contactPhone", state.fields.contactPhone],
+    ["contactEmail", state.fields.contactEmail],
+    ["contactWebsite", state.fields.contactWebsite],
+    ["contactAddress", state.fields.contactAddress],
   ];
 
-  defs.forEach(([key, label, value]) => {
+  defs.forEach(([key, value]) => {
     if (!state.enabled[key]) return;
     const normalized = normalizeMultilineText(value);
     if (!normalized) return;
-    lines.push(`${label}: ${normalized.replace(/\n/g, ", ")}`);
+    if (key === "contactName" && senderValue && valuesLikelyDuplicate(normalized, senderValue)) return;
+    lines.push(normalized.replace(/\n/g, ", "));
   });
-
-  if (state.enabled.contactLogo && state.logoAttachment?.file?.name) {
-    lines.push(`${t("fieldContactLogoLabel")}: ${state.logoAttachment.file.name}`);
-  }
 
   if (state.enabled.socials) {
     state.socials.forEach((item) => {
       const url = normalizeInlineText(item.url);
       if (!url) return;
       const network = SOCIAL_NETWORKS.find((entry) => entry.value === item.network) || SOCIAL_NETWORKS[0];
-      lines.push(`${network.icon} ${t(network.labelKey)}: ${url}`);
+      lines.push(`${t(network.labelKey)} ${url}`);
     });
   }
 
@@ -3004,6 +3118,15 @@ function fileToBase64(file) {
       resolve(base64);
     };
 
+    reader.readAsDataURL(file);
+  });
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error || new Error("FileReader failed"));
+    reader.onload = () => resolve(String(reader.result || ""));
     reader.readAsDataURL(file);
   });
 }
@@ -3289,13 +3412,13 @@ async function initTinyEditors(options = {}) {
       await initSingleTinyEditor({
         target: ui.fieldContent,
         key: "content",
-        height: mobileMedia.matches ? 420 : 320,
+        height: mobileMedia.matches ? 560 : 440,
       });
 
       await initSingleTinyEditor({
         target: ui.fieldQuote,
         key: "quote",
-        height: mobileMedia.matches ? 300 : 210,
+        height: mobileMedia.matches ? 420 : 300,
       });
 
       if (tinyEditors.content) {

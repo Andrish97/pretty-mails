@@ -8,153 +8,196 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f0f0fb;
-      --card: #ffffff;
-      --text: #1e2131;
-      --muted: #656a87;
-      --line: #dbdbec;
-      --accent: var(--template-accent, #7057d6);
-      --accent-2: var(--template-accent-2, #9b86ec);
-      --accent-3: var(--template-accent-3, #4d3ca0);
-      --quote-bg: #f4f1ff;
-      --shell-grad: linear-gradient(
-        130deg,
-        color-mix(in srgb, var(--accent-3) 16%, transparent),
-        color-mix(in srgb, var(--accent-2) 12%, transparent)
-      );
+      --c1: var(--template-accent-1, #7057d6);
+      --c2: var(--template-accent-2, #9b86ec);
+      --c3: var(--template-accent-3, #4d3ca0);
+      --bg: color-mix(in srgb, var(--c2) 12%, #ffffff);
+      --glass: color-mix(in srgb, var(--c1) 7%, #ffffff);
+      --line: color-mix(in srgb, var(--c3) 18%, #cfc8ec);
+      --text: color-mix(in srgb, var(--c3) 56%, #141124);
+      --muted: color-mix(in srgb, var(--c3) 40%, #6f6889);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #131522;
-        --card: #1d2030;
-        --text: #e8e9f6;
-        --muted: #b6b9d7;
-        --line: #3a3e57;
-        --quote-bg: #2b2a45;
-        --shell-grad: linear-gradient(
-          130deg,
-          color-mix(in srgb, var(--accent-3) 26%, transparent),
-          color-mix(in srgb, var(--accent-2) 20%, transparent)
-        );
+        --bg: color-mix(in srgb, var(--c3) 34%, #0d0d17);
+        --glass: color-mix(in srgb, var(--c2) 14%, #171726);
+        --line: color-mix(in srgb, var(--c2) 24%, #3a3957);
+        --text: color-mix(in srgb, var(--c2) 14%, #f1eff9);
+        --muted: color-mix(in srgb, var(--c2) 32%, #bcb7d3);
       }
     }
 
     html.forced-light {
-      --bg: #f0f0fb;
-      --card: #ffffff;
-      --text: #1e2131;
-      --muted: #656a87;
-      --line: #dbdbec;
-      --quote-bg: #f4f1ff;
-      --shell-grad: linear-gradient(
-        130deg,
-        color-mix(in srgb, var(--accent-3) 16%, transparent),
-        color-mix(in srgb, var(--accent-2) 12%, transparent)
-      );
+      --bg: color-mix(in srgb, var(--c2) 12%, #ffffff);
+      --glass: color-mix(in srgb, var(--c1) 7%, #ffffff);
+      --line: color-mix(in srgb, var(--c3) 18%, #cfc8ec);
+      --text: color-mix(in srgb, var(--c3) 56%, #141124);
+      --muted: color-mix(in srgb, var(--c3) 40%, #6f6889);
     }
 
     html.forced-dark {
-      --bg: #131522;
-      --card: #1d2030;
-      --text: #e8e9f6;
-      --muted: #b6b9d7;
-      --line: #3a3e57;
-      --quote-bg: #2b2a45;
-      --shell-grad: linear-gradient(
-        130deg,
-        color-mix(in srgb, var(--accent-3) 26%, transparent),
-        color-mix(in srgb, var(--accent-2) 20%, transparent)
-      );
+      --bg: color-mix(in srgb, var(--c3) 34%, #0d0d17);
+      --glass: color-mix(in srgb, var(--c2) 14%, #171726);
+      --line: color-mix(in srgb, var(--c2) 24%, #3a3957);
+      --text: color-mix(in srgb, var(--c2) 14%, #f1eff9);
+      --muted: color-mix(in srgb, var(--c2) 32%, #bcb7d3);
     }
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 16px/1.58 "IBM Plex Sans", "Segoe UI", sans-serif;
       padding: 24px 12px;
+      font: 16px/1.6 "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--c2) 16%, transparent), transparent 38%),
+        radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 44%),
+        var(--bg);
     }
 
     .mail-shell {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      background-image: var(--shell-grad);
-      background-blend-mode: soft-light;
-      padding: 24px;
-      box-shadow: 0 10px 30px color-mix(in srgb, var(--accent-3) 14%, transparent);
-    }
-
-    .mail-content {
-      min-height: 20px;
+      display: grid;
+      gap: 12px;
     }
 
     .mail-greeting,
-    .mail-closing,
-    .mail-sender {
-      margin: 0 0 14px;
+    .mail-content,
+    .mail-quote,
+    .mail-attachments,
+    .mail-signature-block {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: var(--glass);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--c3) 14%, transparent);
+      backdrop-filter: blur(2px);
+    }
+
+    .mail-greeting {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: color-mix(in srgb, var(--c1) 45%, var(--text));
+    }
+
+    .mail-content {
+      margin: 0;
+      min-height: 28px;
+    }
+
+    .mail-content > :first-child,
+    .mail-quote-body > :first-child {
+      margin-top: 0;
+    }
+
+    .mail-content > :last-child,
+    .mail-quote-body > :last-child {
+      margin-bottom: 0;
     }
 
     .mail-quote {
-      margin: 20px 0;
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent-2);
-      border-radius: 10px;
-      background: var(--quote-bg);
-      padding: 12px 14px;
+      margin: 0;
+      background: linear-gradient(125deg, color-mix(in srgb, var(--c2) 24%, transparent), color-mix(in srgb, var(--c1) 14%, transparent));
     }
 
-    .mail-quote-label {
-      margin: 0 0 8px;
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
+    .mail-attachments {
+      margin: 0;
     }
 
-    .mail-signature-block {
-      margin-top: 22px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
-    }
-
-    .mail-contact-block {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
-      display: grid;
-      gap: 6px;
-    }
-
-    .contact-line {
-      display: grid;
-      grid-template-columns: 150px 1fr;
+    .mail-attachments-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
     }
 
-    .contact-label {
-      font-weight: 600;
+    .mail-attachment-item {
+      display: inline-grid;
+      gap: 3px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 7px 10px;
+      min-width: 170px;
+      background: color-mix(in srgb, var(--c2) 18%, transparent);
+      font-size: 13px;
+    }
+
+    .mail-attachment-kind {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--c3);
+    }
+
+    .mail-attachment-size {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .mail-signature-block {
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mail-contact-block {
+      margin-top: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .contact-chip {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      background: color-mix(in srgb, var(--c1) 15%, transparent);
+      border-radius: 12px;
+      padding: 7px 10px;
+    }
+
+    .contact-chip-tag {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .contact-chip-value {
+      color: var(--text);
+      font-size: 13px;
+      word-break: break-word;
     }
 
     .contact-socials {
-      margin-top: 6px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 2px;
     }
 
-    .contact-socials a,
-    .contact-line a {
-      color: var(--accent);
+    .contact-social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--c2) 20%, transparent);
+    }
+
+    .contact-social-link svg {
+      width: 13px;
+      height: 13px;
     }
 
     .mail-sent-block {
-      margin-top: 12px;
       color: var(--muted);
       font-size: 12px;
       display: grid;
@@ -170,8 +213,9 @@
 <body>
   <main class="mail-shell">
     {{greeting_block}}
-    <section class="mail-content">{{content_block}}</section>
+    {{content_block}}
     {{quote_block}}
+    {{attachments_block}}
     {{signature_block}}
   </main>
 </body>
