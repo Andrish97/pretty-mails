@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f766e">
-  <title>Mail Templates PWA</title>
+  <title>Pretty-Mails</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.svg">
@@ -14,8 +14,7 @@
 <body>
   <header class="app-header">
     <div class="topbar-section topbar-brand">
-      <h1>Mail Templates PWA</h1>
-      <p id="appSubtitle">Szablony, podgląd, załączniki i eksport wiadomości do pliku <code>.eml</code>.</p>
+      <h1>Pretty-Mails</h1>
     </div>
     <div class="topbar-section topbar-template">
       <div class="mobile-template-picker">
@@ -25,8 +24,9 @@
     </div>
 
     <div class="topbar-section topbar-send">
-      <button id="shareBtn" class="button" type="button">Udostępnij .eml</button>
+      <button id="openPreviewModalTopBtn" class="button preview-topbar-btn" type="button">Podgląd</button>
       <button id="exportBtn" class="button button-primary" type="button">Zapisz .eml</button>
+      <button id="shareBtn" class="button" type="button">Udostępnij .eml</button>
     </div>
 
     <div class="topbar-section topbar-locale">
@@ -57,26 +57,11 @@
         </ul>
       </div>
 
-      <label class="theme-switch" for="themeSwitch">
-        <input id="themeSwitch" type="checkbox" role="switch" aria-label="Motyw aplikacji">
-        <span class="theme-switch-track" aria-hidden="true">
-          <span class="theme-switch-thumb"></span>
-        </span>
-        <span id="themeSwitchLabel">Ciemny</span>
-      </label>
-
       <label class="visually-hidden" id="languageModeLabel" for="languageMode">Język</label>
       <select id="languageMode" class="visually-hidden" aria-hidden="true" tabindex="-1">
         <option value="pl">Polski</option>
         <option value="en">English</option>
         <option value="uk">Українська</option>
-      </select>
-
-      <label class="visually-hidden" id="themeModeLabel" for="themeMode">Motyw aplikacji</label>
-      <select id="themeMode" class="visually-hidden" aria-hidden="true" tabindex="-1">
-        <option value="auto">Auto</option>
-        <option value="light">Jasny</option>
-        <option value="dark">Ciemny</option>
       </select>
       <button id="infoBtn" class="button" type="button" aria-haspopup="dialog" aria-controls="infoModal">ℹ️</button>
     </div>
@@ -92,90 +77,113 @@
     </aside>
 
     <section class="workspace">
-      <div class="editor-preview-grid">
+      <div class="editor-column">
         <section class="card editor-panel">
           <h2 id="editorTitle">Edycja</h2>
 
-          <label class="field-toggle">
-            <input id="toggleTo" type="checkbox">
-            <span id="toggleToLabel">Pokaż pole Do (opcjonalne)</span>
-          </label>
-          <label class="field" data-field="to" hidden>
-            <span id="fieldToLabel">Do (opcjonalnie)</span>
+          <label class="field" data-field="to">
+            <span id="fieldToLabel">Adresat</span>
             <input id="fieldTo" type="text" placeholder="adres@example.com" autocomplete="email">
           </label>
 
-          <label class="field-toggle">
-            <input id="toggleCc" type="checkbox">
-            <span id="toggleCcLabel">Pokaż pole DW (opcjonalne)</span>
-          </label>
-          <label class="field" data-field="cc" hidden>
-            <span id="fieldCcLabel">DW (opcjonalnie)</span>
-            <input id="fieldCc" type="text" placeholder="adres@example.com, drugi@example.com" autocomplete="email">
-          </label>
+          <div class="field-block">
+            <span id="fieldCcLabel" class="field-mini-label">DW</span>
+            <div class="field-toggle-row" data-field-row="cc">
+              <label class="field-toggle field-toggle-inline">
+                <input id="toggleCc" type="checkbox">
+                <span id="toggleCcLabel">Pokaż</span>
+              </label>
+              <label class="field" data-field="cc">
+                <input id="fieldCc" type="text" placeholder="adres@example.com, drugi@example.com" autocomplete="email">
+              </label>
+            </div>
+          </div>
 
-          <label class="field-toggle">
-            <input id="toggleBcc" type="checkbox">
-            <span id="toggleBccLabel">Pokaż pole UDW (opcjonalne)</span>
-          </label>
-          <label class="field" data-field="bcc" hidden>
-            <span id="fieldBccLabel">UDW (opcjonalnie)</span>
-            <input id="fieldBcc" type="text" placeholder="adres@example.com" autocomplete="email">
-          </label>
+          <div class="field-block">
+            <span id="fieldBccLabel" class="field-mini-label">UDW</span>
+            <div class="field-toggle-row" data-field-row="bcc">
+              <label class="field-toggle field-toggle-inline">
+                <input id="toggleBcc" type="checkbox">
+                <span id="toggleBccLabel">Pokaż</span>
+              </label>
+              <label class="field" data-field="bcc">
+                <input id="fieldBcc" type="text" placeholder="adres@example.com" autocomplete="email">
+              </label>
+            </div>
+          </div>
 
-          <label class="field-toggle">
-            <input id="toggleReplyTo" type="checkbox">
-            <span id="toggleReplyToLabel">Pokaż pole Reply-To (opcjonalne)</span>
-          </label>
-          <label class="field" data-field="replyTo" hidden>
-            <span id="fieldReplyToLabel">Reply-To (opcjonalnie)</span>
-            <input id="fieldReplyTo" type="text" placeholder="adres@example.com" autocomplete="email">
-          </label>
+          <div class="field-block">
+            <span id="fieldReplyToLabel" class="field-mini-label">Adres odpowiedzi</span>
+            <div class="field-toggle-row" data-field-row="replyTo">
+              <label class="field-toggle field-toggle-inline">
+                <input id="toggleReplyTo" type="checkbox">
+                <span id="toggleReplyToLabel">Pokaż</span>
+              </label>
+              <label class="field" data-field="replyTo">
+                <input id="fieldReplyTo" type="text" placeholder="adres@example.com" autocomplete="email">
+              </label>
+            </div>
+          </div>
 
-          <label class="field-toggle">
-            <input id="toggleSubject" type="checkbox" checked>
-            <span id="toggleSubjectLabel">Pokaż pole Temat (opcjonalne)</span>
-          </label>
-          <label class="field" data-field="subject">
-            <span id="fieldSubjectLabel">Temat (opcjonalnie)</span>
-            <input id="fieldSubject" type="text" placeholder="Temat wiadomości" autocomplete="off">
-          </label>
+          <div class="field-block">
+            <span id="fieldSubjectLabel" class="field-mini-label">Temat</span>
+            <div class="field-toggle-row" data-field-row="subject">
+              <label class="field-toggle field-toggle-inline">
+                <input id="toggleSubject" type="checkbox" checked>
+                <span id="toggleSubjectLabel">Pokaż</span>
+              </label>
+              <label class="field" data-field="subject">
+                <input id="fieldSubject" type="text" placeholder="Temat wiadomości" autocomplete="off">
+              </label>
+            </div>
+          </div>
 
-          <label class="field" data-field="content">
-            <span id="fieldContentLabel">Treść</span>
-            <textarea id="fieldContent" rows="10" placeholder="Wpisz treść wiadomości..."></textarea>
-          </label>
+          <div class="field-block">
+            <span id="fieldContentLabel" class="field-mini-label">Treść</span>
+            <div class="field-toggle-row field-toggle-row-multiline" data-field-row="content">
+              <label class="field-toggle field-toggle-inline">
+                <input id="toggleContent" type="checkbox" checked>
+                <span id="toggleContentLabel">Pokaż</span>
+              </label>
+              <label class="field" data-field="content">
+                <textarea id="fieldContent" rows="10" placeholder="Wpisz treść wiadomości..."></textarea>
+              </label>
+            </div>
+          </div>
 
-          <label class="field-toggle">
-            <input id="replyMode" type="checkbox">
-            <span id="replyModeLabel">Pokaż pole cytatu odpowiedzi (opcjonalne)</span>
-          </label>
+          <div class="field-block">
+            <span id="fieldQuoteLabel" class="field-mini-label">Cytat</span>
+            <div class="field-toggle-row field-toggle-row-multiline" data-field-row="quote">
+              <label class="field-toggle field-toggle-inline">
+                <input id="replyMode" type="checkbox">
+                <span id="replyModeLabel">Pokaż</span>
+              </label>
+              <label class="field" data-field="quote">
+                <textarea id="fieldQuote" rows="4" placeholder="Wklej cytowany fragment, jeśli to odpowiedź..."></textarea>
+              </label>
+            </div>
+          </div>
 
-          <label class="field" data-field="quote" hidden>
-            <span id="fieldQuoteLabel">Cytat odpowiedzi (opcjonalnie)</span>
-            <textarea id="fieldQuote" rows="4" placeholder="Wklej cytowany fragment, jeśli to odpowiedź..."></textarea>
-          </label>
-
-          <label class="field-toggle">
-            <input id="toggleSignatureName" type="checkbox" checked>
-            <span id="toggleSignatureNameLabel">Pokaż podpis (opcjonalny)</span>
-          </label>
           <label class="field" data-field="signatureName">
-            <span id="fieldSignatureLabel">Imię w stopce (opcjonalnie)</span>
+            <span id="fieldSignatureLabel">Nadawca</span>
             <input id="fieldSignatureName" type="text" placeholder="Twoje imię" autocomplete="name">
           </label>
 
-          <label class="field-toggle">
-            <input id="toggleDate" type="checkbox" checked>
-            <span id="toggleDateLabel">Pokaż datę (automatycznie)</span>
-          </label>
-          <p class="auto-field-note" id="toggleDateHint">Data jest automatyczna i nie ma pola edycji.</p>
+          <div class="field-toggle-row field-toggle-row-auto">
+            <label class="field-toggle field-toggle-inline">
+              <input id="toggleDate" type="checkbox" checked>
+              <span id="toggleDateLabel">Data</span>
+            </label>
+            <p class="auto-field-note" id="toggleDateHint">Data jest automatyczna i nie ma pola edycji.</p>
+          </div>
 
-          <label class="field-toggle">
-            <input id="toggleTime" type="checkbox">
-            <span id="toggleTimeLabel">Pokaż godzinę (automatycznie)</span>
-          </label>
-          <p class="auto-field-note" id="toggleTimeHint">Godzina jest automatyczna i nie ma pola edycji.</p>
+          <div class="field-toggle-row field-toggle-row-auto">
+            <label class="field-toggle field-toggle-inline">
+              <input id="toggleTime" type="checkbox">
+              <span id="toggleTimeLabel">Godzina</span>
+            </label>
+            <p class="auto-field-note" id="toggleTimeHint">Godzina jest automatyczna i nie ma pola edycji.</p>
+          </div>
 
           <label class="remember-draft">
             <input id="rememberDraft" type="checkbox">
@@ -187,54 +195,39 @@
           <p class="muted-note" id="mutedNote">Puste pola opcjonalne nie są dodawane do wiadomości. Treść jest bezpiecznie konwertowana z tekstu na HTML.</p>
         </section>
 
-        <section class="card preview-panel">
-          <div class="preview-head">
-            <h2 id="previewTitle">Podgląd</h2>
-            <div class="preview-head-right">
-              <span id="previewTemplateName" class="preview-template-name"></span>
-              <label class="theme-switch template-theme-switch" for="templateThemeSwitch">
-                <input id="templateThemeSwitch" type="checkbox" role="switch" aria-label="Motyw szablonu">
-                <span class="theme-switch-track" aria-hidden="true">
-                  <span class="theme-switch-thumb"></span>
-                </span>
-                <span id="templateThemeSwitchLabel">Motyw szablonu</span>
-              </label>
-              <label class="theme-picker" id="previewModeLabel" for="previewMode">Tryb podglądu</label>
-              <select id="previewMode" aria-label="Tryb podglądu">
-                <option value="app">Jak w aplikacji</option>
-                <option value="light">Jasny</option>
-                <option value="dark">Ciemny</option>
-                <option value="split">Jasny + Ciemny</option>
-              </select>
-            </div>
+        <section class="card attachments-panel">
+          <div class="attachments-head">
+            <h2 id="attachmentsTitle">Załączniki</h2>
+            <button id="addFilesBtn" class="button" type="button">Dodaj pliki</button>
+            <input id="fileInput" type="file" multiple hidden>
           </div>
-          <button id="openPreviewModalBtn" class="button preview-modal-trigger" type="button">Otwórz podgląd</button>
-          <div id="previewFields" class="preview-fields" aria-live="polite"></div>
-          <div class="mail-canvas" id="mailCanvas">
-            <iframe id="previewFrame" title="Podgląd wiadomości" loading="eager"></iframe>
-            <iframe id="previewFrameDark" title="Podgląd wiadomości - ciemny" loading="eager" hidden></iframe>
+
+          <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Przeciągnij i upuść pliki">
+            Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.
+          </div>
+
+          <ul id="attachmentList" class="attachment-grid" aria-live="polite"></ul>
+
+          <div class="attachment-summary">
+            <span id="attachmentCount">0 plików</span>
+            <span id="attachmentTotal">Suma: 0 B</span>
+            <span id="attachmentEstimated">Szacowany rozmiar wiadomości: 0 B</span>
+            <span id="attachmentWarning" class="warning-text"></span>
           </div>
         </section>
       </div>
 
-      <section class="card attachments-panel">
-        <div class="attachments-head">
-          <h2 id="attachmentsTitle">Załączniki</h2>
-          <button id="addFilesBtn" class="button" type="button">Dodaj pliki</button>
-          <input id="fileInput" type="file" multiple hidden>
+      <section class="card preview-panel">
+        <div class="preview-head">
+          <h2 id="previewTitle">Podgląd</h2>
+          <div class="preview-head-right">
+            <span id="previewTemplateName" class="preview-template-name"></span>
+          </div>
         </div>
-
-        <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Przeciągnij i upuść pliki">
-          Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.
-        </div>
-
-        <ul id="attachmentList" class="attachment-grid" aria-live="polite"></ul>
-
-        <div class="attachment-summary">
-          <span id="attachmentCount">0 plików</span>
-          <span id="attachmentTotal">Suma: 0 B</span>
-          <span id="attachmentEstimated">Szacowany rozmiar wiadomości: 0 B</span>
-          <span id="attachmentWarning" class="warning-text"></span>
+        <button id="openPreviewModalBtn" class="button preview-modal-trigger" type="button">Otwórz podgląd</button>
+        <div id="previewFields" class="preview-fields" aria-live="polite"></div>
+        <div class="mail-canvas" id="mailCanvas">
+          <iframe id="previewFrame" title="Podgląd wiadomości" loading="eager"></iframe>
         </div>
       </section>
     </section>
@@ -269,7 +262,6 @@
       </div>
       <div class="mail-canvas" id="previewModalCanvas">
         <iframe id="previewModalFrame" title="Podgląd wiadomości" loading="eager"></iframe>
-        <iframe id="previewModalFrameDark" title="Podgląd wiadomości - ciemny" loading="eager" hidden></iframe>
       </div>
     </section>
   </div>

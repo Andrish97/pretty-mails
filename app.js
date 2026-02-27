@@ -1,6 +1,4 @@
 const STORAGE_KEYS = {
-  themeMode: "mailTemplatesPwa.themeMode",
-  previewMode: "mailTemplatesPwa.previewMode",
   language: "mailTemplatesPwa.language",
   draft: "mailTemplatesPwa.draft.v1",
 };
@@ -15,11 +13,12 @@ const LANGUAGE_FLAGS = {
   uk: "🇺🇦",
 };
 const OPTIONAL_FIELD_DEFAULTS = {
-  to: false,
+  to: true,
   cc: false,
   bcc: false,
   replyTo: false,
   subject: true,
+  content: true,
   quote: false,
   signatureName: true,
   date: true,
@@ -39,10 +38,10 @@ const I18N = {
     themeAuto: "Auto",
     themeLight: "Jasny",
     themeDark: "Ciemny",
-    exportButton: "Zapisz .eml",
-    exportBusy: "Eksport...",
-    shareButton: "Udostępnij .eml",
-    shareBusy: "Udostępnianie...",
+    exportButton: "💾 Zapisz",
+    exportBusy: "💾 Zapis...",
+    shareButton: "📤 Udostępnij",
+    shareBusy: "📤 Wysyłanie...",
     infoButtonAria: "Pokaż wskazówki",
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
@@ -57,48 +56,54 @@ const I18N = {
     templateListAria: "Lista szablonów",
     templateSearchEmpty: "Brak wyników wyszukiwania.",
     editorTitle: "Edycja",
-    fieldToLabel: "Do (opcjonalnie)",
+    fieldToLabel: "Adresat",
     fieldToShort: "Do",
     fieldToPlaceholder: "adres@example.com",
-    fieldCcLabel: "DW (opcjonalnie)",
+    fieldCcLabel: "DW",
     fieldCcShort: "DW",
     fieldCcPlaceholder: "adres@example.com, drugi@example.com",
-    fieldBccLabel: "UDW (opcjonalnie)",
+    fieldBccLabel: "UDW",
     fieldBccShort: "UDW",
     fieldBccPlaceholder: "adres@example.com",
-    fieldReplyToLabel: "Reply-To (opcjonalnie)",
-    fieldReplyToShort: "Reply-To",
+    fieldReplyToLabel: "Adres odpowiedzi",
+    fieldReplyToShort: "Adres odpowiedzi",
     fieldReplyToPlaceholder: "adres@example.com",
-    fieldSubjectLabel: "Temat (opcjonalnie)",
+    fieldSubjectLabel: "Temat",
     fieldSubjectShort: "Temat",
     fieldSubjectPlaceholder: "Temat wiadomości",
     fieldContentLabel: "Treść",
     fieldContentPlaceholder: "Wpisz treść wiadomości...",
-    toggleToLabel: "Pokaż pole Do (opcjonalne)",
-    toggleCcLabel: "Pokaż pole DW (opcjonalne)",
-    toggleBccLabel: "Pokaż pole UDW (opcjonalne)",
-    toggleReplyToLabel: "Pokaż pole Reply-To (opcjonalne)",
-    toggleSubjectLabel: "Pokaż pole Temat (opcjonalne)",
-    toggleQuoteLabel: "Pokaż pole cytatu odpowiedzi (opcjonalne)",
+    toggleToLabel: "Pokaż",
+    toggleCcLabel: "Pokaż",
+    toggleBccLabel: "Pokaż",
+    toggleReplyToLabel: "Pokaż",
+    toggleSubjectLabel: "Pokaż",
+    toggleContentLabel: "Pokaż",
+    toggleQuoteLabel: "Pokaż",
     toggleSignatureLabel: "Pokaż podpis (opcjonalny)",
-    toggleDateLabel: "Pokaż datę (automatycznie)",
+    toggleDateLabel: "Pokaż",
     toggleDateHint: "Data jest automatyczna i nie ma pola edycji.",
-    toggleTimeLabel: "Pokaż godzinę (automatycznie)",
+    toggleTimeLabel: "Pokaż",
     toggleTimeHint: "Godzina jest automatyczna i nie ma pola edycji.",
-    replyModeLabel: "Pokaż pole cytatu odpowiedzi (opcjonalne)",
-    fieldQuoteLabel: "Cytat odpowiedzi (opcjonalnie)",
+    replyModeLabel: "Pokaż",
+    fieldQuoteLabel: "Cytat",
     fieldQuoteShort: "Cytat",
     fieldQuotePlaceholder: "Wklej cytowany fragment, jeśli to odpowiedź...",
-    fieldSignatureLabel: "Imię w stopce (opcjonalnie)",
-    fieldSignatureShort: "Podpis",
+    fieldSignatureLabel: "Nadawca",
+    fieldSignatureShort: "Nadawca",
     fieldSignaturePlaceholder: "Twoje imię",
     fieldDateShort: "Data",
     fieldTimeShort: "Godzina",
+    fieldSentAtShort: "Wysłano",
+    sentAtPrefix: "Wysłano",
+    sentAtTimePrefix: "o",
     rememberDraftLabel: "Zapamiętaj brudnopis lokalnie (bez załączników)",
     mutedNoteHtml:
       "Pola opcjonalne włączasz checkboxami. Aktywne puste pola pokazują placeholder tylko w podglądzie; eksport używa wyłącznie wpisanych wartości.",
-    addressValidationPrefix: "Popraw adresy e-mail:",
-    replyToSingleAddress: "Reply-To może zawierać tylko jeden adres.",
+    addressValidationPrefix: "Uzupełnij lub popraw pola:",
+    requiredToMissing: "Adresat: wpisz poprawny adres e-mail.",
+    requiredSignatureMissing: "Nadawca: wpisz imię lub podpis.",
+    replyToSingleAddress: "Pole Adres do odpowiedzi może zawierać tylko jeden adres.",
     previewTitle: "Podgląd",
     previewFrameTitle: "Podgląd wiadomości",
     previewFrameDarkTitle: "Podgląd wiadomości - ciemny",
@@ -108,7 +113,8 @@ const I18N = {
     previewModeLight: "Jasny",
     previewModeDark: "Ciemny",
     previewModeSplit: "Jasny + Ciemny",
-    openPreviewButton: "Otwórz podgląd",
+    openPreviewButton: "👁️",
+    closePreviewButton: "✕",
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
     dropZoneText: "Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.",
@@ -155,10 +161,10 @@ const I18N = {
     themeAuto: "Auto",
     themeLight: "Light",
     themeDark: "Dark",
-    exportButton: "Save .eml",
-    exportBusy: "Exporting...",
-    shareButton: "Share .eml",
-    shareBusy: "Sharing...",
+    exportButton: "💾 Save",
+    exportBusy: "💾 Saving...",
+    shareButton: "📤 Share",
+    shareBusy: "📤 Sharing...",
     infoButtonAria: "Show tips",
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
@@ -173,47 +179,53 @@ const I18N = {
     templateListAria: "Template list",
     templateSearchEmpty: "No matching templates.",
     editorTitle: "Editor",
-    fieldToLabel: "To (optional)",
+    fieldToLabel: "Recipient",
     fieldToShort: "To",
     fieldToPlaceholder: "address@example.com",
-    fieldCcLabel: "CC (optional)",
+    fieldCcLabel: "CC",
     fieldCcShort: "CC",
     fieldCcPlaceholder: "address@example.com, second@example.com",
-    fieldBccLabel: "BCC (optional)",
+    fieldBccLabel: "BCC",
     fieldBccShort: "BCC",
     fieldBccPlaceholder: "address@example.com",
-    fieldReplyToLabel: "Reply-To (optional)",
+    fieldReplyToLabel: "Reply address",
     fieldReplyToShort: "Reply-To",
     fieldReplyToPlaceholder: "address@example.com",
-    fieldSubjectLabel: "Subject (optional)",
+    fieldSubjectLabel: "Subject",
     fieldSubjectShort: "Subject",
     fieldSubjectPlaceholder: "Message subject",
     fieldContentLabel: "Content",
     fieldContentPlaceholder: "Type message content...",
-    toggleToLabel: "Show To field (optional)",
-    toggleCcLabel: "Show CC field (optional)",
-    toggleBccLabel: "Show BCC field (optional)",
-    toggleReplyToLabel: "Show Reply-To field (optional)",
-    toggleSubjectLabel: "Show Subject field (optional)",
-    toggleQuoteLabel: "Show reply quote field (optional)",
+    toggleToLabel: "Show",
+    toggleCcLabel: "Show",
+    toggleBccLabel: "Show",
+    toggleReplyToLabel: "Show",
+    toggleSubjectLabel: "Show",
+    toggleContentLabel: "Show",
+    toggleQuoteLabel: "Show",
     toggleSignatureLabel: "Show signature (optional)",
-    toggleDateLabel: "Show date (automatic)",
+    toggleDateLabel: "Show",
     toggleDateHint: "Date is generated automatically and cannot be edited.",
-    toggleTimeLabel: "Show time (automatic)",
+    toggleTimeLabel: "Show",
     toggleTimeHint: "Time is generated automatically and cannot be edited.",
-    replyModeLabel: "Show reply quote field (optional)",
-    fieldQuoteLabel: "Reply quote (optional)",
+    replyModeLabel: "Show",
+    fieldQuoteLabel: "Quote",
     fieldQuoteShort: "Quote",
     fieldQuotePlaceholder: "Paste quoted message fragment for reply...",
-    fieldSignatureLabel: "Signature name (optional)",
-    fieldSignatureShort: "Signature",
+    fieldSignatureLabel: "Sender",
+    fieldSignatureShort: "Sender",
     fieldSignaturePlaceholder: "Your name",
     fieldDateShort: "Date",
     fieldTimeShort: "Time",
+    fieldSentAtShort: "Sent",
+    sentAtPrefix: "Sent",
+    sentAtTimePrefix: "at",
     rememberDraftLabel: "Remember draft locally (without attachments)",
     mutedNoteHtml:
       "Optional fields are controlled with checkboxes. Active empty fields show placeholders only in preview; export uses only entered values.",
-    addressValidationPrefix: "Fix email addresses:",
+    addressValidationPrefix: "Complete or fix fields:",
+    requiredToMissing: "Recipient: enter a valid email address.",
+    requiredSignatureMissing: "Sender: enter a name or signature.",
     replyToSingleAddress: "Reply-To can contain only one address.",
     previewTitle: "Preview",
     previewFrameTitle: "Message preview",
@@ -224,7 +236,8 @@ const I18N = {
     previewModeLight: "Light",
     previewModeDark: "Dark",
     previewModeSplit: "Light + Dark",
-    openPreviewButton: "Open preview",
+    openPreviewButton: "👁️",
+    closePreviewButton: "✕",
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
     dropZoneText: "Drag and drop files here or use the “Add files” button.",
@@ -269,10 +282,10 @@ const I18N = {
     themeAuto: "Авто",
     themeLight: "Світла",
     themeDark: "Темна",
-    exportButton: "Зберегти .eml",
-    exportBusy: "Експорт...",
-    shareButton: "Поділитися .eml",
-    shareBusy: "Надсилання...",
+    exportButton: "💾 Зберегти",
+    exportBusy: "💾 Збереження...",
+    shareButton: "📤 Поділитися",
+    shareBusy: "📤 Поширення...",
     infoButtonAria: "Показати підказки",
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
@@ -287,48 +300,54 @@ const I18N = {
     templateListAria: "Список шаблонів",
     templateSearchEmpty: "Шаблони не знайдено.",
     editorTitle: "Редактор",
-    fieldToLabel: "Кому (необов'язково)",
+    fieldToLabel: "Одержувач",
     fieldToShort: "Кому",
-    fieldToPlaceholder: "adres@example.com",
-    fieldCcLabel: "Копія (необов'язково)",
+    fieldToPlaceholder: "email@example.com",
+    fieldCcLabel: "Копія",
     fieldCcShort: "Копія",
-    fieldCcPlaceholder: "adres@example.com, drugi@example.com",
-    fieldBccLabel: "Прих. копія (необов'язково)",
+    fieldCcPlaceholder: "email@example.com, second@example.com",
+    fieldBccLabel: "Прих. копія",
     fieldBccShort: "Прих. копія",
-    fieldBccPlaceholder: "adres@example.com",
-    fieldReplyToLabel: "Reply-To (необов'язково)",
-    fieldReplyToShort: "Reply-To",
-    fieldReplyToPlaceholder: "adres@example.com",
-    fieldSubjectLabel: "Тема (необов'язково)",
+    fieldBccPlaceholder: "email@example.com",
+    fieldReplyToLabel: "Адреса відповіді",
+    fieldReplyToShort: "Адреса відповіді",
+    fieldReplyToPlaceholder: "email@example.com",
+    fieldSubjectLabel: "Тема",
     fieldSubjectShort: "Тема",
     fieldSubjectPlaceholder: "Тема листа",
     fieldContentLabel: "Текст",
     fieldContentPlaceholder: "Введіть текст повідомлення...",
-    toggleToLabel: "Показати поле Кому (необов'язково)",
-    toggleCcLabel: "Показати поле Копія (необов'язково)",
-    toggleBccLabel: "Показати поле Прих. копія (необов'язково)",
-    toggleReplyToLabel: "Показати поле Reply-To (необов'язково)",
-    toggleSubjectLabel: "Показати поле Тема (необов'язково)",
-    toggleQuoteLabel: "Показати поле цитати відповіді (необов'язково)",
+    toggleToLabel: "Показати",
+    toggleCcLabel: "Показати",
+    toggleBccLabel: "Показати",
+    toggleReplyToLabel: "Показати",
+    toggleSubjectLabel: "Показати",
+    toggleContentLabel: "Показати",
+    toggleQuoteLabel: "Показати",
     toggleSignatureLabel: "Показати підпис (необов'язково)",
-    toggleDateLabel: "Показати дату (автоматично)",
+    toggleDateLabel: "Показати",
     toggleDateHint: "Дата генерується автоматично й не редагується.",
-    toggleTimeLabel: "Показати час (автоматично)",
+    toggleTimeLabel: "Показати",
     toggleTimeHint: "Час генерується автоматично й не редагується.",
-    replyModeLabel: "Показати поле цитати відповіді (необов'язково)",
-    fieldQuoteLabel: "Цитата відповіді (необов'язково)",
+    replyModeLabel: "Показати",
+    fieldQuoteLabel: "Цитата",
     fieldQuoteShort: "Цитата",
     fieldQuotePlaceholder: "Вставте цитований фрагмент, якщо це відповідь...",
-    fieldSignatureLabel: "Ім'я в підписі (необов'язково)",
-    fieldSignatureShort: "Підпис",
+    fieldSignatureLabel: "Відправник",
+    fieldSignatureShort: "Відправник",
     fieldSignaturePlaceholder: "Ваше ім'я",
     fieldDateShort: "Дата",
     fieldTimeShort: "Час",
+    fieldSentAtShort: "Надіслано",
+    sentAtPrefix: "Надіслано",
+    sentAtTimePrefix: "о",
     rememberDraftLabel: "Зберігати чернетку локально (без вкладень)",
     mutedNoteHtml:
       "Необов'язкові поля вмикаються чекбоксами. Активні порожні поля показують плейсхолдер тільки в перегляді; експорт бере лише введені значення.",
-    addressValidationPrefix: "Виправте адреси email:",
-    replyToSingleAddress: "Поле Reply-To може містити лише одну адресу.",
+    addressValidationPrefix: "Заповніть або виправте поля:",
+    requiredToMissing: "Одержувач: введіть коректну email-адресу.",
+    requiredSignatureMissing: "Відправник: введіть ім'я або підпис.",
+    replyToSingleAddress: "Поле Адреса для відповіді може містити лише одну адресу.",
     previewTitle: "Попередній перегляд",
     previewFrameTitle: "Попередній перегляд листа",
     previewFrameDarkTitle: "Попередній перегляд листа - темний",
@@ -338,7 +357,8 @@ const I18N = {
     previewModeLight: "Світлий",
     previewModeDark: "Темний",
     previewModeSplit: "Світлий + Темний",
-    openPreviewButton: "Відкрити перегляд",
+    openPreviewButton: "👁️",
+    closePreviewButton: "✕",
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
     dropZoneText: "Перетягніть файли сюди або натисніть «Додати файли».",
@@ -379,8 +399,6 @@ const state = {
   templates: [],
   templateMarkup: new Map(),
   selectedTemplateId: null,
-  themeMode: localStorage.getItem(STORAGE_KEYS.themeMode) || "auto",
-  previewMode: localStorage.getItem(STORAGE_KEYS.previewMode) || "app",
   resolvedTheme: "light",
   language: detectInitialLanguage(),
   rememberDraft: false,
@@ -399,10 +417,10 @@ const state = {
   },
   attachments: [],
   searchQuery: "",
+  mobilePreviewOpen: false,
 };
 
 const ui = {
-  appSubtitle: document.querySelector("#appSubtitle"),
   languageMenu: document.querySelector("#languageMenu"),
   languageMenuBtn: document.querySelector("#languageMenuBtn"),
   languageMenuList: document.querySelector("#languageMenuList"),
@@ -412,10 +430,6 @@ const ui = {
   languageOptionUk: document.querySelector("#languageOptionUk"),
   languageModeLabel: document.querySelector("#languageModeLabel"),
   languageMode: document.querySelector("#languageMode"),
-  themeSwitch: document.querySelector("#themeSwitch"),
-  themeSwitchLabel: document.querySelector("#themeSwitchLabel"),
-  themeModeLabel: document.querySelector("#themeModeLabel"),
-  themeMode: document.querySelector("#themeMode"),
   templateSearch: document.querySelector("#templateSearch"),
   mobileTemplateLabel: document.querySelector("#mobileTemplateLabel"),
   mobileTemplateSelect: document.querySelector("#mobileTemplateSelect"),
@@ -428,24 +442,23 @@ const ui = {
   fieldReplyToLabel: document.querySelector("#fieldReplyToLabel"),
   fieldSubjectLabel: document.querySelector("#fieldSubjectLabel"),
   fieldContentLabel: document.querySelector("#fieldContentLabel"),
-  toggleToLabel: document.querySelector("#toggleToLabel"),
   toggleCcLabel: document.querySelector("#toggleCcLabel"),
   toggleBccLabel: document.querySelector("#toggleBccLabel"),
   toggleReplyToLabel: document.querySelector("#toggleReplyToLabel"),
   toggleSubjectLabel: document.querySelector("#toggleSubjectLabel"),
+  toggleContentLabel: document.querySelector("#toggleContentLabel"),
   replyModeLabel: document.querySelector("#replyModeLabel"),
-  toggleSignatureNameLabel: document.querySelector("#toggleSignatureNameLabel"),
   toggleDateLabel: document.querySelector("#toggleDateLabel"),
   toggleDateHint: document.querySelector("#toggleDateHint"),
   toggleTimeLabel: document.querySelector("#toggleTimeLabel"),
   toggleTimeHint: document.querySelector("#toggleTimeHint"),
   fieldQuoteLabel: document.querySelector("#fieldQuoteLabel"),
   fieldSignatureLabel: document.querySelector("#fieldSignatureLabel"),
-  toggleTo: document.querySelector("#toggleTo"),
   toggleCc: document.querySelector("#toggleCc"),
   toggleBcc: document.querySelector("#toggleBcc"),
   toggleReplyTo: document.querySelector("#toggleReplyTo"),
   toggleSubject: document.querySelector("#toggleSubject"),
+  toggleContent: document.querySelector("#toggleContent"),
   fieldTo: document.querySelector("#fieldTo"),
   fieldCc: document.querySelector("#fieldCc"),
   fieldBcc: document.querySelector("#fieldBcc"),
@@ -454,7 +467,6 @@ const ui = {
   fieldContent: document.querySelector("#fieldContent"),
   replyMode: document.querySelector("#replyMode"),
   fieldQuote: document.querySelector("#fieldQuote"),
-  toggleSignatureName: document.querySelector("#toggleSignatureName"),
   fieldSignatureName: document.querySelector("#fieldSignatureName"),
   toggleDate: document.querySelector("#toggleDate"),
   toggleTime: document.querySelector("#toggleTime"),
@@ -463,22 +475,17 @@ const ui = {
   addressValidation: document.querySelector("#addressValidation"),
   mutedNote: document.querySelector("#mutedNote"),
   previewTitle: document.querySelector("#previewTitle"),
-  templateThemeSwitch: document.querySelector("#templateThemeSwitch"),
-  templateThemeSwitchLabel: document.querySelector("#templateThemeSwitchLabel"),
-  previewModeLabel: document.querySelector("#previewModeLabel"),
-  previewMode: document.querySelector("#previewMode"),
+  openPreviewModalTopBtn: document.querySelector("#openPreviewModalTopBtn"),
   openPreviewModalBtn: document.querySelector("#openPreviewModalBtn"),
   previewFields: document.querySelector("#previewFields"),
   previewTemplateName: document.querySelector("#previewTemplateName"),
   mailCanvas: document.querySelector("#mailCanvas"),
   previewFrame: document.querySelector("#previewFrame"),
-  previewFrameDark: document.querySelector("#previewFrameDark"),
   previewModal: document.querySelector("#previewModal"),
   previewModalClose: document.querySelector("#previewModalClose"),
   previewModalTitle: document.querySelector("#previewModalTitle"),
   previewModalCanvas: document.querySelector("#previewModalCanvas"),
   previewModalFrame: document.querySelector("#previewModalFrame"),
-  previewModalFrameDark: document.querySelector("#previewModalFrameDark"),
   shareBtn: document.querySelector("#shareBtn"),
   exportBtn: document.querySelector("#exportBtn"),
   infoBtn: document.querySelector("#infoBtn"),
@@ -500,9 +507,11 @@ const ui = {
 };
 
 const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+const mobileLayoutMedia = window.matchMedia("(max-width: 760px)");
 let richTextEditor = null;
 let richTextConfigSignature = null;
 let richTextReinitPromise = null;
+const frameSrcdocCache = new WeakMap();
 
 boot().catch((error) => {
   console.error(error);
@@ -513,9 +522,11 @@ async function boot() {
   bindEvents();
   restoreDraft();
   applyLanguage(state.language);
-  applyTheme(state.themeMode);
+  applySystemTheme();
   syncFieldInputs();
+  syncMobilePreviewMode();
   await initContentEditor();
+  applyTemplateFieldVisibility();
   clearAddressValidation();
   renderAttachments();
   await loadTemplates();
@@ -551,6 +562,10 @@ function bindEvents() {
       closeLanguageMenu();
       closeInfoModal();
       closePreviewModal();
+      if (state.mobilePreviewOpen) {
+        state.mobilePreviewOpen = false;
+        syncMobilePreviewMode();
+      }
     }
   });
 
@@ -559,26 +574,14 @@ function bindEvents() {
     maybeSaveDraft();
   });
 
-  ui.themeSwitch.addEventListener("change", () => {
-    applyTheme(ui.themeSwitch.checked ? "dark" : "light");
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
-  ui.themeMode.addEventListener("change", () => {
-    applyTheme(ui.themeMode.value);
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
   themeMedia.addEventListener("change", () => {
-    if (state.themeMode === "auto") {
-      applyTheme("auto");
-      renderPreview();
-      renderAttachments();
-    }
+    applySystemTheme();
+    renderPreview();
+    renderAttachments();
+  });
+
+  mobileLayoutMedia.addEventListener("change", () => {
+    syncMobilePreviewMode();
   });
 
   ui.templateSearch.addEventListener("input", () => {
@@ -590,15 +593,6 @@ function bindEvents() {
     const templateId = ui.mobileTemplateSelect.value;
     if (!templateId) return;
     await selectTemplate(templateId);
-  });
-
-  ui.toggleTo.addEventListener("change", () => {
-    state.enabled.to = ui.toggleTo.checked;
-    applyTemplateFieldVisibility();
-    validateAddressFields();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
   });
 
   ui.toggleCc.addEventListener("change", () => {
@@ -630,6 +624,14 @@ function bindEvents() {
 
   ui.toggleSubject.addEventListener("change", () => {
     state.enabled.subject = ui.toggleSubject.checked;
+    applyTemplateFieldVisibility();
+    maybeSaveDraft();
+    renderPreview();
+    renderAttachments();
+  });
+
+  ui.toggleContent.addEventListener("change", () => {
+    state.enabled.content = ui.toggleContent.checked;
     applyTemplateFieldVisibility();
     maybeSaveDraft();
     renderPreview();
@@ -700,16 +702,9 @@ function bindEvents() {
     renderAttachments();
   });
 
-  ui.toggleSignatureName.addEventListener("change", () => {
-    state.enabled.signatureName = ui.toggleSignatureName.checked;
-    applyTemplateFieldVisibility();
-    maybeSaveDraft();
-    renderPreview();
-    renderAttachments();
-  });
-
   ui.fieldSignatureName.addEventListener("input", () => {
     state.fields.signatureName = ui.fieldSignatureName.value;
+    validateAddressFields();
     maybeSaveDraft();
     renderPreview();
     renderAttachments();
@@ -729,20 +724,15 @@ function bindEvents() {
     renderAttachments();
   });
 
-  ui.previewMode.addEventListener("change", () => {
-    applyPreviewMode(ui.previewMode.value);
-    maybeSaveDraft();
-    renderPreview();
-  });
-
-  ui.templateThemeSwitch.addEventListener("change", () => {
-    ui.templateThemeSwitch.indeterminate = false;
-    applyPreviewMode(ui.templateThemeSwitch.checked ? "dark" : "light");
-    maybeSaveDraft();
-    renderPreview();
-  });
-
   ui.openPreviewModalBtn.addEventListener("click", () => {
+    openPreviewModal();
+  });
+  ui.openPreviewModalTopBtn?.addEventListener("click", () => {
+    if (mobileLayoutMedia.matches) {
+      state.mobilePreviewOpen = !state.mobilePreviewOpen;
+      syncMobilePreviewMode();
+      return;
+    }
     openPreviewModal();
   });
 
@@ -1144,16 +1134,6 @@ function applyLanguage(language) {
   ui.languageOptionUk.textContent = t("languageUk");
   updateLanguageMenuUi();
 
-  ui.appSubtitle.innerHTML = t("subtitleHtml");
-
-  ui.themeModeLabel.textContent = t("themeLabel");
-  ui.themeMode.setAttribute("aria-label", t("themeLabel"));
-  ui.themeSwitch.setAttribute("aria-label", t("themeLabel"));
-  ui.themeSwitchLabel.textContent = t("themeDark");
-  setSelectOptionLabel(ui.themeMode, "auto", t("themeAuto"));
-  setSelectOptionLabel(ui.themeMode, "light", t("themeLight"));
-  setSelectOptionLabel(ui.themeMode, "dark", t("themeDark"));
-
   ui.templatesTitle.textContent = t("templatesTitle");
   ui.mobileTemplateLabel.textContent = t("mobileTemplateLabel");
   ui.mobileTemplateSelect.setAttribute("aria-label", t("mobileTemplateAria"));
@@ -1180,13 +1160,12 @@ function applyLanguage(language) {
       console.warn("Could not update TinyMCE placeholder", error);
     }
   }
-  ui.toggleToLabel.textContent = t("toggleToLabel");
   ui.toggleCcLabel.textContent = t("toggleCcLabel");
   ui.toggleBccLabel.textContent = t("toggleBccLabel");
   ui.toggleReplyToLabel.textContent = t("toggleReplyToLabel");
   ui.toggleSubjectLabel.textContent = t("toggleSubjectLabel");
+  ui.toggleContentLabel.textContent = t("toggleContentLabel");
   ui.replyModeLabel.textContent = t("toggleQuoteLabel");
-  ui.toggleSignatureNameLabel.textContent = t("toggleSignatureLabel");
   ui.toggleDateLabel.textContent = t("toggleDateLabel");
   ui.toggleDateHint.textContent = t("toggleDateHint");
   ui.toggleTimeLabel.textContent = t("toggleTimeLabel");
@@ -1199,20 +1178,11 @@ function applyLanguage(language) {
   ui.mutedNote.innerHTML = t("mutedNoteHtml");
 
   ui.previewTitle.textContent = t("previewTitle");
-  ui.templateThemeSwitchLabel.textContent = t("templateThemeSwitchLabel");
-  ui.templateThemeSwitch.setAttribute("aria-label", t("templateThemeSwitchLabel"));
-  ui.previewModeLabel.textContent = t("previewModeLabel");
-  ui.previewMode.setAttribute("aria-label", t("previewModeLabel"));
-  setSelectOptionLabel(ui.previewMode, "app", t("previewModeApp"));
-  setSelectOptionLabel(ui.previewMode, "light", t("previewModeLight"));
-  setSelectOptionLabel(ui.previewMode, "dark", t("previewModeDark"));
-  setSelectOptionLabel(ui.previewMode, "split", t("previewModeSplit"));
   ui.previewFrame.title = t("previewFrameTitle");
-  ui.previewFrameDark.title = t("previewFrameDarkTitle");
   ui.openPreviewModalBtn.textContent = t("openPreviewButton");
+  updateMobilePreviewToggleButton();
   ui.previewModalTitle.textContent = t("previewTitle");
   ui.previewModalFrame.title = t("previewFrameTitle");
-  ui.previewModalFrameDark.title = t("previewFrameDarkTitle");
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
   ui.addFilesBtn.textContent = t("addFilesButton");
@@ -1280,52 +1250,13 @@ function updateExportButtonLabel() {
     state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
 }
 
-function applyTheme(mode) {
-  state.themeMode = ["auto", "light", "dark"].includes(mode) ? mode : "auto";
-  state.resolvedTheme =
-    state.themeMode === "auto"
-      ? themeMedia.matches
-        ? "dark"
-        : "light"
-      : state.themeMode;
-
-  ui.themeMode.value = state.themeMode;
-  ui.themeSwitch.checked = state.resolvedTheme === "dark";
-  document.documentElement.dataset.themeMode = state.themeMode;
+function applySystemTheme() {
+  state.resolvedTheme = themeMedia.matches ? "dark" : "light";
+  document.documentElement.dataset.themeMode = "auto";
   document.documentElement.dataset.resolvedTheme = state.resolvedTheme;
-  localStorage.setItem(STORAGE_KEYS.themeMode, state.themeMode);
-  syncTemplateThemeSwitch();
   if (richTextEditor) {
     void refreshContentEditorAppearance();
   }
-}
-
-function normalizePreviewMode(mode) {
-  return ["app", "light", "dark", "split"].includes(mode) ? mode : "app";
-}
-
-function applyPreviewMode(mode, options = {}) {
-  state.previewMode = normalizePreviewMode(mode);
-  ui.previewMode.value = state.previewMode;
-  syncTemplateThemeSwitch();
-
-  if (options.persist !== false) {
-    localStorage.setItem(STORAGE_KEYS.previewMode, state.previewMode);
-  }
-}
-
-function syncTemplateThemeSwitch() {
-  const mode = normalizePreviewMode(state.previewMode);
-  ui.templateThemeSwitch.indeterminate = mode === "split";
-
-  const effectiveMode =
-    mode === "app"
-      ? state.resolvedTheme
-      : mode === "split"
-        ? state.resolvedTheme
-        : mode;
-
-  ui.templateThemeSwitch.checked = effectiveMode === "dark";
 }
 
 function openInfoModal() {
@@ -1341,12 +1272,35 @@ function closeInfoModal() {
 function openPreviewModal() {
   ui.previewModal.hidden = false;
   syncBodyModalState();
+  renderPreview();
   ui.previewModalClose?.focus();
 }
 
 function closePreviewModal() {
   ui.previewModal.hidden = true;
   syncBodyModalState();
+}
+
+function syncMobilePreviewMode() {
+  if (!mobileLayoutMedia.matches) {
+    state.mobilePreviewOpen = false;
+  }
+
+  const mobilePreviewOpen = mobileLayoutMedia.matches && state.mobilePreviewOpen;
+  document.body.classList.toggle("mobile-preview-open", mobilePreviewOpen);
+  updateMobilePreviewToggleButton();
+
+  if (mobilePreviewOpen) {
+    closePreviewModal();
+    renderPreview();
+  }
+}
+
+function updateMobilePreviewToggleButton() {
+  if (!ui.openPreviewModalTopBtn) return;
+  const isOpen = mobileLayoutMedia.matches && state.mobilePreviewOpen;
+  ui.openPreviewModalTopBtn.textContent = isOpen ? t("closePreviewButton") : t("openPreviewButton");
+  ui.openPreviewModalTopBtn.setAttribute("aria-pressed", isOpen ? "true" : "false");
 }
 
 function syncBodyModalState() {
@@ -1373,6 +1327,8 @@ function restoreDraft() {
       ...OPTIONAL_FIELD_DEFAULTS,
       ...(saved.enabled || {}),
     };
+    state.enabled.to = true;
+    state.enabled.signatureName = true;
 
     if (saved.isReply !== undefined && saved.enabled?.quote === undefined) {
       state.enabled.quote = Boolean(saved.isReply);
@@ -1381,12 +1337,6 @@ function restoreDraft() {
     if (saved.selectedTemplateId) {
       state.selectedTemplateId = saved.selectedTemplateId;
     }
-
-    if (["auto", "light", "dark"].includes(saved.themeMode)) {
-      state.themeMode = saved.themeMode;
-    }
-
-    state.previewMode = normalizePreviewMode(saved.previewMode || state.previewMode);
 
     const draftLanguage = normalizeLanguage(saved.language);
     if (draftLanguage) {
@@ -1402,8 +1352,6 @@ function saveDraft() {
   const draft = {
     rememberDraft: state.rememberDraft,
     selectedTemplateId: state.selectedTemplateId,
-    themeMode: state.themeMode,
-    previewMode: state.previewMode,
     language: state.language,
     enabled: { ...state.enabled },
     fields: { ...state.fields },
@@ -1418,14 +1366,15 @@ function maybeSaveDraft() {
 }
 
 function syncFieldInputs() {
+  state.enabled.to = true;
+  state.enabled.signatureName = true;
   ui.rememberDraft.checked = state.rememberDraft;
-  ui.toggleTo.checked = Boolean(state.enabled.to);
   ui.toggleCc.checked = Boolean(state.enabled.cc);
   ui.toggleBcc.checked = Boolean(state.enabled.bcc);
   ui.toggleReplyTo.checked = Boolean(state.enabled.replyTo);
   ui.toggleSubject.checked = Boolean(state.enabled.subject);
+  ui.toggleContent.checked = Boolean(state.enabled.content);
   ui.replyMode.checked = Boolean(state.enabled.quote);
-  ui.toggleSignatureName.checked = Boolean(state.enabled.signatureName);
   ui.toggleDate.checked = Boolean(state.enabled.date);
   ui.toggleTime.checked = Boolean(state.enabled.time);
   ui.fieldTo.value = state.fields.to;
@@ -1436,7 +1385,6 @@ function syncFieldInputs() {
   ui.fieldContent.value = state.fields.content;
   ui.fieldQuote.value = state.fields.quote;
   ui.fieldSignatureName.value = state.fields.signatureName;
-  applyPreviewMode(state.previewMode, { persist: false });
   applyTemplateFieldVisibility();
 }
 
@@ -1599,32 +1547,52 @@ async function ensureTemplateMarkup(template) {
 }
 
 function applyTemplateFieldVisibility() {
+  state.enabled.to = true;
+  state.enabled.signatureName = true;
+
   ui.fields.forEach((node) => {
     const field = node.dataset.field;
-    if (field === "content") {
-      node.hidden = false;
-      return;
+    const enabled = field === "to" || field === "signatureName" ? true : Boolean(state.enabled[field]);
+
+    node.hidden = false;
+    node.classList.toggle("is-disabled", !enabled);
+
+    node.querySelectorAll("input, textarea, select").forEach((control) => {
+      control.disabled = !enabled;
+      control.setAttribute("aria-disabled", !enabled ? "true" : "false");
+    });
+
+    const row = node.closest(".field-toggle-row");
+    if (row) {
+      row.classList.toggle("is-disabled", !enabled);
     }
-    node.hidden = !state.enabled[field];
   });
+
+  if (richTextEditor) {
+    richTextEditor.mode?.set?.(state.enabled.content ? "design" : "readonly");
+  }
 }
 
 function getTemplateById(templateId) {
   return state.templates.find((template) => template.id === templateId) || null;
 }
 
+function setFrameSrcdoc(frame, html) {
+  if (!frame) return;
+  const nextHtml = html || "";
+  if (frameSrcdocCache.get(frame) === nextHtml) {
+    return;
+  }
+  frame.srcdoc = nextHtml;
+  frameSrcdocCache.set(frame, nextHtml);
+}
+
 function renderPreview() {
   const template = getTemplateById(state.selectedTemplateId);
   if (!template) {
-    ui.previewFrame.srcdoc = "";
-    ui.previewFrameDark.srcdoc = "";
-    ui.previewFrameDark.hidden = true;
-    ui.previewModalFrame.srcdoc = "";
-    ui.previewModalFrameDark.srcdoc = "";
-    ui.previewModalFrameDark.hidden = true;
+    setFrameSrcdoc(ui.previewFrame, "");
+    setFrameSrcdoc(ui.previewModalFrame, "");
     ui.previewFields.innerHTML = "";
-    ui.mailCanvas.classList.remove("split");
-    ui.previewModalCanvas.classList.remove("split");
     ui.previewTemplateName.textContent = "";
     return;
   }
@@ -1634,41 +1602,15 @@ function renderPreview() {
     return;
   }
 
-  const previewMode = normalizePreviewMode(state.previewMode);
+  const shouldSyncModal = !ui.previewModal.hidden;
+  const html = buildTemplateHtml(rawMarkup, template, {
+    forceMode: null,
+    showPlaceholders: true,
+  });
+  setFrameSrcdoc(ui.previewFrame, html);
 
-  if (previewMode === "split") {
-    ui.mailCanvas.classList.add("split");
-    ui.previewFrameDark.hidden = false;
-    ui.previewFrame.srcdoc = buildTemplateHtml(rawMarkup, template, {
-      forceMode: "light",
-      showPlaceholders: true,
-    });
-    ui.previewFrameDark.srcdoc = buildTemplateHtml(rawMarkup, template, {
-      forceMode: "dark",
-      showPlaceholders: true,
-    });
-    ui.previewModalCanvas.classList.add("split");
-    ui.previewModalFrameDark.hidden = false;
-    ui.previewModalFrame.srcdoc = ui.previewFrame.srcdoc;
-    ui.previewModalFrameDark.srcdoc = ui.previewFrameDark.srcdoc;
-  } else {
-    ui.mailCanvas.classList.remove("split");
-    ui.previewFrameDark.hidden = true;
-    ui.previewFrameDark.srcdoc = "";
-
-    const forceMode =
-      previewMode === "app"
-        ? state.resolvedTheme
-        : previewMode;
-
-    ui.previewFrame.srcdoc = buildTemplateHtml(rawMarkup, template, {
-      forceMode,
-      showPlaceholders: true,
-    });
-    ui.previewModalCanvas.classList.remove("split");
-    ui.previewModalFrameDark.hidden = true;
-    ui.previewModalFrameDark.srcdoc = "";
-    ui.previewModalFrame.srcdoc = ui.previewFrame.srcdoc;
+  if (shouldSyncModal) {
+    setFrameSrcdoc(ui.previewModalFrame, html);
   }
 
   renderPreviewFields();
@@ -1676,20 +1618,65 @@ function renderPreview() {
 }
 
 function formatCurrentDateValue() {
-  return new Intl.DateTimeFormat(t("dateLocale"), { dateStyle: "long" }).format(new Date());
+  return new Intl.DateTimeFormat(t("dateLocale"), {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date());
 }
 
 function formatCurrentTimeValue() {
-  return new Intl.DateTimeFormat(t("dateLocale"), { timeStyle: "short" }).format(new Date());
+  return new Intl.DateTimeFormat(t("dateLocale"), {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
+
+function buildSentAtValue(options = {}) {
+  const withPrefix = options.withPrefix !== false;
+  const showDate = Boolean(state.enabled.date);
+  const showTime = Boolean(state.enabled.time);
+  if (!showDate && !showTime) {
+    return "";
+  }
+
+  const dateValue = showDate ? formatCurrentDateValue() : "";
+  const timeValue = showTime ? formatCurrentTimeValue() : "";
+
+  let core = "";
+  if (dateValue && timeValue) {
+    core = `${dateValue} (${t("sentAtTimePrefix")} ${timeValue})`;
+  } else if (dateValue) {
+    core = dateValue;
+  } else {
+    core = `${t("sentAtTimePrefix")} ${timeValue}`;
+  }
+
+  return withPrefix ? `${t("sentAtPrefix")}: ${core}` : core;
+}
+
+function buildAttachmentsPreviewValue() {
+  if (!state.attachments.length) {
+    return "";
+  }
+
+  const totalBytes = state.attachments.reduce((sum, item) => sum + item.file.size, 0);
+  const maxNames = 3;
+  const names = state.attachments.slice(0, maxNames).map((item) => item.file.name);
+  const remaining = state.attachments.length - names.length;
+  const namesValue = remaining > 0 ? `${names.join(", ")} +${remaining}` : names.join(", ");
+
+  return `${formatFileCount(state.attachments.length)} (${formatBytes(totalBytes)}): ${namesValue}`;
 }
 
 function buildPreviewRows(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-  const dateValue = formatCurrentDateValue();
-  const timeValue = formatCurrentTimeValue();
+  const sentAtValue = buildSentAtValue({ withPrefix: false });
   const contentText = richHtmlToPlainText(state.fields.content);
   const quoteText = normalizeMultilineText(state.fields.quote);
   const signatureText = normalizeInlineText(state.fields.signatureName);
+  const attachmentsValue = buildAttachmentsPreviewValue();
 
   const rows = [
     {
@@ -1729,7 +1716,7 @@ function buildPreviewRows(options = {}) {
     },
     {
       key: "content",
-      visible: true,
+      visible: state.enabled.content,
       label: t("fieldContentLabel"),
       value: contentText,
       placeholder: ui.fieldContent.placeholder,
@@ -1749,18 +1736,18 @@ function buildPreviewRows(options = {}) {
       placeholder: ui.fieldSignatureName.placeholder,
     },
     {
-      key: "date",
-      visible: state.enabled.date,
-      label: t("fieldDateShort"),
-      value: dateValue,
-      placeholder: dateValue,
+      key: "sentAt",
+      visible: state.enabled.date || state.enabled.time,
+      label: t("fieldSentAtShort"),
+      value: sentAtValue,
+      placeholder: sentAtValue,
     },
     {
-      key: "time",
-      visible: state.enabled.time,
-      label: t("fieldTimeShort"),
-      value: timeValue,
-      placeholder: timeValue,
+      key: "attachments",
+      visible: true,
+      label: t("attachmentsTitle"),
+      value: attachmentsValue,
+      placeholder: t("attachmentsEmpty"),
     },
   ];
 
@@ -1777,7 +1764,7 @@ function buildPreviewRows(options = {}) {
 function buildEnvelopeRows(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
   const previewRows = buildPreviewRows({ showPlaceholders });
-  const envelopeKeys = new Set(["to", "cc", "bcc", "replyTo", "subject", "date", "time"]);
+  const envelopeKeys = new Set(["to", "cc", "bcc", "replyTo", "subject", "sentAt", "attachments"]);
   return previewRows.filter((row) => envelopeKeys.has(row.key));
 }
 
@@ -1818,11 +1805,12 @@ function renderPreviewFields() {
 
 function buildTemplateHtml(rawMarkup, template, options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-  const contentHtmlRaw = normalizeEditorHtml(state.fields.content);
+  const contentEnabled = Boolean(state.enabled.content);
+  const contentHtmlRaw = contentEnabled ? normalizeEditorHtml(state.fields.content) : "";
   const hasContent = Boolean(contentHtmlRaw);
   const contentHtml = hasContent
     ? contentHtmlRaw
-    : showPlaceholders
+    : contentEnabled && showPlaceholders
       ? `<p class="app-placeholder">${escapeHtml(ui.fieldContent.placeholder)}</p>`
       : "";
   const signatureHtml = buildSignatureBlockHtml({ showPlaceholders });
@@ -1831,20 +1819,16 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   const quotePreviewHtml =
     quoteHtml || (showPlaceholders ? escapeHtml(ui.fieldQuote.placeholder).replace(/\n/g, "<br>") : "");
   const hasQuote = state.enabled.quote && Boolean(quoteHtml || showPlaceholders);
-  const dateValue = formatCurrentDateValue();
   const timeValue = formatCurrentTimeValue();
-  const templateUsesTimeToken = /\{\{\s*time\s*\}\}/.test(rawMarkup);
-  const dateTokenValue = state.enabled.date ? dateValue : "";
+  const sentAtValue = buildSentAtValue({ withPrefix: true });
+  const dateTokenValue = state.enabled.date || state.enabled.time ? sentAtValue : "";
   const timeTokenValue = state.enabled.time ? timeValue : "";
-  const dateFallbackWithTime = templateUsesTimeToken
-    ? dateTokenValue
-    : [dateTokenValue, timeTokenValue].filter(Boolean).join(" · ");
 
   const replacements = {
     content_block: contentHtml,
     signature_block: signatureHtml,
     greeting: escapeHtml(t("greeting")),
-    date: escapeHtml(dateFallbackWithTime),
+    date: escapeHtml(dateTokenValue),
     time: escapeHtml(timeTokenValue),
     template_title: escapeHtml(t("templateHeader")),
     reply_header: escapeHtml(state.enabled.quote ? t("replyHeader") : t("templateHeader")),
@@ -1864,7 +1848,7 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   if (options.forceMode === "light") root.classList.add("forced-light");
   if (options.forceMode === "dark") root.classList.add("forced-dark");
 
-  if (!hasContent && !showPlaceholders) {
+  if (!contentEnabled || (!hasContent && !showPlaceholders)) {
     doc.querySelectorAll("[data-optional-content]").forEach((node) => node.remove());
   }
 
@@ -2377,27 +2361,33 @@ function escapeHtml(value) {
 
 function clearAddressValidation() {
   ui.addressValidation.textContent = "";
-  [ui.fieldTo, ui.fieldCc, ui.fieldBcc, ui.fieldReplyTo].forEach((input) => {
+  [ui.fieldTo, ui.fieldCc, ui.fieldBcc, ui.fieldReplyTo, ui.fieldSignatureName].forEach((input) => {
     input.setAttribute("aria-invalid", "false");
   });
 }
 
 function validateAddressFields() {
   clearAddressValidation();
+  const issues = [];
+  const toAddresses = parseAddressList(state.fields.to);
+  const toInvalid = toAddresses.filter((address) => !isValidEmailAddress(address));
 
-  const definitions = [
-    { key: "to", shortLabelKey: "fieldToShort", input: ui.fieldTo },
+  if (!toAddresses.length) {
+    ui.fieldTo.setAttribute("aria-invalid", "true");
+    issues.push(t("requiredToMissing"));
+  } else if (toInvalid.length) {
+    ui.fieldTo.setAttribute("aria-invalid", "true");
+    issues.push(`${t("fieldToShort")}: ${[...new Set(toInvalid)].join(", ")}`);
+  }
+
+  const optionalAddressDefinitions = [
     { key: "cc", shortLabelKey: "fieldCcShort", input: ui.fieldCc },
     { key: "bcc", shortLabelKey: "fieldBccShort", input: ui.fieldBcc },
     { key: "replyTo", shortLabelKey: "fieldReplyToShort", input: ui.fieldReplyTo },
   ];
 
-  const issues = [];
-
-  definitions.forEach((definition) => {
-    if (!state.enabled[definition.key]) {
-      return;
-    }
+  optionalAddressDefinitions.forEach((definition) => {
+    if (!state.enabled[definition.key]) return;
 
     const addresses = parseAddressList(state.fields[definition.key]);
     const invalid = addresses.filter((address) => !isValidEmailAddress(address));
@@ -2414,6 +2404,11 @@ function validateAddressFields() {
       issues.push(`${t(definition.shortLabelKey)}: ${[...new Set(invalid)].join(", ")}`);
     }
   });
+
+  if (!normalizeInlineText(state.fields.signatureName)) {
+    ui.fieldSignatureName.setAttribute("aria-invalid", "true");
+    issues.push(t("requiredSignatureMissing"));
+  }
 
   if (!issues.length) {
     return true;
@@ -2448,6 +2443,7 @@ function addAttachments(fileList) {
     });
   });
 
+  renderPreview();
   renderAttachments();
 }
 
@@ -2599,11 +2595,12 @@ function removeAttachment(attachmentId) {
     URL.revokeObjectURL(removed.previewUrl);
   }
 
+  renderPreview();
   renderAttachments();
 }
 
 function buildPlainTextBody() {
-  const content = richHtmlToPlainText(state.fields.content);
+  const content = state.enabled.content ? richHtmlToPlainText(state.fields.content) : "";
   const quote = state.enabled.quote ? normalizeMultilineText(state.fields.quote) : "";
   const signatureName =
     state.enabled.signatureName ? normalizeInlineText(state.fields.signatureName) : "";

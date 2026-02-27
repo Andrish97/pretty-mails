@@ -18,6 +18,10 @@
   --shadow: 0 18px 40px rgba(15, 30, 45, 0.08);
 }
 
+html {
+  height: 100%;
+}
+
 html[data-resolved-theme="dark"] {
   color-scheme: dark;
   --bg-main: #111820;
@@ -45,7 +49,8 @@ html[data-resolved-theme="dark"] {
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100%;
+  height: 100dvh;
   font-family: var(--font-sans);
   color: var(--text-main);
   background:
@@ -53,6 +58,9 @@ body {
     radial-gradient(900px 680px at 92% 12%, var(--bg-gradient-bottom), transparent),
     var(--bg-main);
   padding: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 body.modal-open {
@@ -115,6 +123,10 @@ code {
   gap: 0.65rem;
   flex-wrap: nowrap;
   justify-content: flex-start;
+}
+
+.preview-topbar-btn {
+  display: none;
 }
 
 .visually-hidden {
@@ -304,18 +316,25 @@ button {
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
-  align-items: start;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .workspace {
   display: grid;
   gap: 1rem;
   grid-template-columns: minmax(320px, 1fr) minmax(420px, 1.22fr);
-  align-items: start;
+  align-items: stretch;
+  min-height: 0;
 }
 
-.editor-preview-grid {
-  display: contents;
+.editor-column {
+  display: grid;
+  gap: 1rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.12rem;
 }
 
 .card {
@@ -353,17 +372,11 @@ button {
   display: none;
 }
 
-.editor-panel {
-  grid-column: 1;
-}
-
 .preview-panel {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-}
-
-.attachments-panel {
-  grid-column: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .mobile-template-picker {
@@ -443,20 +456,83 @@ button {
   margin-bottom: 0.72rem;
 }
 
+.field-mini-label,
+.field-toggle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.field-mini-label {
+  display: block;
+  margin-bottom: 0.22rem;
+}
+
 .field-toggle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
-  margin-bottom: 0.38rem;
+  margin: 0;
 }
 
 .field-toggle input {
   width: auto;
 }
 
+.field-toggle-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.58rem;
+  align-items: center;
+}
+
+.field-toggle-row .field {
+  margin: 0;
+}
+
+.field-toggle-inline {
+  white-space: nowrap;
+}
+
+.field-toggle-row-multiline {
+  align-items: start;
+}
+
+.field-toggle-row-multiline .field-toggle-inline {
+  margin-top: 0.4rem;
+}
+
+.field-toggle-row-auto {
+  margin-bottom: 0.7rem;
+}
+
+.field-block {
+  margin-bottom: 0.72rem;
+}
+
+.field-block .field {
+  margin-bottom: 0;
+}
+
+.field.is-disabled {
+  opacity: 0.5;
+}
+
+.field.is-disabled input,
+.field.is-disabled textarea,
+.field.is-disabled select {
+  pointer-events: none;
+}
+
+.field.is-disabled .tox {
+  pointer-events: none;
+}
+
+.field-toggle-row.is-disabled .field-toggle-inline {
+  opacity: 0.55;
+}
+
 .field span {
-  font-size: 0.89rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 
@@ -547,6 +623,10 @@ input[aria-invalid="true"] {
       color-mix(in srgb, var(--surface-soft) 88%, transparent),
       color-mix(in srgb, var(--surface) 92%, transparent));
   min-height: 520px;
+}
+
+.preview-panel .mail-canvas {
+  flex: 1 1 auto;
 }
 
 .mail-canvas.split {
@@ -759,6 +839,16 @@ html[data-resolved-theme="dark"] #previewFrame {
 }
 
 @media (max-width: 1080px) {
+  body {
+    min-height: 100vh;
+    height: auto;
+    overflow: auto;
+  }
+
+  .layout {
+    flex: initial;
+  }
+
   .layout {
     grid-template-columns: 1fr;
   }
@@ -767,16 +857,13 @@ html[data-resolved-theme="dark"] #previewFrame {
     grid-template-columns: 1fr;
   }
 
-  .editor-preview-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+  .editor-column {
+    overflow: visible;
+    padding-right: 0;
   }
 
-  .editor-panel,
-  .preview-panel,
-  .attachments-panel {
-    grid-column: auto;
-    grid-row: auto;
+  .preview-panel {
+    overflow: visible;
   }
 
   .mail-canvas.split {
@@ -811,7 +898,8 @@ html[data-resolved-theme="dark"] #previewFrame {
     grid-template-columns: 1fr auto;
     grid-template-areas:
       "brand locale"
-      "template send";
+      "template template"
+      "send send";
     gap: 0.52rem;
     align-items: center;
   }
@@ -831,11 +919,31 @@ html[data-resolved-theme="dark"] #previewFrame {
 
   .topbar-template {
     grid-area: template;
+    width: 100%;
   }
 
   .topbar-send {
     grid-area: send;
-    justify-content: flex-end;
+    justify-content: stretch;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  .topbar-send .button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  #openPreviewModalTopBtn {
+    order: 1;
+  }
+
+  #exportBtn {
+    order: 2;
+  }
+
+  #shareBtn {
+    order: 3;
   }
 
   #infoBtn {
@@ -845,34 +953,29 @@ html[data-resolved-theme="dark"] #previewFrame {
   .mobile-template-picker {
     min-width: 0;
     margin: 0;
+    width: 100%;
   }
 
   .mobile-template-picker label {
     display: none;
   }
 
-  .preview-head {
-    flex-direction: column;
-    align-items: flex-start;
+  .mobile-template-picker select {
+    font-size: 1rem;
+    min-height: 44px;
+    padding: 0.68rem 0.78rem;
   }
 
-  .preview-head-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .preview-head-right select {
-    width: 100%;
-    min-width: 0;
+  .preview-topbar-btn {
+    display: inline-flex;
   }
 
   .preview-modal-trigger {
-    display: inline-flex;
+    display: none;
     margin-bottom: 0.68rem;
   }
 
-  .preview-panel #previewFields,
-  .preview-panel #mailCanvas {
+  .preview-panel {
     display: none;
   }
 
@@ -881,8 +984,16 @@ html[data-resolved-theme="dark"] #previewFrame {
     gap: 0.7rem;
   }
 
-  .editor-preview-grid {
+  .editor-column {
     display: contents;
+  }
+
+  body.mobile-preview-open .editor-column {
+    display: none;
+  }
+
+  body.mobile-preview-open .preview-panel {
+    display: flex;
   }
 
   .editor-panel {
@@ -898,10 +1009,6 @@ html[data-resolved-theme="dark"] #previewFrame {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     margin-top: -0.72rem;
-  }
-
-  .preview-panel {
-    grid-row: 3;
   }
 
   .attachment-grid {

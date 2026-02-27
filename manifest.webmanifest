@@ -1,6 +1,6 @@
 {
-  "name": "Mail Templates PWA",
-  "short_name": "MailTemplates",
+  "name": "Pretty-Mails",
+  "short_name": "Pretty-Mails",
   "description": "Statyczna mini-apka do pracy na szablonach maili i eksportu .eml",
   "start_url": "./index.html",
   "scope": "./",

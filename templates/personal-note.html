@@ -15,7 +15,141 @@
     @media (prefers-color-scheme:dark){:root{--bg:#241f11;--card:#312b18;--border:#524830;--txt:#f4ecd4;--muted:#d0bf8f}}
     html.forced-light{--bg:#fff9e9;--card:#fffef8;--border:#efdcae;--txt:#382f18;--muted:#7a6b40}
     html.forced-dark{--bg:#241f11;--card:#312b18;--border:#524830;--txt:#f4ecd4;--muted:#d0bf8f}
-  </style>
+  
+
+    /* Neutral Theme Bridge: consistent contrast in light/dark mode */
+    :root {
+      --neutral-page-bg: #f3f6fa;
+      --neutral-surface-bg: #ffffff;
+      --neutral-border: #d5dfeb;
+      --neutral-text: #1a2733;
+      --neutral-muted: #5d7186;
+      --neutral-link: #1f6fd6;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html:not(.forced-light) {
+        --neutral-page-bg: #101a24;
+        --neutral-surface-bg: #1a2733;
+        --neutral-border: #33475b;
+        --neutral-text: #e7eef6;
+        --neutral-muted: #a8b9cb;
+        --neutral-link: #8bcaff;
+      }
+    }
+
+    html.forced-light {
+      --neutral-page-bg: #f3f6fa;
+      --neutral-surface-bg: #ffffff;
+      --neutral-border: #d5dfeb;
+      --neutral-text: #1a2733;
+      --neutral-muted: #5d7186;
+      --neutral-link: #1f6fd6;
+    }
+
+    html.forced-dark {
+      --neutral-page-bg: #101a24;
+      --neutral-surface-bg: #1a2733;
+      --neutral-border: #33475b;
+      --neutral-text: #e7eef6;
+      --neutral-muted: #a8b9cb;
+      --neutral-link: #8bcaff;
+    }
+
+    html,
+    body {
+      background: var(--neutral-page-bg) !important;
+      color: var(--neutral-text) !important;
+    }
+
+    .mail-wrap,
+    .wrap,
+    .page,
+    .shell,
+    .canvas,
+    .pad,
+    .space,
+    .stage {
+      background: var(--neutral-page-bg) !important;
+      color: var(--neutral-text) !important;
+    }
+
+    .mail,
+    .mail-card,
+    .card,
+    .sheet,
+    .paper,
+    .note,
+    .post,
+    .inner,
+    .body,
+    .mail-content,
+    .signature,
+    .signature-box,
+    .letterhead,
+    .top,
+    .head,
+    .hero {
+      border-color: var(--neutral-border) !important;
+      color: var(--neutral-text) !important;
+    }
+
+    html.forced-dark [style*="background:#f"],
+    html.forced-dark [style*="background: #f"],
+    html.forced-dark [style*="background:#e"],
+    html.forced-dark [style*="background: #e"],
+    html.forced-dark [style*="background-color:#f"],
+    html.forced-dark [style*="background-color: #f"],
+    html.forced-dark [style*="background-color:#e"],
+    html.forced-dark [style*="background-color: #e"] {
+      background: var(--neutral-surface-bg) !important;
+      color: var(--neutral-text) !important;
+      border-color: var(--neutral-border) !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html:not(.forced-light) [style*="background:#f"],
+      html:not(.forced-light) [style*="background: #f"],
+      html:not(.forced-light) [style*="background:#e"],
+      html:not(.forced-light) [style*="background: #e"],
+      html:not(.forced-light) [style*="background-color:#f"],
+      html:not(.forced-light) [style*="background-color: #f"],
+      html:not(.forced-light) [style*="background-color:#e"],
+      html:not(.forced-light) [style*="background-color: #e"] {
+        background: var(--neutral-surface-bg) !important;
+        color: var(--neutral-text) !important;
+        border-color: var(--neutral-border) !important;
+      }
+    }
+
+    p,
+    li,
+    td,
+    h1,
+    h2,
+    h3,
+    h4,
+    strong,
+    .signature-name {
+      color: var(--neutral-text) !important;
+    }
+
+    .meta,
+    .head-meta,
+    .signature,
+    .quote-label,
+    .head p,
+    .top p,
+    .hero p,
+    small {
+      color: var(--neutral-muted) !important;
+    }
+
+    a {
+      color: var(--neutral-link) !important;
+    }
+
+</style>
 </head>
 <body>
   <div class="page" style="padding:26px 14px;background:#fff9e9;">
