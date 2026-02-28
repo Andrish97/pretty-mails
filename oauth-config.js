@@ -5,7 +5,7 @@
 */
 
 // Google OAuth (Gmail API)
-window.PRETTY_MAILS_GOOGLE_CLIENT_ID = "";
+window.PRETTY_MAILS_GOOGLE_CLIENT_ID = "1032042667052-cfk1pp9o5u5fcli2lask89bsggrmiklb.apps.googleusercontent.com";
 // Opcjonalnie: ogranicz logowanie do jednego konta
 window.PRETTY_MAILS_ALLOWED_EMAIL = "";
 
