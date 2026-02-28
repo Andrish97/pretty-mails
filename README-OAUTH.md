@@ -7,7 +7,7 @@ Ten plik opisuje konfigurację wysyłki przez:
 ## 1. Gdzie ustawić zmienne
 
 Edytuj plik:
-- [`oauth-config.js`](/pretty-mails/oauth-config.js)
+- [`oauth-config.js`](/oauth-config.js)
 
 Do uzupełnienia:
 - `window.PRETTY_MAILS_GOOGLE_CLIENT_ID`
