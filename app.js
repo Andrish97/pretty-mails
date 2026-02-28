@@ -24,23 +24,6 @@ const GOOGLE_AUTH_CONFIG = {
   scopes: "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email",
 };
 
-const defaultOutlookRedirectUri = (() => {
-  const url = new URL(window.location.href);
-  url.search = "";
-  url.hash = "";
-  return url.toString();
-})();
-
-const OUTLOOK_AUTH_CONFIG = {
-  clientId: String(window.PRETTY_MAILS_OUTLOOK_CLIENT_ID || "").trim(),
-  tenantId: String(window.PRETTY_MAILS_OUTLOOK_TENANT_ID || "common").trim() || "common",
-  allowedEmail: String(window.PRETTY_MAILS_OUTLOOK_ALLOWED_EMAIL || "")
-    .trim()
-    .toLowerCase(),
-  redirectUri: String(window.PRETTY_MAILS_OUTLOOK_REDIRECT_URI || "").trim() || defaultOutlookRedirectUri,
-  scopes: "offline_access openid profile email Mail.Send User.Read",
-};
-
 const OPTIONAL_DEFAULTS = {
   cc: false,
   bcc: false,
@@ -187,13 +170,10 @@ const I18N = {
     exportBusy: "💾…",
     gmailSendButton: "📨",
     gmailSendBusy: "📨…",
-    outlookSendButton: "Ⓜ️",
-    outlookSendBusy: "Ⓜ️…",
     shareButton: "📋",
     shareBusy: "📋…",
     exportButtonAria: "Zapisz plik .eml",
     gmailSendButtonAria: "Wyślij przez Gmail",
-    outlookSendButtonAria: "Wyślij przez Outlook",
     shareButtonAria: "Kopiuj całą treść wiadomości",
 
     infoButtonAria: "Pokaż wskazówki",
@@ -202,7 +182,7 @@ const I18N = {
     infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
     infoLine2: "💾 „Zapisz” pobiera plik na urządzenie.",
     infoLine3:
-      "📨/Ⓜ️ „Wyślij Gmail/Outlook” używa OAuth, a gdy brak konfiguracji otwiera szkic webmaila.",
+      "📨 „Wyślij Gmail” używa OAuth, a gdy brak konfiguracji otwiera szkic webmaila.",
     infoLine4: "📋 „Kopiuj” kopiuje cały podgląd wiadomości (HTML + style).",
 
     attachmentsTitle: "Załączniki",
@@ -264,10 +244,6 @@ const I18N = {
       "Brak konfiguracji Google OAuth. Ustaw window.PRETTY_MAILS_GOOGLE_CLIENT_ID w index.html.",
     gmailComposeFallbackTitle: "Otwórz szkic Gmail",
     gmailComposePopupBlocked: "Przeglądarka zablokowała okno Gmail. Zezwól na popupy i spróbuj ponownie.",
-    outlookConfigMissing:
-      "Brak konfiguracji Microsoft OAuth. Ustaw window.PRETTY_MAILS_OUTLOOK_CLIENT_ID w index.html.",
-    outlookComposeFallbackTitle: "Otwórz szkic Outlook",
-    outlookComposePopupBlocked: "Przeglądarka zablokowała okno Outlook. Zezwól na popupy i spróbuj ponownie.",
     googleAuthModalTitle: "🔐 Zaloguj się z Google",
     googleAuthModalTextOauth: "Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Google.",
     googleAuthModalTextFallback:
@@ -276,19 +252,8 @@ const I18N = {
     googleAuthModalConfirmFallback: "Otwórz Gmail",
     googleAuthModalCancel: "Anuluj",
     googleAuthModalCloseAria: "Zamknij okno logowania Google",
-    outlookAuthModalTitle: "🔐 Zaloguj się do Outlook",
-    outlookAuthModalTextOauth: "Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Microsoft.",
-    outlookAuthModalTextFallback:
-      "Microsoft OAuth nie jest skonfigurowany. Otworzymy Outlook Web, gdzie zalogujesz się i wyślesz wiadomość.",
-    outlookAuthModalConfirmOauth: "Zaloguj się do Outlook",
-    outlookAuthModalConfirmFallback: "Otwórz Outlook",
-    outlookAuthModalCancel: "Anuluj",
-    outlookAuthModalCloseAria: "Zamknij okno logowania Outlook",
     gmailAuthFailed: "Logowanie Google nie powiodło się.",
     gmailWrongAccount: "To konto Google nie jest dozwolone dla tej aplikacji.",
-    outlookAuthFailed: "Logowanie Microsoft nie powiodło się.",
-    outlookWrongAccount: "To konto Microsoft nie jest dozwolone dla tej aplikacji.",
-    outlookSendFailedAlert: "Nie udało się wysłać wiadomości przez Outlook.",
 
     fileKindFile: "PLIK",
     fileKindImage: "IMG",
@@ -417,13 +382,10 @@ const I18N = {
     exportBusy: "💾…",
     gmailSendButton: "📨",
     gmailSendBusy: "📨…",
-    outlookSendButton: "Ⓜ️",
-    outlookSendBusy: "Ⓜ️…",
     shareButton: "📋",
     shareBusy: "📋…",
     exportButtonAria: "Save .eml file",
     gmailSendButtonAria: "Send via Gmail",
-    outlookSendButtonAria: "Send via Outlook",
     shareButtonAria: "Copy full message content",
 
     infoButtonAria: "Show tips",
@@ -432,7 +394,7 @@ const I18N = {
     infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
     infoLine2: "💾 “Save” downloads the file to your device.",
     infoLine3:
-      "📨/Ⓜ️ “Send Gmail/Outlook” uses OAuth, and when OAuth is not configured it opens a webmail draft.",
+      "📨 “Send Gmail” uses OAuth, and when OAuth is not configured it opens a webmail draft.",
     infoLine4: "📋 “Copy” copies the full message preview (HTML + styles).",
 
     attachmentsTitle: "Attachments",
@@ -494,10 +456,6 @@ const I18N = {
       "Google OAuth is not configured. Set window.PRETTY_MAILS_GOOGLE_CLIENT_ID in index.html.",
     gmailComposeFallbackTitle: "Open Gmail draft",
     gmailComposePopupBlocked: "The browser blocked the Gmail window. Allow popups and try again.",
-    outlookConfigMissing:
-      "Microsoft OAuth is not configured. Set window.PRETTY_MAILS_OUTLOOK_CLIENT_ID in index.html.",
-    outlookComposeFallbackTitle: "Open Outlook draft",
-    outlookComposePopupBlocked: "The browser blocked the Outlook window. Allow popups and try again.",
     googleAuthModalTitle: "🔐 Sign in with Google",
     googleAuthModalTextOauth: "To send directly from this app, sign in to your Google account.",
     googleAuthModalTextFallback:
@@ -506,19 +464,8 @@ const I18N = {
     googleAuthModalConfirmFallback: "Open Gmail",
     googleAuthModalCancel: "Cancel",
     googleAuthModalCloseAria: "Close Google sign-in dialog",
-    outlookAuthModalTitle: "🔐 Sign in to Outlook",
-    outlookAuthModalTextOauth: "To send directly from this app, sign in to your Microsoft account.",
-    outlookAuthModalTextFallback:
-      "Microsoft OAuth is not configured. We will open Outlook Web where you can sign in and send the message.",
-    outlookAuthModalConfirmOauth: "Sign in to Outlook",
-    outlookAuthModalConfirmFallback: "Open Outlook",
-    outlookAuthModalCancel: "Cancel",
-    outlookAuthModalCloseAria: "Close Outlook sign-in dialog",
     gmailAuthFailed: "Google sign-in failed.",
     gmailWrongAccount: "This Google account is not allowed for this app.",
-    outlookAuthFailed: "Microsoft sign-in failed.",
-    outlookWrongAccount: "This Microsoft account is not allowed for this app.",
-    outlookSendFailedAlert: "Could not send message via Outlook.",
 
     fileKindFile: "FILE",
     fileKindImage: "IMG",
@@ -645,13 +592,10 @@ const I18N = {
     exportBusy: "💾…",
     gmailSendButton: "📨",
     gmailSendBusy: "📨…",
-    outlookSendButton: "Ⓜ️",
-    outlookSendBusy: "Ⓜ️…",
     shareButton: "📋",
     shareBusy: "📋…",
     exportButtonAria: "Зберегти файл .eml",
     gmailSendButtonAria: "Надіслати через Gmail",
-    outlookSendButtonAria: "Надіслати через Outlook",
     shareButtonAria: "Скопіювати весь вміст листа",
 
     infoButtonAria: "Показати підказки",
@@ -660,7 +604,7 @@ const I18N = {
     infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
     infoLine2: "💾 «Зберегти» завантажує файл на пристрій.",
     infoLine3:
-      "📨/Ⓜ️ «Надіслати Gmail/Outlook» використовує OAuth, а без налаштування відкриває веб-чернетку.",
+      "📨 «Надіслати Gmail» використовує OAuth, а без налаштування відкриває веб-чернетку.",
     infoLine4: "📋 «Копіювати» копіює весь перегляд листа (HTML + стилі).",
 
     attachmentsTitle: "Вкладення",
@@ -722,10 +666,6 @@ const I18N = {
       "Google OAuth не налаштовано. Вкажіть window.PRETTY_MAILS_GOOGLE_CLIENT_ID у index.html.",
     gmailComposeFallbackTitle: "Відкрити чернетку Gmail",
     gmailComposePopupBlocked: "Браузер заблокував вікно Gmail. Дозвольте pop-up і спробуйте ще раз.",
-    outlookConfigMissing:
-      "Microsoft OAuth не налаштовано. Вкажіть window.PRETTY_MAILS_OUTLOOK_CLIENT_ID у index.html.",
-    outlookComposeFallbackTitle: "Відкрити чернетку Outlook",
-    outlookComposePopupBlocked: "Браузер заблокував вікно Outlook. Дозвольте pop-up і спробуйте ще раз.",
     googleAuthModalTitle: "🔐 Увійти через Google",
     googleAuthModalTextOauth: "Щоб надіслати лист безпосередньо із застосунку, увійдіть у Google-акаунт.",
     googleAuthModalTextFallback:
@@ -734,19 +674,8 @@ const I18N = {
     googleAuthModalConfirmFallback: "Відкрити Gmail",
     googleAuthModalCancel: "Скасувати",
     googleAuthModalCloseAria: "Закрити вікно входу Google",
-    outlookAuthModalTitle: "🔐 Увійти в Outlook",
-    outlookAuthModalTextOauth: "Щоб надіслати лист безпосередньо із застосунку, увійдіть у Microsoft-акаунт.",
-    outlookAuthModalTextFallback:
-      "Microsoft OAuth не налаштовано. Ми відкриємо Outlook Web, де ви увійдете й надішлете лист.",
-    outlookAuthModalConfirmOauth: "Увійти в Outlook",
-    outlookAuthModalConfirmFallback: "Відкрити Outlook",
-    outlookAuthModalCancel: "Скасувати",
-    outlookAuthModalCloseAria: "Закрити вікно входу Outlook",
     gmailAuthFailed: "Вхід через Google не вдався.",
     gmailWrongAccount: "Цей Google-акаунт не дозволено для цього застосунку.",
-    outlookAuthFailed: "Вхід через Microsoft не вдався.",
-    outlookWrongAccount: "Цей Microsoft-акаунт не дозволено для цього застосунку.",
-    outlookSendFailedAlert: "Не вдалося надіслати лист через Outlook.",
 
     fileKindFile: "ФАЙЛ",
     fileKindImage: "IMG",
@@ -806,12 +735,6 @@ const state = {
     email: "",
     expiresAt: 0,
   },
-  outlookAuth: {
-    accessToken: "",
-    refreshToken: "",
-    email: "",
-    expiresAt: 0,
-  },
   isExporting: false,
   exportAction: "save",
   mobilePreviewOpen: false,
@@ -837,7 +760,6 @@ const ui = {
   mobilePreviewToggleBtn: document.querySelector("#mobilePreviewToggleBtn"),
   exportBtn: document.querySelector("#exportBtn"),
   gmailSendBtn: document.querySelector("#gmailSendBtn"),
-  outlookSendBtn: document.querySelector("#outlookSendBtn"),
   shareBtn: document.querySelector("#shareBtn"),
 
   infoBtn: document.querySelector("#infoBtn"),
@@ -851,12 +773,6 @@ const ui = {
   googleAuthModalText: document.querySelector("#googleAuthModalText"),
   googleAuthModalConfirm: document.querySelector("#googleAuthModalConfirm"),
   googleAuthModalCancel: document.querySelector("#googleAuthModalCancel"),
-  outlookAuthModal: document.querySelector("#outlookAuthModal"),
-  outlookAuthModalClose: document.querySelector("#outlookAuthModalClose"),
-  outlookAuthModalTitle: document.querySelector("#outlookAuthModalTitle"),
-  outlookAuthModalText: document.querySelector("#outlookAuthModalText"),
-  outlookAuthModalConfirm: document.querySelector("#outlookAuthModalConfirm"),
-  outlookAuthModalCancel: document.querySelector("#outlookAuthModalCancel"),
 
   editorTitle: document.querySelector("#editorTitle"),
   sectionEnvelopeTitle: document.querySelector("#sectionEnvelopeTitle"),
@@ -1100,7 +1016,6 @@ function bindEvents() {
     closeAllCustomSelects();
     closeInfoModal();
     closeGoogleAuthModal();
-    closeOutlookAuthModal();
     if (state.mobilePreviewOpen) {
       state.mobilePreviewOpen = false;
       syncMobilePreviewMode();
@@ -1301,19 +1216,6 @@ function bindEvents() {
     await runGmailSendAction();
   });
 
-  ui.outlookSendBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) return;
-    if (!hasAnyRecipient()) {
-      await runOutlookSendAction();
-      return;
-    }
-    if (shouldPromptOutlookAuthModal()) {
-      openOutlookAuthModal();
-      return;
-    }
-    await runOutlookSendAction();
-  });
-
   ui.shareBtn.addEventListener("click", async () => {
     try {
       state.isExporting = true;
@@ -1364,27 +1266,6 @@ function bindEvents() {
     closeGoogleAuthModal();
     if (!validateAddressFields()) return;
     await runGmailSendAction();
-  });
-
-  ui.outlookAuthModalClose.addEventListener("click", () => {
-    closeOutlookAuthModal();
-  });
-
-  ui.outlookAuthModalCancel.addEventListener("click", () => {
-    closeOutlookAuthModal();
-  });
-
-  ui.outlookAuthModal.addEventListener("click", (event) => {
-    if (!(event.target instanceof HTMLElement)) return;
-    if (event.target.closest("[data-outlook-auth-close]")) {
-      closeOutlookAuthModal();
-    }
-  });
-
-  ui.outlookAuthModalConfirm.addEventListener("click", async () => {
-    closeOutlookAuthModal();
-    if (!validateAddressFields()) return;
-    await runOutlookSendAction();
   });
 }
 
@@ -1934,11 +1815,9 @@ function applyLanguage(language) {
   ui.mobilePreviewToggleBtn.textContent = t("openPreviewButton");
   ui.exportBtn.setAttribute("aria-label", t("exportButtonAria"));
   ui.gmailSendBtn.setAttribute("aria-label", t("gmailSendButtonAria"));
-  ui.outlookSendBtn.setAttribute("aria-label", t("outlookSendButtonAria"));
   ui.shareBtn.setAttribute("aria-label", t("shareButtonAria"));
   ui.exportBtn.title = t("exportButtonAria");
   ui.gmailSendBtn.title = t("gmailSendButtonAria");
-  ui.outlookSendBtn.title = t("outlookSendButtonAria");
   ui.shareBtn.title = t("shareButtonAria");
 
   ui.infoBtn.setAttribute("aria-label", t("infoButtonAria"));
@@ -1951,7 +1830,6 @@ function applyLanguage(language) {
     ui.infoModalList.append(item);
   });
   updateGoogleAuthModalCopy();
-  updateOutlookAuthModalCopy();
 
   buildPresetOptions();
   renderTemplateSelectOptions();
@@ -3052,15 +2930,12 @@ function updateActionButtons() {
     state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
   ui.gmailSendBtn.textContent =
     state.isExporting && state.exportAction === "gmail" ? t("gmailSendBusy") : t("gmailSendButton");
-  ui.outlookSendBtn.textContent =
-    state.isExporting && state.exportAction === "outlook" ? t("outlookSendBusy") : t("outlookSendButton");
   ui.shareBtn.textContent =
     state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
 
   if (state.isExporting) {
     ui.exportBtn.disabled = true;
     ui.gmailSendBtn.disabled = true;
-    ui.outlookSendBtn.disabled = true;
     ui.shareBtn.disabled = true;
     return;
   }
@@ -3068,15 +2943,10 @@ function updateActionButtons() {
   const hasValidationErrors = collectValidationState().issues.length > 0;
   const canExport = !hasValidationErrors && hasAnyExportData();
   const canGmailSend = !hasValidationErrors && hasAnyExportData() && hasAnyRecipient();
-  const canOutlookSend = !hasValidationErrors && hasAnyExportData() && hasAnyRecipient();
   const canCopy = hasCopyContentData();
   ui.gmailSendBtn.title = isGoogleAuthConfigured() ? t("gmailSendButtonAria") : t("gmailComposeFallbackTitle");
-  ui.outlookSendBtn.title = isOutlookAuthConfigured()
-    ? t("outlookSendButtonAria")
-    : t("outlookComposeFallbackTitle");
   ui.exportBtn.disabled = !canExport;
   ui.gmailSendBtn.disabled = !canGmailSend;
-  ui.outlookSendBtn.disabled = !canOutlookSend;
   ui.shareBtn.disabled = !canCopy;
 }
 
@@ -3092,18 +2962,9 @@ function hasActiveGoogleAccessToken() {
   return Boolean(state.googleAuth.accessToken) && Date.now() < state.googleAuth.expiresAt - 30_000;
 }
 
-function hasActiveOutlookAccessToken() {
-  return Boolean(state.outlookAuth.accessToken) && Date.now() < state.outlookAuth.expiresAt - 30_000;
-}
-
 function shouldPromptGoogleAuthModal() {
   if (!isGoogleAuthConfigured()) return true;
   return !hasActiveGoogleAccessToken();
-}
-
-function shouldPromptOutlookAuthModal() {
-  if (!isOutlookAuthConfigured()) return true;
-  return !hasActiveOutlookAccessToken();
 }
 
 async function runGmailSendAction() {
@@ -3115,22 +2976,6 @@ async function runGmailSendAction() {
   } catch (error) {
     console.error(error);
     alert(error?.message || t("gmailSendFailedAlert"));
-  } finally {
-    state.isExporting = false;
-    state.exportAction = "save";
-    updateActionButtons();
-  }
-}
-
-async function runOutlookSendAction() {
-  try {
-    state.isExporting = true;
-    state.exportAction = "outlook";
-    updateActionButtons();
-    await sendViaOutlook();
-  } catch (error) {
-    console.error(error);
-    alert(error?.message || t("outlookSendFailedAlert"));
   } finally {
     state.isExporting = false;
     state.exportAction = "save";
@@ -3550,19 +3395,8 @@ function closeGoogleAuthModal() {
   syncModalBodyState();
 }
 
-function openOutlookAuthModal() {
-  updateOutlookAuthModalCopy();
-  ui.outlookAuthModal.hidden = false;
-  syncModalBodyState();
-}
-
-function closeOutlookAuthModal() {
-  ui.outlookAuthModal.hidden = true;
-  syncModalBodyState();
-}
-
 function syncModalBodyState() {
-  const anyModalOpen = !ui.infoModal.hidden || !ui.googleAuthModal.hidden || !ui.outlookAuthModal.hidden;
+  const anyModalOpen = !ui.infoModal.hidden || !ui.googleAuthModal.hidden;
   document.body.classList.toggle("modal-open", anyModalOpen);
 }
 
@@ -3575,17 +3409,6 @@ function updateGoogleAuthModalCopy() {
     : t("googleAuthModalConfirmFallback");
   ui.googleAuthModalCancel.textContent = t("googleAuthModalCancel");
   ui.googleAuthModalClose.setAttribute("aria-label", t("googleAuthModalCloseAria"));
-}
-
-function updateOutlookAuthModalCopy() {
-  const oauthConfigured = isOutlookAuthConfigured();
-  ui.outlookAuthModalTitle.textContent = t("outlookAuthModalTitle");
-  ui.outlookAuthModalText.textContent = oauthConfigured ? t("outlookAuthModalTextOauth") : t("outlookAuthModalTextFallback");
-  ui.outlookAuthModalConfirm.textContent = oauthConfigured
-    ? t("outlookAuthModalConfirmOauth")
-    : t("outlookAuthModalConfirmFallback");
-  ui.outlookAuthModalCancel.textContent = t("outlookAuthModalCancel");
-  ui.outlookAuthModalClose.setAttribute("aria-label", t("outlookAuthModalCloseAria"));
 }
 
 function buildPlainTextBody() {
@@ -3752,20 +3575,6 @@ async function sendViaGmail() {
   const rawMessage = await buildMimeMessage({ draftMode: false });
   const accessToken = await ensureGoogleAccessToken();
   await sendGmailRawMessage(rawMessage, accessToken);
-}
-
-async function sendViaOutlook() {
-  if (!hasAnyRecipient()) {
-    throw new Error(t("requiredRecipientMissing"));
-  }
-
-  if (!isOutlookAuthConfigured()) {
-    openOutlookComposeWindow();
-    return;
-  }
-
-  const accessToken = await ensureOutlookAccessToken();
-  await sendOutlookGraphMessage(accessToken);
 }
 
 async function buildEmlFile() {
@@ -3940,10 +3749,6 @@ function isGoogleAuthConfigured() {
   return Boolean(GOOGLE_AUTH_CONFIG.clientId);
 }
 
-function isOutlookAuthConfigured() {
-  return Boolean(OUTLOOK_AUTH_CONFIG.clientId);
-}
-
 async function ensureGoogleIdentityLoaded() {
   if (window.google?.accounts?.oauth2) return;
 
@@ -4051,276 +3856,6 @@ async function fetchGoogleUserEmail(accessToken) {
   return email;
 }
 
-function clearOutlookAuthSession() {
-  state.outlookAuth.accessToken = "";
-  state.outlookAuth.refreshToken = "";
-  state.outlookAuth.expiresAt = 0;
-  state.outlookAuth.email = "";
-}
-
-function outlookAuthorityBaseUrl() {
-  const tenantId = encodeURIComponent(OUTLOOK_AUTH_CONFIG.tenantId || "common");
-  return `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0`;
-}
-
-function createRandomAuthString(length = 64) {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-  const bytes = new Uint8Array(length);
-  window.crypto.getRandomValues(bytes);
-  let output = "";
-  for (let index = 0; index < bytes.length; index += 1) {
-    output += alphabet[bytes[index] % alphabet.length];
-  }
-  return output;
-}
-
-function bytesToBase64Url(bytes) {
-  let binary = "";
-  for (let index = 0; index < bytes.length; index += 1) {
-    binary += String.fromCharCode(bytes[index]);
-  }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-}
-
-async function buildPkceCodeChallenge(verifier) {
-  if (!window.crypto?.subtle) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-  const bytes = new TextEncoder().encode(verifier);
-  const digest = await window.crypto.subtle.digest("SHA-256", bytes);
-  return bytesToBase64Url(new Uint8Array(digest));
-}
-
-function buildOutlookAuthorizeUrl({ stateValue, codeChallenge }) {
-  const authUrl = new URL(`${outlookAuthorityBaseUrl()}/authorize`);
-  authUrl.searchParams.set("client_id", OUTLOOK_AUTH_CONFIG.clientId);
-  authUrl.searchParams.set("response_type", "code");
-  authUrl.searchParams.set("redirect_uri", OUTLOOK_AUTH_CONFIG.redirectUri);
-  authUrl.searchParams.set("response_mode", "query");
-  authUrl.searchParams.set("scope", OUTLOOK_AUTH_CONFIG.scopes);
-  authUrl.searchParams.set("state", stateValue);
-  authUrl.searchParams.set("code_challenge", codeChallenge);
-  authUrl.searchParams.set("code_challenge_method", "S256");
-  authUrl.searchParams.set("prompt", "select_account");
-  return authUrl.toString();
-}
-
-function openCenteredPopup(url, name, width = 520, height = 720) {
-  const left = Math.max(0, window.screenX + Math.round((window.outerWidth - width) / 2));
-  const top = Math.max(0, window.screenY + Math.round((window.outerHeight - height) / 2));
-  const features = `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`;
-  return window.open(url, name, features);
-}
-
-function waitForOutlookPopupCode(popup, expectedState, timeoutMs = 120000) {
-  return new Promise((resolve, reject) => {
-    const startedAt = Date.now();
-    const cleanup = () => {
-      window.clearInterval(intervalId);
-    };
-
-    const rejectAuth = (messageKey = "outlookAuthFailed") => {
-      cleanup();
-      try {
-        popup?.close();
-      } catch {
-        // ignore
-      }
-      reject(new Error(t(messageKey)));
-    };
-
-    const intervalId = window.setInterval(() => {
-      if (!popup || popup.closed) {
-        rejectAuth("outlookAuthFailed");
-        return;
-      }
-
-      if (Date.now() - startedAt > timeoutMs) {
-        rejectAuth("outlookAuthFailed");
-        return;
-      }
-
-      let locationHref = "";
-      try {
-        locationHref = String(popup.location.href || "");
-      } catch {
-        return;
-      }
-
-      if (!locationHref) return;
-
-      let url;
-      try {
-        url = new URL(locationHref);
-      } catch {
-        return;
-      }
-
-      if (url.origin !== window.location.origin) {
-        return;
-      }
-
-      const errorCode = url.searchParams.get("error");
-      if (errorCode) {
-        rejectAuth("outlookAuthFailed");
-        return;
-      }
-
-      const code = url.searchParams.get("code");
-      if (!code) {
-        return;
-      }
-
-      const stateValue = url.searchParams.get("state");
-      if (!stateValue || stateValue !== expectedState) {
-        rejectAuth("outlookAuthFailed");
-        return;
-      }
-
-      cleanup();
-      try {
-        popup.close();
-      } catch {
-        // ignore
-      }
-      resolve(code);
-    }, 150);
-  });
-}
-
-async function requestOutlookTokenWithRefresh(refreshToken) {
-  const body = new URLSearchParams({
-    client_id: OUTLOOK_AUTH_CONFIG.clientId,
-    grant_type: "refresh_token",
-    refresh_token: refreshToken,
-    redirect_uri: OUTLOOK_AUTH_CONFIG.redirectUri,
-    scope: OUTLOOK_AUTH_CONFIG.scopes,
-  });
-
-  const response = await fetch(`${outlookAuthorityBaseUrl()}/token`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: body.toString(),
-  });
-
-  if (!response.ok) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-
-  return response.json();
-}
-
-async function requestOutlookTokenInteractive() {
-  if (!window.crypto?.getRandomValues) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-
-  const stateValue = createRandomAuthString(32);
-  const codeVerifier = createRandomAuthString(96);
-  const codeChallenge = await buildPkceCodeChallenge(codeVerifier);
-  const authUrl = buildOutlookAuthorizeUrl({ stateValue, codeChallenge });
-  const popup = openCenteredPopup(authUrl, "pretty-mails-outlook-auth");
-
-  if (!popup) {
-    throw new Error(t("outlookComposePopupBlocked"));
-  }
-
-  const code = await waitForOutlookPopupCode(popup, stateValue);
-
-  const body = new URLSearchParams({
-    client_id: OUTLOOK_AUTH_CONFIG.clientId,
-    grant_type: "authorization_code",
-    code,
-    redirect_uri: OUTLOOK_AUTH_CONFIG.redirectUri,
-    code_verifier: codeVerifier,
-    scope: OUTLOOK_AUTH_CONFIG.scopes,
-  });
-
-  const response = await fetch(`${outlookAuthorityBaseUrl()}/token`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: body.toString(),
-  });
-
-  if (!response.ok) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-
-  return response.json();
-}
-
-function applyOutlookTokenResponse(payload) {
-  if (!payload?.access_token) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-
-  state.outlookAuth.accessToken = payload.access_token;
-  state.outlookAuth.expiresAt = Date.now() + Math.max(0, Number(payload.expires_in || 0)) * 1000;
-  if (payload.refresh_token) {
-    state.outlookAuth.refreshToken = payload.refresh_token;
-  }
-}
-
-async function fetchOutlookUserEmail(accessToken) {
-  const response = await fetch("https://graph.microsoft.com/v1.0/me?$select=mail,userPrincipalName", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-
-  const payload = await response.json();
-  const primary = normalizeInlineText(payload?.mail).toLowerCase();
-  const fallback = normalizeInlineText(payload?.userPrincipalName).toLowerCase();
-  const email = primary || fallback;
-  if (!email) {
-    throw new Error(t("outlookAuthFailed"));
-  }
-  return email;
-}
-
-async function requestOutlookAccessToken() {
-  if (!isOutlookAuthConfigured()) {
-    throw new Error(t("outlookConfigMissing"));
-  }
-
-  if (state.outlookAuth.refreshToken) {
-    try {
-      const payload = await requestOutlookTokenWithRefresh(state.outlookAuth.refreshToken);
-      applyOutlookTokenResponse(payload);
-    } catch {
-      clearOutlookAuthSession();
-    }
-  }
-
-  if (!hasActiveOutlookAccessToken()) {
-    const payload = await requestOutlookTokenInteractive();
-    applyOutlookTokenResponse(payload);
-  }
-
-  const email = await fetchOutlookUserEmail(state.outlookAuth.accessToken);
-  if (OUTLOOK_AUTH_CONFIG.allowedEmail && email !== OUTLOOK_AUTH_CONFIG.allowedEmail) {
-    clearOutlookAuthSession();
-    throw new Error(t("outlookWrongAccount"));
-  }
-  state.outlookAuth.email = email;
-  return state.outlookAuth.accessToken;
-}
-
-async function ensureOutlookAccessToken() {
-  if (hasActiveOutlookAccessToken()) {
-    return state.outlookAuth.accessToken;
-  }
-  return requestOutlookAccessToken();
-}
-
 function openGmailComposeWindow() {
   const to = parseAddressList(state.fields.to).join(",");
   const cc = state.enabled.cc ? parseAddressList(state.fields.cc).join(",") : "";
@@ -4342,30 +3877,6 @@ function openGmailComposeWindow() {
   const popup = window.open(`https://mail.google.com/mail/?${params.toString()}`, "_blank", "noopener,noreferrer");
   if (!popup) {
     throw new Error(t("gmailComposePopupBlocked"));
-  }
-}
-
-function openOutlookComposeWindow() {
-  const to = parseAddressList(state.fields.to).join(";");
-  const cc = state.enabled.cc ? parseAddressList(state.fields.cc).join(";") : "";
-  const bcc = state.enabled.bcc ? parseAddressList(state.fields.bcc).join(";") : "";
-  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
-  const body = buildPlainTextBody();
-
-  const params = new URLSearchParams();
-  if (to) params.set("to", to);
-  if (cc) params.set("cc", cc);
-  if (bcc) params.set("bcc", bcc);
-  if (subject) params.set("subject", subject);
-  if (body) params.set("body", body);
-
-  const popup = window.open(
-    `https://outlook.office.com/mail/deeplink/compose?${params.toString()}`,
-    "_blank",
-    "noopener,noreferrer"
-  );
-  if (!popup) {
-    throw new Error(t("outlookComposePopupBlocked"));
   }
 }
 
@@ -4399,92 +3910,6 @@ async function sendGmailRawMessage(rawMessage, accessToken, allowRetry = true) {
 
     throw new Error(
       details ? `${t("gmailSendFailedAlert")} (${response.status}): ${details}` : t("gmailSendFailedAlert")
-    );
-  }
-}
-
-async function buildOutlookGraphAttachments() {
-  const exportAttachments = getAllExportAttachments();
-  const attachments = [];
-
-  for (const [index, attachment] of exportAttachments.entries()) {
-    const base64 = await fileToBase64(attachment.file);
-    attachments.push({
-      "@odata.type": "#microsoft.graph.fileAttachment",
-      name: attachment.file.name,
-      contentType: attachment.file.type || "application/octet-stream",
-      contentBytes: base64,
-      isInline: true,
-      contentId: buildAttachmentContentId(attachment, index),
-    });
-  }
-
-  return attachments;
-}
-
-async function sendOutlookGraphMessage(accessToken, allowRetry = true) {
-  const toAddresses = parseAddressList(state.fields.to);
-  const ccAddresses = state.enabled.cc ? parseAddressList(state.fields.cc) : [];
-  const bccAddresses = state.enabled.bcc ? parseAddressList(state.fields.bcc) : [];
-  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
-  const htmlDocument = await buildExportBodyHtml({
-    forceMode: null,
-    showPlaceholders: false,
-    attachmentLinkMode: "cid",
-  });
-  const htmlBody = buildClipboardHtml(htmlDocument);
-  const attachments = await buildOutlookGraphAttachments();
-
-  const payload = {
-    message: {
-      subject,
-      body: {
-        contentType: "HTML",
-        content: htmlBody || `<p>${escapeHtml(buildPlainTextBody() || "")}</p>`,
-      },
-      toRecipients: toAddresses.map((address) => ({
-        emailAddress: { address },
-      })),
-      ccRecipients: ccAddresses.map((address) => ({
-        emailAddress: { address },
-      })),
-      bccRecipients: bccAddresses.map((address) => ({
-        emailAddress: { address },
-      })),
-    },
-    saveToSentItems: true,
-  };
-
-  if (attachments.length) {
-    payload.message.attachments = attachments;
-  }
-
-  const response = await fetch("https://graph.microsoft.com/v1.0/me/sendMail", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (response.status === 401 && allowRetry) {
-    clearOutlookAuthSession();
-    const refreshedToken = await ensureOutlookAccessToken();
-    return sendOutlookGraphMessage(refreshedToken, false);
-  }
-
-  if (!response.ok) {
-    let details = "";
-    try {
-      const responsePayload = await response.json();
-      details = normalizeInlineText(responsePayload?.error?.message);
-    } catch {
-      details = normalizeInlineText(await response.text());
-    }
-
-    throw new Error(
-      details ? `${t("outlookSendFailedAlert")} (${response.status}): ${details}` : t("outlookSendFailedAlert")
     );
   }
 }
