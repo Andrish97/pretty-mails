@@ -22,6 +22,9 @@ const DEFAULT_MAIN_PALETTE = Object.freeze({
   accent2: "#59a3ff",
 });
 const SHORTCUT_MAX_URL_LENGTH = 7000;
+const SHORTCUT_DIAGNOSTICS_ENABLED = true;
+const SHORTCUT_DIAGNOSTICS_PREFIX = "[PrettyMail]";
+const SHORTCUT_DIAGNOSTICS_SESSION = Math.random().toString(36).slice(2, 8);
 
 const LANGUAGE_FLAGS = {
   pl: "🇵🇱",
@@ -190,9 +193,9 @@ const I18N = {
     shortcutReasonMaybeNotInstalled: "Jeśli nic się nie otworzyło, zainstaluj skrót i spróbuj ponownie.",
     shortcutReasonClipboard: "Nie udało się skopiować HTML do schowka.",
     shortcutReasonPayload: "Dane do skrótu są za duże.",
-    shortcutStep1: "Zainstaluj skrót PrettyMail.",
-    shortcutStep2: "Wróć tutaj i kliknij Wyślij ponownie.",
-    shortcutStep3: "W Skrótach zezwól na uruchamianie skrótu.",
+    shortcutStep1: "Kliknij „Zainstaluj skrót”.",
+    shortcutStep2: "W aplikacji Skróty wybierz „Dodaj skrót”.",
+    shortcutStep3: "Wróć tutaj i kliknij „Wyślij (Apple Mail)”.",
     shortcutInstall: "Zainstaluj skrót",
     shortcutClose: "Zamknij",
     shortcutAppleOnly: "Działa tylko na iPhone/iPad/Mac z Apple Mail.",
@@ -202,18 +205,18 @@ const I18N = {
     shortcutPickFilesHint: "Włącz, aby pominąć lokalne załączniki i wybrać pliki bezpośrednio w Skrótach.",
     shortcutPickFilesEnvelope: "Załączniki zostaną wybrane w Skrótach.",
     shortcutProviderNote: "Konto nadawcy wybierasz w Apple Mail.",
-    shortcutSetupSummary: "Jak skonfigurować skrót",
-    shortcutSetup1: "Zainstaluj skrót z linku iCloud poniżej.",
-    shortcutSetup2: "Otwórz aplikację Skróty i potwierdź uprawnienia.",
-    shortcutSetup3: "W skrócie użyj: Get Clipboard -> Make Rich Text from HTML -> Email (Show Compose Sheet ON).",
-    shortcutSetup4: "Deweloper: aplikacja nie tworzy skrótu automatycznie; utwórz go i wklej link do SHORTCUT_INSTALL_URL.",
+    shortcutSetupSummary: "Jak dodać i uruchomić",
+    shortcutSetup1: "Otwórz link iCloud przyciskiem poniżej.",
+    shortcutSetup2: "Dodaj skrót PrettyMail w aplikacji Skróty.",
+    shortcutSetup3: "Uruchom go raz i zezwól na uprawnienia.",
+    shortcutSetup4: "Potem wróć do Pretty-Mails i kliknij Wyślij.",
 
     infoButtonAria: "Pokaż wskazówki",
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
     infoLine1: "✉️ Wyślij kopiuje HTML wiadomości do schowka i uruchamia skrót Apple.",
     infoLine2: "📋 HTML jest w schowku, a Do/DW/UDW/Temat są przekazywane do skrótu jako tekst.",
-    infoLine3: " Skrót powinien mieć akcje: Get Clipboard -> Make Rich Text from HTML -> Email.",
+    infoLine3: " Jeśli skrót nie jest dodany, kliknij „Zainstaluj skrót” i dodaj go w aplikacji Skróty.",
     infoLine4: "⚙️ Konto nadawcy wybierasz już bezpośrednio w Apple Mail.",
 
     attachmentsTitle: "Załączniki",
@@ -412,9 +415,9 @@ const I18N = {
     shortcutReasonMaybeNotInstalled: "If nothing opened, install the Shortcut and try again.",
     shortcutReasonClipboard: "Could not copy HTML to clipboard.",
     shortcutReasonPayload: "Shortcut input is too large.",
-    shortcutStep1: "Install the PrettyMail Shortcut.",
-    shortcutStep2: "Return here and tap Send again.",
-    shortcutStep3: "In Shortcuts, allow the shortcut to run.",
+    shortcutStep1: "Tap Install Shortcut.",
+    shortcutStep2: "In Shortcuts, tap Add Shortcut.",
+    shortcutStep3: "Return here and tap Send (Apple Mail).",
     shortcutInstall: "Install Shortcut",
     shortcutClose: "Close",
     shortcutAppleOnly: "This works only on iPhone/iPad/Mac with Apple Mail.",
@@ -424,18 +427,18 @@ const I18N = {
     shortcutPickFilesHint: "Enable this to skip local attachments and choose files directly in Shortcuts.",
     shortcutPickFilesEnvelope: "Attachments will be selected in Shortcuts.",
     shortcutProviderNote: "Sender account is chosen in Apple Mail.",
-    shortcutSetupSummary: "How to set up the Shortcut",
-    shortcutSetup1: "Install the shortcut via the iCloud link below.",
-    shortcutSetup2: "Open the Shortcuts app and allow permissions.",
-    shortcutSetup3: "Shortcut actions: Get Clipboard -> Make Rich Text from HTML -> Email (Show Compose Sheet ON).",
-    shortcutSetup4: "Developer: the app cannot create the shortcut automatically; create it once and paste the iCloud link into SHORTCUT_INSTALL_URL.",
+    shortcutSetupSummary: "How to add and run",
+    shortcutSetup1: "Open the iCloud link with the button below.",
+    shortcutSetup2: "Add the PrettyMail shortcut in Shortcuts.",
+    shortcutSetup3: "Run it once and allow permissions.",
+    shortcutSetup4: "Then return to Pretty-Mails and tap Send.",
 
     infoButtonAria: "Show tips",
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
     infoLine1: "✉️ Send copies the email HTML to clipboard and runs the Apple Shortcut.",
     infoLine2: "📋 HTML goes via clipboard; To/CC/BCC/Subject are passed to the shortcut as text.",
-    infoLine3: " Shortcut actions: Get Clipboard -> Make Rich Text from HTML -> Email.",
+    infoLine3: " If not installed yet, tap Install Shortcut and add it in Shortcuts.",
     infoLine4: "⚙️ Sender account is selected in Apple Mail.",
 
     attachmentsTitle: "Attachments",
@@ -632,9 +635,9 @@ const I18N = {
     shortcutReasonMaybeNotInstalled: "Якщо нічого не відкрилося, встановіть ярлик і спробуйте ще раз.",
     shortcutReasonClipboard: "Не вдалося скопіювати HTML у буфер обміну.",
     shortcutReasonPayload: "Дані для ярлика занадто великі.",
-    shortcutStep1: "Встановіть ярлик PrettyMail.",
-    shortcutStep2: "Поверніться сюди й натисніть Надіслати ще раз.",
-    shortcutStep3: "У Shortcuts дозвольте запуск ярлика.",
+    shortcutStep1: "Натисніть «Встановити ярлик».",
+    shortcutStep2: "У Shortcuts натисніть «Додати ярлик».",
+    shortcutStep3: "Поверніться сюди і натисніть «Надіслати (Apple Mail)».",
     shortcutInstall: "Встановити ярлик",
     shortcutClose: "Закрити",
     shortcutAppleOnly: "Працює лише на iPhone/iPad/Mac з Apple Mail.",
@@ -644,18 +647,18 @@ const I18N = {
     shortcutPickFilesHint: "Увімкніть, щоб пропустити локальні вкладення і вибирати файли прямо в Shortcuts.",
     shortcutPickFilesEnvelope: "Вкладення буде вибрано в Shortcuts.",
     shortcutProviderNote: "Акаунт відправника обирається в Apple Mail.",
-    shortcutSetupSummary: "Як налаштувати ярлик",
-    shortcutSetup1: "Встановіть ярлик за iCloud-посиланням нижче.",
-    shortcutSetup2: "Відкрийте застосунок Shortcuts і підтвердьте дозволи.",
-    shortcutSetup3: "Дії ярлика: Get Clipboard -> Make Rich Text from HTML -> Email (Show Compose Sheet ON).",
-    shortcutSetup4: "Для розробника: застосунок не створює ярлик автоматично; створіть його і вставте iCloud-посилання в SHORTCUT_INSTALL_URL.",
+    shortcutSetupSummary: "Як додати і запустити",
+    shortcutSetup1: "Відкрийте iCloud-посилання кнопкою нижче.",
+    shortcutSetup2: "Додайте ярлик PrettyMail у Shortcuts.",
+    shortcutSetup3: "Запустіть його один раз і надайте дозволи.",
+    shortcutSetup4: "Потім поверніться в Pretty-Mails і натисніть Надіслати.",
 
     infoButtonAria: "Показати підказки",
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
     infoLine1: "✉️ Надіслати копіює HTML листа в буфер обміну і запускає ярлик Apple.",
     infoLine2: "📋 HTML у буфері обміну; Кому/Копія/Прих. копія/Тема передаються в ярлик як текст.",
-    infoLine3: " Дії ярлика: Get Clipboard -> Make Rich Text from HTML -> Email.",
+    infoLine3: " Якщо ярлик ще не додано, натисніть «Встановити ярлик» і додайте його в Shortcuts.",
     infoLine4: "⚙️ Акаунт відправника обирається в Apple Mail.",
 
     attachmentsTitle: "Вкладення",
@@ -1011,12 +1014,48 @@ const OPTIONAL_BINDINGS = {
   sentFrom: { toggle: () => ui.toggleSentFrom, controls: () => [] },
 };
 
+function diagInfo(eventName, details) {
+  if (!SHORTCUT_DIAGNOSTICS_ENABLED) return;
+  console.info(`${SHORTCUT_DIAGNOSTICS_PREFIX} ${eventName}`, {
+    session: SHORTCUT_DIAGNOSTICS_SESSION,
+    ...details,
+  });
+}
+
+function diagWarn(eventName, details) {
+  if (!SHORTCUT_DIAGNOSTICS_ENABLED) return;
+  console.warn(`${SHORTCUT_DIAGNOSTICS_PREFIX} ${eventName}`, {
+    session: SHORTCUT_DIAGNOSTICS_SESSION,
+    ...details,
+  });
+}
+
+function diagError(eventName, error, details) {
+  if (!SHORTCUT_DIAGNOSTICS_ENABLED) return;
+  console.error(`${SHORTCUT_DIAGNOSTICS_PREFIX} ${eventName}`, {
+    session: SHORTCUT_DIAGNOSTICS_SESSION,
+    name: error?.name || null,
+    message: error?.message || String(error),
+    stack: error?.stack || null,
+    ...details,
+  });
+}
+
 boot().catch((error) => {
+  diagError("boot:failed", error);
   console.error(error);
   ui.addressValidation.textContent = t("bootFailed");
 });
 
 async function boot() {
+  diagInfo("boot:start", {
+    ua: navigator.userAgent,
+    platform: navigator.platform,
+    maxTouchPoints: Number(navigator.maxTouchPoints || 0),
+    exportBtnFound: Boolean(ui.exportBtn),
+    shortcutModalFound: Boolean(ui.shortcutModal),
+    toastHostFound: Boolean(ui.toastHost),
+  });
   bindEvents();
   restoreDraft();
   applyLanguage(state.language);
@@ -1035,6 +1074,11 @@ async function boot() {
   await initTinyEditors();
   renderPreview();
   registerServiceWorker();
+  diagInfo("boot:ready", {
+    templateCount: state.templates.length,
+    selectedTemplateId: state.selectedTemplateId,
+    shortcutPickFiles: state.shortcutPickFiles,
+  });
 }
 
 function bindEvents() {
@@ -1290,7 +1334,38 @@ function bindEvents() {
   });
 
   ui.exportBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) return;
+    const validation = collectValidationState();
+    const hasData = hasAnyExportData();
+    diagInfo("send:button_clicked", {
+      disabled: Boolean(ui.exportBtn.disabled),
+      isExporting: state.isExporting,
+      hasData,
+      issueCount: validation.issues.length,
+      issues: validation.issues,
+      to: normalizeInlineText(state.fields.to),
+      ccEnabled: Boolean(state.enabled.cc),
+      bccEnabled: Boolean(state.enabled.bcc),
+      subjectEnabled: Boolean(state.enabled.subject),
+      shortcutPickFiles: Boolean(state.shortcutPickFiles),
+      attachmentCount: getAllExportAttachments().length,
+      visibilityState: document.visibilityState,
+    });
+
+    if (!validateAddressFields()) {
+      const validationMessage = validation.issues.length
+        ? `${t("addressValidationPrefix")} ${validation.issues.join("; ")}`
+        : !hasData
+          ? t("emptyMailDisabled")
+          : t("shortcutReasonClipboard");
+      showToast(validationMessage, "error", 3200);
+      diagWarn("send:blocked_by_validation", {
+        hasData,
+        issues: validation.issues,
+        validationMessage,
+      });
+      return;
+    }
+
     await sendAppleMail();
   });
 
@@ -1883,6 +1958,46 @@ function retintTemplateInlineStyles(doc, theme, mode) {
     }
     table.style.borderColor = table.style.borderColor || theme.border;
     table.style.color = table.style.color || theme.text;
+  });
+}
+
+function resolveTemplateColorTokens(doc, palette, theme) {
+  if (!doc) return;
+
+  const replacements = [
+    ["--template-accent-1", palette.accent],
+    ["--template-accent-2", palette.accent2],
+    ["--template-accent-3", palette.accent3],
+    ["--template-accent", palette.accent],
+    ["--template-bg", theme.bg],
+    ["--template-surface-soft", theme.surfaceSoft],
+    ["--template-surface", theme.surface],
+    ["--template-border", theme.border],
+    ["--template-text", theme.text],
+    ["--template-muted", theme.muted],
+  ];
+
+  const applyReplacements = (value) => {
+    let next = String(value || "");
+    replacements.forEach(([name, color]) => {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const pattern = new RegExp(`var\\(${escaped}(?:\\s*,\\s*[^)]+)?\\)`, "gi");
+      next = next.replace(pattern, color);
+    });
+    return next;
+  };
+
+  doc.querySelectorAll("[style]").forEach((element) => {
+    if (!(element instanceof HTMLElement)) return;
+    const current = element.getAttribute("style");
+    if (!current || !current.includes("var(--template-")) return;
+    element.setAttribute("style", applyReplacements(current));
+  });
+
+  doc.querySelectorAll("style").forEach((styleNode) => {
+    const current = styleNode.textContent || "";
+    if (!current.includes("var(--template-")) return;
+    styleNode.textContent = applyReplacements(current);
   });
 }
 
@@ -2599,7 +2714,7 @@ function buildEnvelopeRows(options = {}) {
       placeholder: ui.fieldSubject.placeholder,
     },
     {
-      visible: true,
+      visible: !state.shortcutPickFiles,
       label: t("attachmentsTitle"),
       value: buildAttachmentEnvelopeValue(),
       placeholder: t("attachmentsEmpty"),
@@ -2819,6 +2934,7 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     }
   `;
   doc.head.append(themeStyle);
+  resolveTemplateColorTokens(doc, palette, theme);
 
   return `<!doctype html>\n${doc.documentElement.outerHTML}`;
 }
@@ -2899,7 +3015,7 @@ function buildQuoteBlockHtml(options = {}) {
 
 function buildAttachmentsBlockHtml(options = {}) {
   const linkMode = options.linkMode || "none";
-  const attachments = state.attachments;
+  const attachments = getAllExportAttachments();
 
   if (!attachments.length) {
     return "";
@@ -3524,10 +3640,6 @@ function getAllExportAttachments() {
 }
 
 function buildAttachmentEnvelopeValue() {
-  if (state.shortcutPickFiles) {
-    return t("shortcutPickFilesEnvelope");
-  }
-
   const attachments = getAllExportAttachments();
   if (!attachments.length) return "";
 
@@ -3706,6 +3818,7 @@ function closeInfoModal() {
 function showShortcutModal(options = {}) {
   if (!ui.shortcutModal) return;
   const reason = options.reason || "maybeNotInstalled";
+  diagInfo("shortcut:modal_open", { reason });
   ui.shortcutModal.dataset.reason = reason;
   if (ui.shortcutModalReason) {
     ui.shortcutModalReason.textContent = t(shortcutReasonKey(reason));
@@ -3716,6 +3829,7 @@ function showShortcutModal(options = {}) {
 
 function closeShortcutModal() {
   if (!ui.shortcutModal) return;
+  diagInfo("shortcut:modal_close", { reason: ui.shortcutModal.dataset.reason || null });
   clearShortcutFallbackTimer();
   ui.shortcutModal.hidden = true;
   syncModalBodyState();
@@ -3748,6 +3862,8 @@ function shortcutReasonKey(reason) {
 }
 
 function clearShortcutFallbackTimer() {
+  const hadTimer = Boolean(shortcutFallbackTimer);
+  const hadVisibilityHandler = Boolean(shortcutVisibilityHandler);
   if (shortcutFallbackTimer) {
     window.clearTimeout(shortcutFallbackTimer);
     shortcutFallbackTimer = null;
@@ -3755,6 +3871,12 @@ function clearShortcutFallbackTimer() {
   if (shortcutVisibilityHandler) {
     document.removeEventListener("visibilitychange", shortcutVisibilityHandler);
     shortcutVisibilityHandler = null;
+  }
+  if (hadTimer || hadVisibilityHandler) {
+    diagInfo("shortcut:fallback_cleared", {
+      hadTimer,
+      hadVisibilityHandler,
+    });
   }
 }
 
@@ -3768,6 +3890,7 @@ function syncModalBodyState() {
 
 function setTopbarSendLoading(nextState) {
   state.isExporting = Boolean(nextState);
+  diagInfo("send:loading_state", { isExporting: state.isExporting });
   if (ui.exportBtn) {
     ui.exportBtn.classList.toggle("is-loading", state.isExporting);
     ui.exportBtn.setAttribute("aria-busy", state.isExporting ? "true" : "false");
@@ -3777,8 +3900,19 @@ function setTopbarSendLoading(nextState) {
 
 async function sendAppleMail() {
   clearShortcutFallbackTimer();
+  diagInfo("send:start", {
+    applePlatform: isApplePlatform(),
+    safari: isSafari(),
+    visibilityState: document.visibilityState,
+    shortcutPickFiles: Boolean(state.shortcutPickFiles),
+    attachmentCount: getAllExportAttachments().length,
+  });
 
   if (!isApplePlatform()) {
+    diagWarn("send:unsupported_platform", {
+      ua: navigator.userAgent,
+      platform: navigator.platform,
+    });
     showToast(t("shortcutAppleOnly"), "error");
     showShortcutModal({ reason: "unsupported" });
     return;
@@ -3786,6 +3920,7 @@ async function sendAppleMail() {
 
   const safariBrowser = isSafari();
   if (!safariBrowser) {
+    diagWarn("send:not_safari", { ua: navigator.userAgent });
     showToast(t("shortcutSafariHint"), "info");
   }
 
@@ -3799,14 +3934,15 @@ async function sendAppleMail() {
     let html = buildExportBodyHtmlSync({
       forceMode: null,
       showPlaceholders: false,
-      attachmentLinkMode: "preview",
+      attachmentLinkMode: "none",
     });
 
     if (!normalizeInlineText(html)) {
+      diagWarn("send:sync_html_empty_fallback_async", {});
       html = await buildExportBodyHtml({
         forceMode: null,
         showPlaceholders: false,
-        attachmentLinkMode: "preview",
+        attachmentLinkMode: "none",
       });
     }
 
@@ -3814,25 +3950,60 @@ async function sendAppleMail() {
       throw new Error("empty html");
     }
 
+    diagInfo("send:html_built", {
+      htmlLengthBeforeInline: html.length,
+    });
+
     const inlinedHtml = inlineCssForEmail(html, { mode: state.resolvedTheme });
     if (normalizeInlineText(inlinedHtml)) {
       html = inlinedHtml;
     }
+    diagInfo("send:html_inlined", {
+      htmlLengthAfterInline: html.length,
+      resolvedTheme: state.resolvedTheme,
+    });
 
     showToast(t("shortcutToastCopying"), "info", 1200);
+    let copyResult = null;
     if (safariBrowser) {
       // Safari may block shortcuts:// launch after awaited async operations.
       // Prefer sync copy first so launch stays tightly tied to the click.
       const copiedSync = copyHtmlToClipboardExecCommand(html);
+      diagInfo("clipboard:execCommand_sync_attempt", { copiedSync });
       if (!copiedSync) {
-        await copyHtmlToClipboard(html);
+        copyResult = await copyHtmlToClipboard(html);
+      } else {
+        copyResult = { method: "execCommand-sync" };
       }
     } else {
-      await copyHtmlToClipboard(html);
+      copyResult = await copyHtmlToClipboard(html);
     }
+    diagInfo("clipboard:copy_success", copyResult || { method: "unknown" });
 
     const payloadText = buildShortcutInputPayload({ to, cc, bcc, subject });
+    let payloadMeta = {
+      payloadLength: payloadText.length,
+    };
+    try {
+      const parsedPayload = JSON.parse(payloadText);
+      payloadMeta = {
+        ...payloadMeta,
+        toLength: String(parsedPayload.to || "").length,
+        ccLength: String(parsedPayload.cc || "").length,
+        bccLength: String(parsedPayload.bcc || "").length,
+        subjectLength: String(parsedPayload.subject || "").length,
+        pickFilesInShortcut: Boolean(parsedPayload.pickFilesInShortcut),
+        attachmentCount: Array.isArray(parsedPayload.attachments) ? parsedPayload.attachments.length : 0,
+      };
+    } catch (payloadParseError) {
+      diagWarn("shortcut:payload_parse_failed", {
+        message: payloadParseError?.message || String(payloadParseError),
+      });
+    }
+    diagInfo("shortcut:payload_ready", payloadMeta);
+
     const shortcutResult = runShortcut({ payloadText });
+    diagInfo("shortcut:run_result", shortcutResult);
     if (shortcutResult.tooLong) {
       throw new Error("shortcut_payload_too_large");
     }
@@ -3842,6 +4013,7 @@ async function sendAppleMail() {
     let switchedAway = false;
     shortcutVisibilityHandler = () => {
       if (document.visibilityState === "hidden") {
+        diagInfo("shortcut:visibility_hidden", {});
         switchedAway = true;
       }
     };
@@ -3854,11 +4026,13 @@ async function sendAppleMail() {
       }
       setTopbarSendLoading(false);
       if (!switchedAway) {
+        diagWarn("shortcut:no_visibility_change_show_modal", {});
         showShortcutModal({ reason: "maybeNotInstalled" });
       }
       shortcutFallbackTimer = null;
     }, 1200);
   } catch (error) {
+    diagError("send:failed", error);
     console.error(error);
     setTopbarSendLoading(false);
     if (error?.message === "shortcut_payload_too_large") {
@@ -3890,6 +4064,12 @@ async function copyHtmlToClipboard(html) {
   }
 
   const plain = stripHtml(html);
+  diagInfo("clipboard:copy_start", {
+    htmlLength: String(html).length,
+    plainLength: plain.length,
+    hasClipboardApi: Boolean(navigator.clipboard),
+    hasClipboardItem: Boolean(window.ClipboardItem),
+  });
 
   if (navigator.clipboard && window.ClipboardItem) {
     try {
@@ -3898,31 +4078,42 @@ async function copyHtmlToClipboard(html) {
         "text/plain": new Blob([plain], { type: "text/plain" }),
       });
       await navigator.clipboard.write([item]);
+      diagInfo("clipboard:copy_method", { method: "clipboardItem" });
       return { method: "clipboardItem" };
     } catch (error) {
-      console.warn("clipboard.write failed", error);
+      diagWarn("clipboard:clipboardItem_failed", {
+        message: error?.message || String(error),
+      });
     }
   }
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     try {
       await navigator.clipboard.writeText(html);
+      diagInfo("clipboard:copy_method", { method: "writeText" });
       return { method: "writeText" };
     } catch (error) {
-      console.warn("clipboard.writeText failed", error);
+      diagWarn("clipboard:writeText_failed", {
+        message: error?.message || String(error),
+      });
     }
   }
 
   const copied = copyHtmlToClipboardExecCommand(html);
   if (!copied) {
+    diagWarn("clipboard:execCommand_failed", {});
     throw new Error("execCommand copy failed");
   }
 
+  diagInfo("clipboard:copy_method", { method: "execCommand" });
   return { method: "execCommand" };
 }
 
 function copyHtmlToClipboardExecCommand(html) {
-  if (typeof document.execCommand !== "function") return false;
+  if (typeof document.execCommand !== "function") {
+    diagWarn("clipboard:execCommand_unavailable", {});
+    return false;
+  }
 
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
@@ -3943,6 +4134,9 @@ function copyHtmlToClipboardExecCommand(html) {
   try {
     copied = document.execCommand("copy");
   } catch (error) {
+    diagWarn("clipboard:execCommand_exception", {
+      message: error?.message || String(error),
+    });
     copied = false;
   }
 
@@ -4002,8 +4196,16 @@ function runShortcut({ payloadText }) {
   const name = encodeURIComponent(SHORTCUT_NAME);
   const encodedPayload = encodeURIComponent(String(payloadText || ""));
   const withInputUrl = `${SHORTCUT_RUN_BASE}?name=${name}&input=text&text=${encodedPayload}`;
+  diagInfo("shortcut:build_url", {
+    withInputUrlLength: withInputUrl.length,
+    maxLength: SHORTCUT_MAX_URL_LENGTH,
+  });
 
   if (withInputUrl.length > SHORTCUT_MAX_URL_LENGTH) {
+    diagWarn("shortcut:url_too_long", {
+      withInputUrlLength: withInputUrl.length,
+      maxLength: SHORTCUT_MAX_URL_LENGTH,
+    });
     return { withInput: false, tooLong: true };
   }
 
@@ -4013,9 +4215,18 @@ function runShortcut({ payloadText }) {
 
 function launchShortcutUrl(url) {
   const targetUrl = String(url || "").trim();
-  if (!targetUrl) return;
+  if (!targetUrl) {
+    diagWarn("shortcut:launch_skipped_empty_url", {});
+    return;
+  }
 
-  if (isSafari()) {
+  const safari = isSafari();
+  diagInfo("shortcut:launch_attempt", {
+    safari,
+    targetUrlLength: targetUrl.length,
+  });
+
+  if (safari) {
     const link = document.createElement("a");
     link.href = targetUrl;
     link.style.position = "fixed";
@@ -4024,14 +4235,21 @@ function launchShortcutUrl(url) {
     document.body.appendChild(link);
     link.click();
     link.remove();
+    diagInfo("shortcut:launch_anchor_click", {});
     return;
   }
 
   window.location.href = targetUrl;
+  diagInfo("shortcut:launch_location_href", {});
 }
 
 function showToast(message, type = "info", duration = 2200) {
   if (!ui.toastHost || !message) return;
+  diagInfo("toast:show", {
+    type,
+    duration,
+    message: String(message),
+  });
 
   const toast = document.createElement("div");
   toast.className = `toast toast-${type}`;
@@ -4221,8 +4439,9 @@ function buildGreetingPlainText() {
 }
 
 function buildAttachmentsPlainText() {
-  if (!state.attachments.length) return "";
-  const lines = state.attachments.map((attachment) => `${attachment.file.name} (${formatBytes(attachment.file.size)})`);
+  const attachments = getAllExportAttachments();
+  if (!attachments.length) return "";
+  const lines = attachments.map((attachment) => `${attachment.file.name} (${formatBytes(attachment.file.size)})`);
   return lines.join("\n");
 }
 
