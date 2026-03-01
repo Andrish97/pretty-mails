@@ -21,6 +21,7 @@ const I18N = {
     themeLight: "Jasny",
     themeDark: "Ciemny",
     backHomeAria: "Wróć do strony głównej",
+    backHomeText: "Powrót",
     pageTitle: "Polityka prywatności i warunki korzystania",
     updated: "Ostatnia aktualizacja: 1 marca 2026",
     privacyTitle: "Polityka prywatności",
@@ -49,7 +50,6 @@ const I18N = {
     contactTitle: "Kontakt",
     contactText:
       "W sprawach prywatności lub działania aplikacji skontaktuj się z właścicielem projektu przez GitHub.",
-    footerBack: "Wróć do aplikacji",
   },
   en: {
     documentTitle: "Pretty-Mails - Privacy Policy and Terms",
@@ -62,6 +62,7 @@ const I18N = {
     themeLight: "Light",
     themeDark: "Dark",
     backHomeAria: "Back to home page",
+    backHomeText: "Back",
     pageTitle: "Privacy Policy and Terms of Use",
     updated: "Last updated: March 1, 2026",
     privacyTitle: "Privacy Policy",
@@ -90,7 +91,6 @@ const I18N = {
     contactTitle: "Contact",
     contactText:
       "For privacy or application questions, contact the project owner via GitHub.",
-    footerBack: "Back to app",
   },
   uk: {
     documentTitle: "Pretty-Mails - Політика конфіденційності та умови",
@@ -103,6 +103,7 @@ const I18N = {
     themeLight: "Світла",
     themeDark: "Темна",
     backHomeAria: "Повернутися на головну сторінку",
+    backHomeText: "Назад",
     pageTitle: "Політика конфіденційності та умови користування",
     updated: "Останнє оновлення: 1 березня 2026",
     privacyTitle: "Політика конфіденційності",
@@ -131,7 +132,6 @@ const I18N = {
     contactTitle: "Контакт",
     contactText:
       "З питань конфіденційності або роботи застосунку звертайтеся до власника проєкту через GitHub.",
-    footerBack: "Повернутися до застосунку",
   },
 };
 
@@ -144,6 +144,7 @@ const ui = {
   themeModeLabel: document.querySelector("#themeModeLabel"),
   themeMode: document.querySelector("#themeMode"),
   backHomeBtn: document.querySelector("#backHomeBtn"),
+  backHomeText: document.querySelector("#backHomeText"),
   languageMenu: document.querySelector("#languageMenu"),
   languageMenuBtn: document.querySelector("#languageMenuBtn"),
   languageMenuList: document.querySelector("#languageMenuList"),
@@ -174,15 +175,18 @@ const ui = {
   termsItem5: document.querySelector("#termsItem5"),
   contactTitle: document.querySelector("#contactTitle"),
   contactText: document.querySelector("#contactText"),
-  legalFooterBack: document.querySelector("#legalFooterBack"),
 };
 
 const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+const customSelectInstances = [];
+const customSelectMap = new WeakMap();
+let customSelectGlobalsBound = false;
 
 boot();
 
 function boot() {
   bindEvents();
+  initCustomSelects(document);
   applyLanguage(state.language);
   applyThemeMode(state.themeMode, { persist: false });
 }
@@ -207,11 +211,16 @@ function bindEvents() {
     if (!ui.languageMenu.contains(event.target)) {
       closeLanguageMenu();
     }
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target || !target.closest(".custom-select")) {
+      closeAllCustomSelects();
+    }
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
     closeLanguageMenu();
+    closeAllCustomSelects();
   });
 
   ui.themeMode.addEventListener("change", () => {
@@ -258,12 +267,11 @@ function applyLanguage(language) {
   setText(ui.termsItem5, copy.termsItem5);
   setText(ui.contactTitle, copy.contactTitle);
   setText(ui.contactText, copy.contactText);
-  setText(ui.legalFooterBack, copy.footerBack);
+  setText(ui.backHomeText, copy.backHomeText);
 
   ui.languageMenuBtn.setAttribute("aria-label", copy.languageAria);
   ui.backHomeBtn.setAttribute("aria-label", copy.backHomeAria);
   ui.backHomeBtn.title = copy.backHomeAria;
-  ui.legalFooterBack.title = copy.backHomeAria;
 
   setSelectOptionLabel(ui.themeMode, "auto", copy.themeAuto);
   setSelectOptionLabel(ui.themeMode, "light", copy.themeLight);
@@ -304,6 +312,7 @@ function applyThemeMode(mode, options = {}) {
   document.documentElement.dataset.themeMode = state.themeMode;
   document.documentElement.dataset.resolvedTheme = resolvedTheme;
   ui.themeMode.value = state.themeMode;
+  refreshCustomSelect(ui.themeMode);
 }
 
 function normalizeThemeMode(value) {
@@ -333,9 +342,247 @@ function normalizeLanguage(value) {
 
 function setSelectOptionLabel(selectElement, value, text) {
   const option = selectElement.querySelector(`option[value="${value}"]`);
-  if (option) option.textContent = text;
+  if (option) {
+    option.textContent = text;
+    refreshCustomSelect(selectElement);
+  }
 }
 
 function setText(node, value) {
   if (node) node.textContent = value;
+}
+
+function initCustomSelects(root = document) {
+  if (!root || typeof root.querySelectorAll !== "function") return;
+
+  bindCustomSelectGlobals();
+
+  root.querySelectorAll("select").forEach((selectElement) => {
+    if (selectElement.classList.contains("visually-hidden")) return;
+    if (selectElement.dataset.nativeSelect === "true") return;
+    if (customSelectMap.has(selectElement)) return;
+    createCustomSelect(selectElement);
+  });
+}
+
+function bindCustomSelectGlobals() {
+  if (customSelectGlobalsBound) return;
+  customSelectGlobalsBound = true;
+
+  window.addEventListener("resize", () => {
+    closeAllCustomSelects();
+  });
+
+  window.addEventListener("scroll", () => {
+    closeAllCustomSelects();
+  });
+}
+
+function createCustomSelect(selectElement) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "custom-select";
+
+  selectElement.parentNode.insertBefore(wrapper, selectElement);
+  wrapper.append(selectElement);
+  selectElement.classList.add("custom-select-native");
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "custom-select-trigger";
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+
+  const value = document.createElement("span");
+  value.className = "custom-select-value";
+
+  const caret = document.createElement("span");
+  caret.className = "custom-select-caret";
+  caret.textContent = "▾";
+  caret.setAttribute("aria-hidden", "true");
+
+  trigger.append(value, caret);
+
+  const list = document.createElement("div");
+  list.className = "custom-select-list";
+  list.setAttribute("role", "listbox");
+  list.hidden = true;
+
+  wrapper.append(trigger, list);
+
+  const instance = {
+    selectElement,
+    wrapper,
+    trigger,
+    value,
+    list,
+    observer: null,
+  };
+
+  const syncFromSelect = () => {
+    const selectedOption = selectElement.selectedOptions?.[0] || selectElement.options[0] || null;
+    value.textContent = selectedOption?.textContent?.trim() || "—";
+
+    list.querySelectorAll(".custom-select-option").forEach((optionButton) => {
+      const isActive = optionButton.dataset.value === selectElement.value;
+      optionButton.classList.toggle("is-active", isActive);
+      optionButton.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    const isDisabled = selectElement.disabled || selectElement.options.length === 0;
+    trigger.disabled = isDisabled;
+    wrapper.classList.toggle("is-disabled", isDisabled);
+  };
+
+  const rebuildOptions = () => {
+    list.innerHTML = "";
+
+    Array.from(selectElement.options).forEach((option) => {
+      const optionButton = document.createElement("button");
+      optionButton.type = "button";
+      optionButton.className = "custom-select-option";
+      optionButton.setAttribute("role", "option");
+      optionButton.dataset.value = option.value;
+      optionButton.textContent = option.textContent;
+      optionButton.disabled = option.disabled;
+      list.append(optionButton);
+    });
+
+    syncFromSelect();
+  };
+
+  const close = () => {
+    wrapper.classList.remove("is-open");
+    list.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+  };
+
+  const open = (focusSelected = false) => {
+    if (trigger.disabled) return;
+    closeAllCustomSelects(instance);
+    wrapper.classList.add("is-open");
+    list.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+
+    if (focusSelected) {
+      const selectedButton = list.querySelector(".custom-select-option.is-active:not(:disabled)");
+      const fallbackButton = list.querySelector(".custom-select-option:not(:disabled)");
+      (selectedButton || fallbackButton)?.focus();
+    }
+  };
+
+  const selectValue = (nextValue) => {
+    if (selectElement.value !== nextValue) {
+      selectElement.value = nextValue;
+      selectElement.dispatchEvent(new Event("change", { bubbles: true }));
+    } else {
+      syncFromSelect();
+    }
+    close();
+    trigger.focus();
+  };
+
+  trigger.addEventListener("click", () => {
+    if (wrapper.classList.contains("is-open")) {
+      close();
+    } else {
+      open();
+    }
+  });
+
+  trigger.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      open(true);
+    }
+  });
+
+  list.addEventListener("click", (event) => {
+    const optionButton = event.target.closest(".custom-select-option");
+    if (!optionButton || optionButton.disabled) return;
+    selectValue(optionButton.dataset.value);
+  });
+
+  list.addEventListener("keydown", (event) => {
+    const enabledOptions = Array.from(list.querySelectorAll(".custom-select-option:not(:disabled)"));
+    if (!enabledOptions.length) return;
+
+    const currentIndex = enabledOptions.indexOf(document.activeElement);
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      const nextIndex = currentIndex < 0 ? 0 : Math.min(enabledOptions.length - 1, currentIndex + 1);
+      enabledOptions[nextIndex].focus();
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      const nextIndex = currentIndex < 0 ? enabledOptions.length - 1 : Math.max(0, currentIndex - 1);
+      enabledOptions[nextIndex].focus();
+      return;
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      enabledOptions[0].focus();
+      return;
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      enabledOptions[enabledOptions.length - 1].focus();
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+      trigger.focus();
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const activeButton = document.activeElement.closest(".custom-select-option");
+      if (activeButton && !activeButton.disabled) {
+        selectValue(activeButton.dataset.value);
+      }
+    }
+  });
+
+  selectElement.addEventListener("change", () => {
+    syncFromSelect();
+  });
+
+  instance.observer = new MutationObserver(() => {
+    rebuildOptions();
+  });
+
+  instance.observer.observe(selectElement, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ["disabled"],
+  });
+
+  instance.rebuildOptions = rebuildOptions;
+  instance.close = close;
+
+  customSelectMap.set(selectElement, instance);
+  customSelectInstances.push(instance);
+  rebuildOptions();
+}
+
+function refreshCustomSelect(selectElement) {
+  const instance = customSelectMap.get(selectElement);
+  if (!instance || !instance.selectElement.isConnected) return;
+  instance.rebuildOptions();
+}
+
+function closeAllCustomSelects(exceptInstance = null) {
+  customSelectInstances.forEach((instance) => {
+    if (!instance.selectElement.isConnected) return;
+    if (exceptInstance && instance === exceptInstance) return;
+    instance.close();
+  });
 }

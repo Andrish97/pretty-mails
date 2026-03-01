@@ -14,7 +14,10 @@
   <header class="app-header">
     <div class="topbar-section topbar-brand">
       <div class="topbar-brand-row">
-        <a id="backHomeBtn" class="button button-back" href="./index.html" aria-label="Wróć do strony głównej">←</a>
+        <a id="backHomeBtn" class="button button-primary button-back-home" href="./index.html" aria-label="Wróć do strony głównej">
+          <span class="button-back-home-icon" aria-hidden="true">←</span>
+          <span id="backHomeText">Wróć</span>
+        </a>
         <h1>Pretty-Mails</h1>
       </div>
     </div>
@@ -114,12 +117,6 @@
       </section>
     </section>
   </main>
-
-  <footer class="app-footer legal-footer">
-    <p id="legalFooterNote">
-      Pretty-Mails · <a href="./index.html" id="legalFooterBack">Wróć do aplikacji</a>
-    </p>
-  </footer>
 
   <script type="module" src="./legal.js"></script>
 </body>
