@@ -33,7 +33,7 @@ const I18N = {
     privacyDataItem3: "dane techniczne przeglądarki potrzebne do renderowania podglądu.",
     privacyUseTitle: "Cel przetwarzania:",
     privacyUseItem1: "generowanie podglądu i plików eksportu (.eml/.html),",
-    privacyUseItem2: "obsługa przycisków udostępniania, pobierania i kopiowania,",
+    privacyUseItem2: "generowanie i pobieranie szkicu .eml,",
     privacyUseItem3: "działanie interfejsu w bieżącej sesji.",
     privacyStorage:
       "Dane robocze mogą być zapisane lokalnie tylko wtedy, gdy użytkownik włączy zapamiętywanie brudnopisu.",
@@ -74,7 +74,7 @@ const I18N = {
     privacyDataItem3: "browser technical data required to render the preview.",
     privacyUseTitle: "Purpose of processing:",
     privacyUseItem1: "generating previews and export files (.eml/.html),",
-    privacyUseItem2: "handling share, download, and copy actions,",
+    privacyUseItem2: "generating and downloading the .eml draft,",
     privacyUseItem3: "running the interface in the current session.",
     privacyStorage:
       "Working data is saved locally in the browser only when the user enables draft memory.",
@@ -115,7 +115,7 @@ const I18N = {
     privacyDataItem3: "технічні дані браузера, потрібні для рендерингу перегляду.",
     privacyUseTitle: "Мета обробки:",
     privacyUseItem1: "генерація перегляду та файлів експорту (.eml/.html),",
-    privacyUseItem2: "робота кнопок поширення, завантаження і копіювання,",
+    privacyUseItem2: "генерація та завантаження чернетки .eml,",
     privacyUseItem3: "робота інтерфейсу в поточній сесії.",
     privacyStorage:
       "Робочі дані зберігаються локально в браузері лише якщо користувач увімкнув збереження чернетки.",

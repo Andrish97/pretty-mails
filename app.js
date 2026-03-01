@@ -158,26 +158,17 @@ const I18N = {
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
 
-    exportButton: "Pobierz .eml",
-    exportBusy: "Pobieranie .eml…",
-    shareSendButton: "Wyślij / Udostępnij",
-    shareSendBusy: "Udostępnianie…",
-    htmlExportButton: "Pobierz .html + assets",
-    htmlExportBusy: "Pobieranie .html…",
-    plainCopyButton: "Kopiuj plain text",
-    plainCopyBusy: "Kopiowanie…",
-    exportButtonAria: "Pobierz plik .eml",
-    shareSendButtonAria: "Wyślij lub udostępnij wiadomość",
-    htmlExportButtonAria: "Pobierz plik .html i załączniki",
-    plainCopyButtonAria: "Skopiuj wersję plain text",
+    exportButton: "Pobierz szkic .eml",
+    exportBusy: "Generowanie szkicu .eml…",
+    exportButtonAria: "Pobierz szkic .eml (Apple Mail)",
 
     infoButtonAria: "Pokaż wskazówki",
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
-    infoLine1: "✉️ Aplikacja generuje szkic .eml z HTML i linkami pobierania plików (base64).",
-    infoLine2: "📤 „Wyślij / Udostępnij” używa systemowego udostępniania (na iOS awaryjnie mailto).",
-    infoLine3: "💾 „Pobierz .eml” zapisuje draft z nagłówkiem X-Unsent: 1.",
-    infoLine4: "🧩 „Pobierz .html + assets” i „📋 Kopiuj plain text” to tryby awaryjne.",
+    infoLine1: "✉️ Aplikacja generuje tylko szkic .eml (Apple Mail draft template).",
+    infoLine2: "💾 Plik zawiera nagłówki draftu: X-Unsent: 1 i X-Uniform-Type-Identifier.",
+    infoLine3: "🧩 Treść to multipart/alternative: text/plain + text/html.",
+    infoLine4: "📮 Wysyłka odbywa się po otwarciu pliku w Twojej aplikacji pocztowej.",
 
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
@@ -231,9 +222,6 @@ const I18N = {
     noTemplateSelected: "Brak wybranego szablonu",
     bootFailed: "Nie udało się uruchomić aplikacji.",
     exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
-    htmlExportFailedAlert: "Nie udało się wyeksportować pliku .html",
-    shareFailedAlert: "Nie udało się udostępnić wiadomości.",
-    plainCopyFailedAlert: "Nie udało się skopiować wersji plain text.",
     copyEmptyAlert: "Brak treści do skopiowania.",
 
     fileKindFile: "PLIK",
@@ -359,26 +347,17 @@ const I18N = {
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
 
-    exportButton: "Download .eml",
-    exportBusy: "Downloading .eml…",
-    shareSendButton: "Send / Share",
-    shareSendBusy: "Sharing…",
-    htmlExportButton: "Download .html + assets",
-    htmlExportBusy: "Downloading .html…",
-    plainCopyButton: "Copy plain text",
-    plainCopyBusy: "Copying…",
-    exportButtonAria: "Download .eml file",
-    shareSendButtonAria: "Send or share message",
-    htmlExportButtonAria: "Download .html file and attachments",
-    plainCopyButtonAria: "Copy plain text version",
+    exportButton: "Download .eml draft",
+    exportBusy: "Building .eml draft…",
+    exportButtonAria: "Download .eml draft (Apple Mail)",
 
     infoButtonAria: "Show tips",
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
-    infoLine1: "✉️ The app builds a draft .eml with HTML and file download links (base64).",
-    infoLine2: "📤 “Send / Share” uses the system share sheet (on iOS fallback to mailto).",
-    infoLine3: "💾 “Download .eml” saves a draft with X-Unsent: 1 header.",
-    infoLine4: "🧩 “Download .html + assets” and “📋 Copy plain text” are fallback options.",
+    infoLine1: "✉️ The app only builds a draft .eml (Apple Mail draft template).",
+    infoLine2: "💾 The file includes draft headers: X-Unsent: 1 and X-Uniform-Type-Identifier.",
+    infoLine3: "🧩 Message body is multipart/alternative: text/plain + text/html.",
+    infoLine4: "📮 Sending happens after opening the file in your mail app.",
 
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
@@ -432,9 +411,6 @@ const I18N = {
     noTemplateSelected: "No template selected",
     bootFailed: "Failed to start application.",
     exportFailedAlert: "Failed to export .eml file",
-    htmlExportFailedAlert: "Failed to export .html file",
-    shareFailedAlert: "Could not share the message.",
-    plainCopyFailedAlert: "Could not copy plain text.",
     copyEmptyAlert: "There is no content to copy.",
 
     fileKindFile: "FILE",
@@ -558,26 +534,17 @@ const I18N = {
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
 
-    exportButton: "Завантажити .eml",
-    exportBusy: "Завантаження .eml…",
-    shareSendButton: "Надіслати / Поділитися",
-    shareSendBusy: "Поширення…",
-    htmlExportButton: "Завантажити .html + assets",
-    htmlExportBusy: "Завантаження .html…",
-    plainCopyButton: "Скопіювати plain text",
-    plainCopyBusy: "Копіювання…",
-    exportButtonAria: "Завантажити файл .eml",
-    shareSendButtonAria: "Надіслати або поділитися листом",
-    htmlExportButtonAria: "Завантажити .html та вкладення",
-    plainCopyButtonAria: "Скопіювати версію plain text",
+    exportButton: "Завантажити чернетку .eml",
+    exportBusy: "Генерація чернетки .eml…",
+    exportButtonAria: "Завантажити чернетку .eml (Apple Mail)",
 
     infoButtonAria: "Показати підказки",
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
-    infoLine1: "✉️ Застосунок створює чернетку .eml з HTML і посиланнями на завантаження файлів (base64).",
-    infoLine2: "📤 «Надіслати / Поділитися» відкриває системне меню поширення (на iOS аварійно mailto).",
-    infoLine3: "💾 «Завантажити .eml» зберігає чернетку з заголовком X-Unsent: 1.",
-    infoLine4: "🧩 «Завантажити .html + assets» і «📋 Скопіювати plain text» — запасні варіанти.",
+    infoLine1: "✉️ Застосунок створює лише чернетку .eml (Apple Mail draft template).",
+    infoLine2: "💾 Файл містить заголовки чернетки: X-Unsent: 1 і X-Uniform-Type-Identifier.",
+    infoLine3: "🧩 Вміст повідомлення: multipart/alternative (text/plain + text/html).",
+    infoLine4: "📮 Надсилання виконується після відкриття файлу у вашому поштовому застосунку.",
 
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
@@ -631,9 +598,6 @@ const I18N = {
     noTemplateSelected: "Шаблон не вибрано",
     bootFailed: "Не вдалося запустити застосунок.",
     exportFailedAlert: "Не вдалося експортувати файл .eml",
-    htmlExportFailedAlert: "Не вдалося експортувати файл .html",
-    shareFailedAlert: "Не вдалося поділитися листом.",
-    plainCopyFailedAlert: "Не вдалося скопіювати plain text.",
     copyEmptyAlert: "Немає вмісту для копіювання.",
 
     fileKindFile: "ФАЙЛ",
@@ -689,7 +653,6 @@ const state = {
   logoAttachment: null,
   attachments: [],
   isExporting: false,
-  exportAction: "save",
   mobilePreviewOpen: false,
 };
 
@@ -711,10 +674,7 @@ const ui = {
   mobileTemplateSelect: document.querySelector("#mobileTemplateSelect"),
 
   mobilePreviewToggleBtn: document.querySelector("#mobilePreviewToggleBtn"),
-  htmlExportBtn: document.querySelector("#htmlExportBtn"),
-  plainCopyBtn: document.querySelector("#plainCopyBtn"),
   exportBtn: document.querySelector("#exportBtn"),
-  shareBtn: document.querySelector("#shareBtn"),
 
   infoBtn: document.querySelector("#infoBtn"),
   infoModal: document.querySelector("#infoModal"),
@@ -1137,7 +1097,6 @@ function bindEvents() {
 
     try {
       state.isExporting = true;
-      state.exportAction = "save";
       updateActionButtons();
       await saveEmlFile();
     } catch (error) {
@@ -1145,60 +1104,6 @@ function bindEvents() {
       alert(t("exportFailedAlert"));
     } finally {
       state.isExporting = false;
-      state.exportAction = "save";
-      updateActionButtons();
-    }
-  });
-
-  ui.htmlExportBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) return;
-
-    try {
-      state.isExporting = true;
-      state.exportAction = "html";
-      updateActionButtons();
-      await saveHtmlWithAssets();
-    } catch (error) {
-      console.error(error);
-      alert(error?.message || t("htmlExportFailedAlert"));
-    } finally {
-      state.isExporting = false;
-      state.exportAction = "save";
-      updateActionButtons();
-    }
-  });
-
-  ui.shareBtn.addEventListener("click", async () => {
-    if (!validateAddressFields()) return;
-
-    try {
-      state.isExporting = true;
-      state.exportAction = "share";
-      updateActionButtons();
-      await shareMessage();
-    } catch (error) {
-      if (error?.name === "AbortError") return;
-      console.error(error);
-      alert(error?.message || t("shareFailedAlert"));
-    } finally {
-      state.isExporting = false;
-      state.exportAction = "save";
-      updateActionButtons();
-    }
-  });
-
-  ui.plainCopyBtn.addEventListener("click", async () => {
-    try {
-      state.isExporting = true;
-      state.exportAction = "plain";
-      updateActionButtons();
-      await copyPlainTextFallback();
-    } catch (error) {
-      console.error(error);
-      alert(error?.message || t("plainCopyFailedAlert"));
-    } finally {
-      state.isExporting = false;
-      state.exportAction = "save";
       updateActionButtons();
     }
   });
@@ -1763,14 +1668,8 @@ function applyLanguage(language) {
   ui.dropZone.setAttribute("aria-label", t("dropZoneAria"));
 
   ui.mobilePreviewToggleBtn.textContent = t("openPreviewButton");
-  ui.htmlExportBtn.setAttribute("aria-label", t("htmlExportButtonAria"));
-  ui.plainCopyBtn.setAttribute("aria-label", t("plainCopyButtonAria"));
   ui.exportBtn.setAttribute("aria-label", t("exportButtonAria"));
-  ui.shareBtn.setAttribute("aria-label", t("shareSendButtonAria"));
-  ui.htmlExportBtn.title = t("htmlExportButtonAria");
-  ui.plainCopyBtn.title = t("plainCopyButtonAria");
   ui.exportBtn.title = t("exportButtonAria");
-  ui.shareBtn.title = t("shareSendButtonAria");
 
   ui.infoBtn.setAttribute("aria-label", t("infoButtonAria"));
   ui.infoModalTitle.textContent = t("infoModalTitle");
@@ -2898,32 +2797,16 @@ function hasAnyExportData() {
 }
 
 function updateActionButtons() {
-  ui.exportBtn.textContent =
-    state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
-  ui.htmlExportBtn.textContent =
-    state.isExporting && state.exportAction === "html" ? t("htmlExportBusy") : t("htmlExportButton");
-  ui.shareBtn.textContent =
-    state.isExporting && state.exportAction === "share" ? t("shareSendBusy") : t("shareSendButton");
-  ui.plainCopyBtn.textContent =
-    state.isExporting && state.exportAction === "plain" ? t("plainCopyBusy") : t("plainCopyButton");
+  ui.exportBtn.textContent = state.isExporting ? t("exportBusy") : t("exportButton");
 
   if (state.isExporting) {
     ui.exportBtn.disabled = true;
-    ui.htmlExportBtn.disabled = true;
-    ui.shareBtn.disabled = true;
-    ui.plainCopyBtn.disabled = true;
     return;
   }
 
   const hasValidationErrors = collectValidationState().issues.length > 0;
   const canExport = !hasValidationErrors && hasAnyExportData();
-  const canHtmlExport = !hasValidationErrors && hasAnyExportData();
-  const canShareSend = !hasValidationErrors && hasAnyExportData();
-  const canPlainCopy = Boolean(normalizeMultilineText(buildPlainTextBody()));
   ui.exportBtn.disabled = !canExport;
-  ui.htmlExportBtn.disabled = !canHtmlExport;
-  ui.shareBtn.disabled = !canShareSend;
-  ui.plainCopyBtn.disabled = !canPlainCopy;
 }
 
 function hasAnyRecipient() {
@@ -3450,107 +3333,6 @@ async function saveEmlFile() {
   triggerDownload(blob, filename);
 }
 
-async function saveHtmlWithAssets() {
-  const htmlDocument = await buildExportBodyHtml({
-    forceMode: null,
-    showPlaceholders: false,
-    attachmentLinkMode: "preview",
-  });
-  const html = String(htmlDocument || "").trim();
-  if (!html) {
-    throw new Error(t("htmlExportFailedAlert"));
-  }
-
-  const baseName = buildExportFilename().replace(/\.eml$/i, "");
-  const htmlBlob = new Blob([html], { type: "text/html;charset=utf-8" });
-  triggerDownload(htmlBlob, `${baseName}.html`);
-
-  // Optional assets export: download source files next to HTML.
-  const assets = getAllExportAttachments();
-  assets.forEach((asset) => {
-    triggerDownload(asset.file, asset.file.name);
-  });
-}
-
-async function shareMessage() {
-  const plainText = normalizeMultilineText(buildPlainTextBody());
-  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
-  const to = normalizeInlineText(state.fields.to);
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: subject || "Pretty-Mails",
-        text: plainText || subject || undefined,
-      });
-      return;
-    } catch (error) {
-      if (error?.name === "AbortError") {
-        throw error;
-      }
-    }
-  }
-
-  if (isLikelyIosDevice() && openMailtoDraft({ to, subject, body: plainText })) {
-    return;
-  }
-
-  const { blob, filename } = await buildEmlFile();
-  triggerDownload(blob, filename);
-}
-
-function isLikelyIosDevice() {
-  const ua = navigator.userAgent.toLowerCase();
-  const isTouchMac = ua.includes("macintosh") && "ontouchend" in document;
-  return ua.includes("iphone") || ua.includes("ipad") || isTouchMac;
-}
-
-function openMailtoDraft(options = {}) {
-  const recipients = parseAddressList(options.to).map((email) => encodeURIComponent(email)).join(",");
-  const subject = normalizeInlineText(options.subject);
-  const body = normalizeMultilineText(options.body);
-  const params = new URLSearchParams();
-
-  if (subject) params.set("subject", subject);
-  if (body) params.set("body", body);
-
-  const query = params.toString();
-  const url = `mailto:${recipients}${query ? `?${query}` : ""}`;
-
-  try {
-    window.location.href = url;
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function copyPlainTextFallback() {
-  const plain = normalizeMultilineText(buildPlainTextBody());
-  if (!plain) {
-    throw new Error(t("copyEmptyAlert"));
-  }
-
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(plain);
-    return;
-  }
-
-  const fallback = document.createElement("textarea");
-  fallback.value = plain;
-  fallback.setAttribute("readonly", "readonly");
-  fallback.style.position = "fixed";
-  fallback.style.left = "-9999px";
-  document.body.append(fallback);
-  fallback.select();
-  const copied = document.execCommand("copy");
-  fallback.remove();
-
-  if (!copied) {
-    throw new Error(t("plainCopyFailedAlert"));
-  }
-}
-
 async function buildEmlFile() {
   const emlContent = await buildMimeMessage({ draftMode: true });
   const blob = new Blob([emlContent], { type: "message/rfc822;charset=utf-8" });
@@ -3576,8 +3358,14 @@ async function buildMimeMessage(options = {}) {
   const ccAddresses = state.enabled.cc ? parseAddressList(state.fields.cc) : [];
   const bccAddresses = state.enabled.bcc ? parseAddressList(state.fields.bcc) : [];
   const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
+  const from = buildFromHeader();
+  const messageId = buildMessageId();
 
   const lines = [];
+
+  if (from) {
+    lines.push(`From: ${from}`);
+  }
 
   if (toAddresses.length) {
     lines.push(`To: ${toAddresses.join(", ")}`);
@@ -3600,6 +3388,7 @@ async function buildMimeMessage(options = {}) {
     lines.push("X-Uniform-Type-Identifier: com.apple.mail-draft");
   }
   lines.push(`Date: ${new Date().toUTCString()}`);
+  lines.push(`Message-ID: <${messageId}>`);
   lines.push("MIME-Version: 1.0");
   lines.push(`Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`);
   lines.push("");
@@ -3622,6 +3411,22 @@ async function buildMimeMessage(options = {}) {
   lines.push("");
 
   return lines.join("\r\n");
+}
+
+function buildFromHeader() {
+  const senderName = normalizeInlineText(state.fields.senderName);
+  const email = normalizeInlineText(state.fields.contactEmail);
+  if (!email || !isValidEmailAddress(email)) return "";
+  if (!senderName) return `<${email}>`;
+  return `${encodeMimeHeader(senderName)} <${email}>`;
+}
+
+function buildMessageId() {
+  if (typeof crypto?.randomUUID === "function") {
+    return `${crypto.randomUUID().replace(/-/g, "")}@pretty-mails.local`;
+  }
+  const randomPart = `${Date.now().toString(16)}${Math.random().toString(16).slice(2)}`;
+  return `${randomPart}@pretty-mails.local`;
 }
 
 function buildExportFilename() {

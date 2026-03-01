@@ -6,10 +6,9 @@ Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML i eksportu
 
 - edytor treści wiadomości z podglądem,
 - obsługa załączników jako lokalnych przycisków pobierania (base64/data URL),
-- `Wyślij / Udostępnij` (Web Share API, na iOS fallback do `mailto:`, potem pobranie `.eml`),
-- `Pobierz .eml` (draft z nagłówkiem `X-Unsent: 1`),
-- `Pobierz .html + assets`,
-- `Kopiuj plain text`,
+- jeden tryb eksportu: `Pobierz szkic .eml` (Apple Mail draft template),
+- nagłówki draftu: `X-Unsent: 1` i `X-Uniform-Type-Identifier: com.apple.mail-draft`,
+- MIME `multipart/alternative` (`text/plain` + `text/html`),
 - wielojęzyczny interfejs (`pl`, `en`, `uk`),
 - tryby motywu (`auto`, `light`, `dark`).
 

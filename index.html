@@ -19,10 +19,7 @@
 
     <div class="topbar-section topbar-send">
       <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
-      <button id="shareBtn" class="button button-primary" type="button" aria-label="Wyślij lub udostępnij">Wyślij / Udostępnij</button>
-      <button id="exportBtn" class="button button-primary" type="button" aria-label="Pobierz plik .eml">Pobierz .eml</button>
-      <button id="htmlExportBtn" class="button" type="button" aria-label="Pobierz .html i assets">Pobierz .html + assets</button>
-      <button id="plainCopyBtn" class="button" type="button" aria-label="Kopiuj plain text">Kopiuj plain text</button>
+      <button id="exportBtn" class="button button-primary" type="button" aria-label="Pobierz szkic .eml (Apple Mail)">Pobierz szkic .eml</button>
     </div>
 
     <div class="topbar-section topbar-theme">
@@ -382,10 +379,10 @@
         <button id="infoModalClose" class="button" type="button" aria-label="Zamknij">✕</button>
       </div>
       <ul id="infoModalList" class="modal-list">
-        <li>✉️ Aplikacja generuje szkic <code>.eml</code> z HTML i linkami pobierania plików (base64).</li>
-        <li>📤 „Wyślij / Udostępnij” używa systemowego udostępniania.</li>
-        <li>💾 „Pobierz .eml” zapisuje draft z nagłówkiem <code>X-Unsent: 1</code>.</li>
-        <li>🧩 „Pobierz .html + assets” i „Kopiuj plain text” to tryby awaryjne.</li>
+        <li>✉️ Aplikacja generuje tylko szkic <code>.eml</code> (Apple Mail draft template).</li>
+        <li>💾 Plik zawiera nagłówki draftu: <code>X-Unsent: 1</code> oraz <code>X-Uniform-Type-Identifier</code>.</li>
+        <li>🧩 Treść to <code>multipart/alternative</code>: <code>text/plain</code> + <code>text/html</code>.</li>
+        <li>📮 Wysyłka odbywa się po otwarciu pliku w Twojej aplikacji pocztowej.</li>
       </ul>
     </section>
   </div>
