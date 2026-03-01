@@ -1,10 +1,12 @@
-const CACHE_NAME = "mail-templates-pwa-v15";
+const CACHE_NAME = "mail-templates-pwa-v16";
 
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./legal.html",
   "./app.css",
   "./app.js",
+  "./legal.js",
   "./manifest.webmanifest",
   "./assets/icon-192.svg",
   "./assets/icon-512.svg",

@@ -253,6 +253,12 @@ const I18N = {
     googleAuthModalCancel: "Anuluj",
     googleAuthModalCloseAria: "Zamknij okno logowania Google",
     gmailAuthFailed: "Logowanie Google nie powiodło się.",
+    gmailAuthPopupBlocked:
+      "Logowanie Google zostało zablokowane przez przeglądarkę. Zezwól na popupy lub otwórz stronę bezpośrednio w Safari.",
+    gmailAccessDenied:
+      "Google odrzucił logowanie (403 access_denied). Dodaj konto do Test users w OAuth consent screen albo opublikuj aplikację.",
+    gmailIosStandaloneUnsupported:
+      "Na iOS tryb „Dodaj do ekranu głównego” może blokować logowanie Google. Otwórz tę stronę bezpośrednio w Safari i spróbuj ponownie.",
     gmailWrongAccount: "To konto Google nie jest dozwolone dla tej aplikacji.",
 
     fileKindFile: "PLIK",
@@ -465,6 +471,12 @@ const I18N = {
     googleAuthModalCancel: "Cancel",
     googleAuthModalCloseAria: "Close Google sign-in dialog",
     gmailAuthFailed: "Google sign-in failed.",
+    gmailAuthPopupBlocked:
+      "Google sign-in was blocked by the browser. Allow popups or open the page directly in Safari.",
+    gmailAccessDenied:
+      "Google denied sign-in (403 access_denied). Add this account to OAuth consent screen Test users or publish the app.",
+    gmailIosStandaloneUnsupported:
+      "On iOS, Home Screen mode can block Google sign-in. Open this page directly in Safari and try again.",
     gmailWrongAccount: "This Google account is not allowed for this app.",
 
     fileKindFile: "FILE",
@@ -675,6 +687,12 @@ const I18N = {
     googleAuthModalCancel: "Скасувати",
     googleAuthModalCloseAria: "Закрити вікно входу Google",
     gmailAuthFailed: "Вхід через Google не вдався.",
+    gmailAuthPopupBlocked:
+      "Вхід через Google заблоковано браузером. Дозвольте pop-up або відкрийте сторінку безпосередньо в Safari.",
+    gmailAccessDenied:
+      "Google відхилив вхід (403 access_denied). Додайте акаунт у Test users на OAuth consent screen або опублікуйте застосунок.",
+    gmailIosStandaloneUnsupported:
+      "На iOS режим «Додати на екран Додому» може блокувати вхід через Google. Відкрийте сторінку напряму в Safari і спробуйте ще раз.",
     gmailWrongAccount: "Цей Google-акаунт не дозволено для цього застосунку.",
 
     fileKindFile: "ФАЙЛ",
@@ -980,6 +998,7 @@ async function boot() {
   await loadTemplates();
   await initTinyEditors();
   renderPreview();
+  warmupGoogleIdentity();
   registerServiceWorker();
 }
 
@@ -3572,8 +3591,12 @@ async function sendViaGmail() {
     return;
   }
 
-  const rawMessage = await buildMimeMessage({ draftMode: false });
+  if (isIosStandaloneMode() && !hasActiveGoogleAccessToken()) {
+    throw new Error(t("gmailIosStandaloneUnsupported"));
+  }
+
   const accessToken = await ensureGoogleAccessToken();
+  const rawMessage = await buildMimeMessage({ draftMode: false });
   await sendGmailRawMessage(rawMessage, accessToken);
 }
 
@@ -3749,6 +3772,21 @@ function isGoogleAuthConfigured() {
   return Boolean(GOOGLE_AUTH_CONFIG.clientId);
 }
 
+function isIosStandaloneMode() {
+  const ua = String(navigator.userAgent || "").toLowerCase();
+  const ios = /iphone|ipad|ipod/.test(ua);
+  const standaloneDisplayMode = window.matchMedia?.("(display-mode: standalone)")?.matches;
+  const standaloneNavigatorFlag = window.navigator.standalone === true;
+  return ios && Boolean(standaloneDisplayMode || standaloneNavigatorFlag);
+}
+
+function warmupGoogleIdentity() {
+  if (!isGoogleAuthConfigured()) return;
+  void ensureGoogleIdentityLoaded().catch(() => {
+    // If GIS script is late/blocked we keep lazy loading on first auth attempt.
+  });
+}
+
 async function ensureGoogleIdentityLoaded() {
   if (window.google?.accounts?.oauth2) return;
 
@@ -3800,7 +3838,16 @@ async function requestGoogleAccessToken() {
 
   return new Promise((resolve, reject) => {
     tokenClient.callback = async (response) => {
-      if (response?.error || !response?.access_token) {
+      if (response?.error) {
+        if (response.error === "access_denied") {
+          reject(new Error(t("gmailAccessDenied")));
+          return;
+        }
+        reject(new Error(t("gmailAuthFailed")));
+        return;
+      }
+
+      if (!response?.access_token) {
         reject(new Error(t("gmailAuthFailed")));
         return;
       }
@@ -3822,6 +3869,15 @@ async function requestGoogleAccessToken() {
       } catch (error) {
         reject(error instanceof Error ? error : new Error(t("gmailAuthFailed")));
       }
+    };
+
+    tokenClient.error_callback = (errorResponse) => {
+      const errorType = normalizeInlineText(errorResponse?.type).toLowerCase();
+      if (errorType === "popup_failed_to_open" || errorType === "popup_closed") {
+        reject(new Error(t("gmailAuthPopupBlocked")));
+        return;
+      }
+      reject(new Error(t("gmailAuthFailed")));
     };
 
     const requestOptions = {

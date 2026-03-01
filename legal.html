@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pl" data-theme-mode="auto" data-resolved-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f766e">
+  <title>Pretty-Mails - Polityka prywatności i warunki</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon-192.svg">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body class="legal-page">
+  <header class="app-header">
+    <div class="topbar-section topbar-brand">
+      <div class="topbar-brand-row">
+        <a id="backHomeBtn" class="button button-back" href="./index.html" aria-label="Wróć do strony głównej">←</a>
+        <h1>Pretty-Mails</h1>
+      </div>
+    </div>
+
+    <div class="topbar-section topbar-theme">
+      <div class="theme-picker">
+        <label id="themeModeLabel" for="themeMode">Motyw</label>
+        <select id="themeMode">
+          <option value="auto">Auto</option>
+          <option value="light">Jasny</option>
+          <option value="dark">Ciemny</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="topbar-section topbar-locale">
+      <div class="language-menu" id="languageMenu">
+        <button id="languageMenuBtn" class="button language-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Język interfejsu">
+          <span id="languageFlag" class="language-flag" aria-hidden="true">🇵🇱</span>
+          <span class="language-caret" aria-hidden="true">▾</span>
+        </button>
+        <ul id="languageMenuList" class="language-menu-list" role="listbox" hidden>
+          <li>
+            <button id="languageOptionPlBtn" type="button" class="language-option" data-lang="pl" role="option">
+              <span class="language-flag" aria-hidden="true">🇵🇱</span>
+              <span id="languageOptionPl">Polski</span>
+            </button>
+          </li>
+          <li>
+            <button id="languageOptionEnBtn" type="button" class="language-option" data-lang="en" role="option">
+              <span class="language-flag" aria-hidden="true">🇬🇧</span>
+              <span id="languageOptionEn">English</span>
+            </button>
+          </li>
+          <li>
+            <button id="languageOptionUkBtn" type="button" class="language-option" data-lang="uk" role="option">
+              <span class="language-flag" aria-hidden="true">🇺🇦</span>
+              <span id="languageOptionUk">Українська</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="legal-layout">
+    <section class="card legal-card">
+      <header class="legal-head">
+        <h2 id="legalPageTitle">Polityka prywatności i warunki korzystania</h2>
+        <p id="legalUpdated" class="legal-updated">Ostatnia aktualizacja: 1 marca 2026</p>
+      </header>
+
+      <section class="legal-section" id="privacy">
+        <h3 id="privacyTitle">Polityka prywatności</h3>
+        <p id="privacyIntro">
+          Pretty-Mails działa głównie po stronie przeglądarki. Dane wpisane w formularzu nie są wysyłane na serwer aplikacji.
+        </p>
+        <p id="privacyDataTitle"><strong>Jakie dane mogą być przetwarzane:</strong></p>
+        <ul class="legal-list">
+          <li id="privacyDataItem1">treść wiadomości, adresy e-mail i załączniki dodane przez użytkownika,</li>
+          <li id="privacyDataItem2">ustawienia interfejsu zapisane lokalnie (np. język i motyw),</li>
+          <li id="privacyDataItem3">dane autoryzacyjne OAuth Google, potrzebne do wysłania wiadomości z konta użytkownika.</li>
+        </ul>
+        <p id="privacyUseTitle"><strong>Cel przetwarzania:</strong></p>
+        <ul class="legal-list">
+          <li id="privacyUseItem1">generowanie podglądu i plików .eml,</li>
+          <li id="privacyUseItem2">wysyłanie wiadomości przez Gmail po świadomej autoryzacji użytkownika,</li>
+          <li id="privacyUseItem3">zachowanie ustawień wygody działania aplikacji.</li>
+        </ul>
+        <p id="privacyStorage">
+          Dane robocze są zapisywane lokalnie w przeglądarce tylko wtedy, gdy użytkownik włączy zapamiętywanie brudnopisu.
+        </p>
+        <p id="privacyThirdParty">
+          Logowanie i wysyłka przez Gmail korzystają z usług Google zgodnie z politykami Google.
+        </p>
+      </section>
+
+      <section class="legal-section" id="terms">
+        <h3 id="termsTitle">Warunki korzystania</h3>
+        <p id="termsIntro">
+          Korzystając z Pretty-Mails, akceptujesz poniższe warunki.
+        </p>
+        <ul class="legal-list">
+          <li id="termsItem1">Użytkownik odpowiada za treść wysyłanych wiadomości oraz zgodność z prawem.</li>
+          <li id="termsItem2">Aplikacja jest udostępniana bez gwarancji ciągłej dostępności i bez gwarancji przydatności do konkretnego celu.</li>
+          <li id="termsItem3">Właściciel aplikacji nie odpowiada za szkody wynikające z nieprawidłowego użycia narzędzia.</li>
+          <li id="termsItem4">Integracje z usługami zewnętrznymi (np. Google) podlegają ich regulaminom i politykom.</li>
+          <li id="termsItem5">Warunki mogą być aktualizowane wraz z rozwojem projektu.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section" id="contact">
+        <h3 id="contactTitle">Kontakt</h3>
+        <p id="contactText">
+          W sprawach prywatności lub działania aplikacji skontaktuj się z właścicielem projektu przez GitHub.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer legal-footer">
+    <p id="legalFooterNote">
+      Pretty-Mails · <a href="./index.html" id="legalFooterBack">Wróć do aplikacji</a>
+    </p>
+  </footer>
+
+  <script type="module" src="./legal.js"></script>
+</body>
+</html>
