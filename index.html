@@ -9,13 +9,6 @@
   <link rel="icon" href="./assets/icon-192.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.svg">
   <script src="https://cdn.tiny.cloud/1/rvwao9ib8mj0j8bfxbp4dml22na1rnlbgwu4wvfkitbd7dr3/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="./oauth-config.js"></script>
-  <script>
-    // Wartości domyślne, jeśli nie ustawisz ich w oauth-config.js
-    window.PRETTY_MAILS_GOOGLE_CLIENT_ID = window.PRETTY_MAILS_GOOGLE_CLIENT_ID || "";
-    window.PRETTY_MAILS_ALLOWED_EMAIL = window.PRETTY_MAILS_ALLOWED_EMAIL || "";
-  </script>
   <link rel="stylesheet" href="./app.css">
 </head>
 <body>
@@ -26,9 +19,10 @@
 
     <div class="topbar-section topbar-send">
       <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
-      <button id="exportBtn" class="button button-primary" type="button" aria-label="Zapisz plik .eml">💾</button>
-      <button id="gmailSendBtn" class="button" type="button" aria-label="Wyślij przez Gmail">📨</button>
-      <button id="shareBtn" class="button" type="button" aria-label="Udostępnij plik .eml">📤</button>
+      <button id="shareBtn" class="button button-primary" type="button" aria-label="Wyślij lub udostępnij">Wyślij / Udostępnij</button>
+      <button id="exportBtn" class="button button-primary" type="button" aria-label="Pobierz plik .eml">Pobierz .eml</button>
+      <button id="htmlExportBtn" class="button" type="button" aria-label="Pobierz .html i assets">Pobierz .html + assets</button>
+      <button id="plainCopyBtn" class="button" type="button" aria-label="Kopiuj plain text">Kopiuj plain text</button>
     </div>
 
     <div class="topbar-section topbar-theme">
@@ -388,28 +382,11 @@
         <button id="infoModalClose" class="button" type="button" aria-label="Zamknij">✕</button>
       </div>
       <ul id="infoModalList" class="modal-list">
-        <li>✉️ Aplikacja tworzy plik <code>.eml</code> z HTML i załącznikami.</li>
-        <li>💾 „Zapisz” pobiera plik na urządzenie.</li>
-        <li>📤 „Udostępnij” otwiera systemowe udostępnianie.</li>
-        <li>📮 Wysłanie odbywa się z Twojej aplikacji pocztowej i Twojego konta.</li>
+        <li>✉️ Aplikacja generuje szkic <code>.eml</code> z HTML i linkami pobierania plików (base64).</li>
+        <li>📤 „Wyślij / Udostępnij” używa systemowego udostępniania.</li>
+        <li>💾 „Pobierz .eml” zapisuje draft z nagłówkiem <code>X-Unsent: 1</code>.</li>
+        <li>🧩 „Pobierz .html + assets” i „Kopiuj plain text” to tryby awaryjne.</li>
       </ul>
-    </section>
-  </div>
-
-  <div id="googleAuthModal" class="modal" hidden>
-    <div class="modal-backdrop" data-google-auth-close></div>
-    <section class="modal-card modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="googleAuthModalTitle">
-      <div class="modal-head">
-        <h2 id="googleAuthModalTitle">🔐 Zaloguj się z Google</h2>
-        <button id="googleAuthModalClose" class="button" type="button" aria-label="Zamknij okno logowania Google">✕</button>
-      </div>
-      <p id="googleAuthModalText" class="modal-text">
-        Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Google.
-      </p>
-      <div class="modal-actions">
-        <button id="googleAuthModalConfirm" class="button button-primary" type="button">Zaloguj się z Google</button>
-        <button id="googleAuthModalCancel" class="button" type="button">Anuluj</button>
-      </div>
     </section>
   </div>
 

@@ -1,13 +1,15 @@
 # Pretty-Mails
 
-Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML, eksportu do `.eml` i wysyłki przez Gmail OAuth.
+Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML i eksportu roboczych wiadomości `.eml`.
 
 ## Funkcje
 
 - edytor treści wiadomości z podglądem,
-- obsługa załączników i osadzania logo,
-- eksport gotowej wiadomości do `.eml`,
-- wysyłka bezpośrednio przez Gmail API (OAuth),
+- obsługa załączników jako lokalnych przycisków pobierania (base64/data URL),
+- `Wyślij / Udostępnij` (Web Share API, na iOS fallback do `mailto:`, potem pobranie `.eml`),
+- `Pobierz .eml` (draft z nagłówkiem `X-Unsent: 1`),
+- `Pobierz .html + assets`,
+- `Kopiuj plain text`,
 - wielojęzyczny interfejs (`pl`, `en`, `uk`),
 - tryby motywu (`auto`, `light`, `dark`).
 
@@ -23,13 +25,6 @@ python3 -m http.server 5500
 Następnie otwórz:
 
 - `http://localhost:5500/`
-
-## Konfiguracja OAuth
-
-Szczegóły konfiguracji Gmail OAuth znajdziesz w:
-
-- [`README-OAUTH.md`](./README-OAUTH.md)
-- [`oauth-config.js`](./oauth-config.js)
 
 ## Polityka prywatności i warunki
 

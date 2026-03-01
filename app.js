@@ -16,14 +16,6 @@ const LANGUAGE_FLAGS = {
   uk: "🇺🇦",
 };
 
-const GOOGLE_AUTH_CONFIG = {
-  clientId: String(window.PRETTY_MAILS_GOOGLE_CLIENT_ID || "").trim(),
-  allowedEmail: String(window.PRETTY_MAILS_ALLOWED_EMAIL || "")
-    .trim()
-    .toLowerCase(),
-  scopes: "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email",
-};
-
 const OPTIONAL_DEFAULTS = {
   cc: false,
   bcc: false,
@@ -166,24 +158,26 @@ const I18N = {
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
 
-    exportButton: "💾",
-    exportBusy: "💾…",
-    gmailSendButton: "📨",
-    gmailSendBusy: "📨…",
-    shareButton: "📋",
-    shareBusy: "📋…",
-    exportButtonAria: "Zapisz plik .eml",
-    gmailSendButtonAria: "Wyślij przez Gmail",
-    shareButtonAria: "Kopiuj całą treść wiadomości",
+    exportButton: "Pobierz .eml",
+    exportBusy: "Pobieranie .eml…",
+    shareSendButton: "Wyślij / Udostępnij",
+    shareSendBusy: "Udostępnianie…",
+    htmlExportButton: "Pobierz .html + assets",
+    htmlExportBusy: "Pobieranie .html…",
+    plainCopyButton: "Kopiuj plain text",
+    plainCopyBusy: "Kopiowanie…",
+    exportButtonAria: "Pobierz plik .eml",
+    shareSendButtonAria: "Wyślij lub udostępnij wiadomość",
+    htmlExportButtonAria: "Pobierz plik .html i załączniki",
+    plainCopyButtonAria: "Skopiuj wersję plain text",
 
     infoButtonAria: "Pokaż wskazówki",
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
-    infoLine1: "✉️ Aplikacja tworzy plik .eml z HTML i załącznikami.",
-    infoLine2: "💾 „Zapisz” pobiera plik na urządzenie.",
-    infoLine3:
-      "📨 „Wyślij Gmail” używa OAuth, a gdy brak konfiguracji otwiera szkic webmaila.",
-    infoLine4: "📋 „Kopiuj” kopiuje cały podgląd wiadomości (HTML + style).",
+    infoLine1: "✉️ Aplikacja generuje szkic .eml z HTML i linkami pobierania plików (base64).",
+    infoLine2: "📤 „Wyślij / Udostępnij” używa systemowego udostępniania (na iOS awaryjnie mailto).",
+    infoLine3: "💾 „Pobierz .eml” zapisuje draft z nagłówkiem X-Unsent: 1.",
+    infoLine4: "🧩 „Pobierz .html + assets” i „📋 Kopiuj plain text” to tryby awaryjne.",
 
     attachmentsTitle: "Załączniki",
     addFilesButton: "Dodaj pliki",
@@ -237,29 +231,10 @@ const I18N = {
     noTemplateSelected: "Brak wybranego szablonu",
     bootFailed: "Nie udało się uruchomić aplikacji.",
     exportFailedAlert: "Nie udało się wyeksportować pliku .eml",
-    gmailSendFailedAlert: "Nie udało się wysłać wiadomości przez Gmail.",
-    shareFailedAlert: "Nie udało się skopiować treści wiadomości.",
+    htmlExportFailedAlert: "Nie udało się wyeksportować pliku .html",
+    shareFailedAlert: "Nie udało się udostępnić wiadomości.",
+    plainCopyFailedAlert: "Nie udało się skopiować wersji plain text.",
     copyEmptyAlert: "Brak treści do skopiowania.",
-    gmailConfigMissing:
-      "Brak konfiguracji Google OAuth. Ustaw window.PRETTY_MAILS_GOOGLE_CLIENT_ID w index.html.",
-    gmailComposeFallbackTitle: "Otwórz szkic Gmail",
-    gmailComposePopupBlocked: "Przeglądarka zablokowała okno Gmail. Zezwól na popupy i spróbuj ponownie.",
-    googleAuthModalTitle: "🔐 Zaloguj się z Google",
-    googleAuthModalTextOauth: "Aby wysłać wiadomość bezpośrednio z aplikacji, zaloguj się na konto Google.",
-    googleAuthModalTextFallback:
-      "Google OAuth nie jest skonfigurowany. Otworzymy Gmail, gdzie zalogujesz się i wyślesz wiadomość.",
-    googleAuthModalConfirmOauth: "Zaloguj się z Google",
-    googleAuthModalConfirmFallback: "Otwórz Gmail",
-    googleAuthModalCancel: "Anuluj",
-    googleAuthModalCloseAria: "Zamknij okno logowania Google",
-    gmailAuthFailed: "Logowanie Google nie powiodło się.",
-    gmailAuthPopupBlocked:
-      "Logowanie Google zostało zablokowane przez przeglądarkę. Zezwól na popupy lub otwórz stronę bezpośrednio w Safari.",
-    gmailAccessDenied:
-      "Google odrzucił logowanie (403 access_denied). Dodaj konto do Test users w OAuth consent screen albo opublikuj aplikację.",
-    gmailIosStandaloneUnsupported:
-      "Na iOS tryb „Dodaj do ekranu głównego” może blokować logowanie Google. Otwórz tę stronę bezpośrednio w Safari i spróbuj ponownie.",
-    gmailWrongAccount: "To konto Google nie jest dozwolone dla tej aplikacji.",
 
     fileKindFile: "PLIK",
     fileKindImage: "IMG",
@@ -384,24 +359,26 @@ const I18N = {
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
 
-    exportButton: "💾",
-    exportBusy: "💾…",
-    gmailSendButton: "📨",
-    gmailSendBusy: "📨…",
-    shareButton: "📋",
-    shareBusy: "📋…",
-    exportButtonAria: "Save .eml file",
-    gmailSendButtonAria: "Send via Gmail",
-    shareButtonAria: "Copy full message content",
+    exportButton: "Download .eml",
+    exportBusy: "Downloading .eml…",
+    shareSendButton: "Send / Share",
+    shareSendBusy: "Sharing…",
+    htmlExportButton: "Download .html + assets",
+    htmlExportBusy: "Downloading .html…",
+    plainCopyButton: "Copy plain text",
+    plainCopyBusy: "Copying…",
+    exportButtonAria: "Download .eml file",
+    shareSendButtonAria: "Send or share message",
+    htmlExportButtonAria: "Download .html file and attachments",
+    plainCopyButtonAria: "Copy plain text version",
 
     infoButtonAria: "Show tips",
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
-    infoLine1: "✉️ The app builds an .eml file with HTML and attachments.",
-    infoLine2: "💾 “Save” downloads the file to your device.",
-    infoLine3:
-      "📨 “Send Gmail” uses OAuth, and when OAuth is not configured it opens a webmail draft.",
-    infoLine4: "📋 “Copy” copies the full message preview (HTML + styles).",
+    infoLine1: "✉️ The app builds a draft .eml with HTML and file download links (base64).",
+    infoLine2: "📤 “Send / Share” uses the system share sheet (on iOS fallback to mailto).",
+    infoLine3: "💾 “Download .eml” saves a draft with X-Unsent: 1 header.",
+    infoLine4: "🧩 “Download .html + assets” and “📋 Copy plain text” are fallback options.",
 
     attachmentsTitle: "Attachments",
     addFilesButton: "Add files",
@@ -455,29 +432,10 @@ const I18N = {
     noTemplateSelected: "No template selected",
     bootFailed: "Failed to start application.",
     exportFailedAlert: "Failed to export .eml file",
-    gmailSendFailedAlert: "Could not send message via Gmail.",
-    shareFailedAlert: "Could not copy message body.",
+    htmlExportFailedAlert: "Failed to export .html file",
+    shareFailedAlert: "Could not share the message.",
+    plainCopyFailedAlert: "Could not copy plain text.",
     copyEmptyAlert: "There is no content to copy.",
-    gmailConfigMissing:
-      "Google OAuth is not configured. Set window.PRETTY_MAILS_GOOGLE_CLIENT_ID in index.html.",
-    gmailComposeFallbackTitle: "Open Gmail draft",
-    gmailComposePopupBlocked: "The browser blocked the Gmail window. Allow popups and try again.",
-    googleAuthModalTitle: "🔐 Sign in with Google",
-    googleAuthModalTextOauth: "To send directly from this app, sign in to your Google account.",
-    googleAuthModalTextFallback:
-      "Google OAuth is not configured. We will open Gmail where you can sign in and send the message.",
-    googleAuthModalConfirmOauth: "Sign in with Google",
-    googleAuthModalConfirmFallback: "Open Gmail",
-    googleAuthModalCancel: "Cancel",
-    googleAuthModalCloseAria: "Close Google sign-in dialog",
-    gmailAuthFailed: "Google sign-in failed.",
-    gmailAuthPopupBlocked:
-      "Google sign-in was blocked by the browser. Allow popups or open the page directly in Safari.",
-    gmailAccessDenied:
-      "Google denied sign-in (403 access_denied). Add this account to OAuth consent screen Test users or publish the app.",
-    gmailIosStandaloneUnsupported:
-      "On iOS, Home Screen mode can block Google sign-in. Open this page directly in Safari and try again.",
-    gmailWrongAccount: "This Google account is not allowed for this app.",
 
     fileKindFile: "FILE",
     fileKindImage: "IMG",
@@ -600,24 +558,26 @@ const I18N = {
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
 
-    exportButton: "💾",
-    exportBusy: "💾…",
-    gmailSendButton: "📨",
-    gmailSendBusy: "📨…",
-    shareButton: "📋",
-    shareBusy: "📋…",
-    exportButtonAria: "Зберегти файл .eml",
-    gmailSendButtonAria: "Надіслати через Gmail",
-    shareButtonAria: "Скопіювати весь вміст листа",
+    exportButton: "Завантажити .eml",
+    exportBusy: "Завантаження .eml…",
+    shareSendButton: "Надіслати / Поділитися",
+    shareSendBusy: "Поширення…",
+    htmlExportButton: "Завантажити .html + assets",
+    htmlExportBusy: "Завантаження .html…",
+    plainCopyButton: "Скопіювати plain text",
+    plainCopyBusy: "Копіювання…",
+    exportButtonAria: "Завантажити файл .eml",
+    shareSendButtonAria: "Надіслати або поділитися листом",
+    htmlExportButtonAria: "Завантажити .html та вкладення",
+    plainCopyButtonAria: "Скопіювати версію plain text",
 
     infoButtonAria: "Показати підказки",
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
-    infoLine1: "✉️ Застосунок створює файл .eml з HTML і вкладеннями.",
-    infoLine2: "💾 «Зберегти» завантажує файл на пристрій.",
-    infoLine3:
-      "📨 «Надіслати Gmail» використовує OAuth, а без налаштування відкриває веб-чернетку.",
-    infoLine4: "📋 «Копіювати» копіює весь перегляд листа (HTML + стилі).",
+    infoLine1: "✉️ Застосунок створює чернетку .eml з HTML і посиланнями на завантаження файлів (base64).",
+    infoLine2: "📤 «Надіслати / Поділитися» відкриває системне меню поширення (на iOS аварійно mailto).",
+    infoLine3: "💾 «Завантажити .eml» зберігає чернетку з заголовком X-Unsent: 1.",
+    infoLine4: "🧩 «Завантажити .html + assets» і «📋 Скопіювати plain text» — запасні варіанти.",
 
     attachmentsTitle: "Вкладення",
     addFilesButton: "Додати файли",
@@ -670,30 +630,11 @@ const I18N = {
     templateFileFetchError: "Не вдалося завантажити файл шаблону: {path}",
     noTemplateSelected: "Шаблон не вибрано",
     bootFailed: "Не вдалося запустити застосунок.",
-    exportFailedAlert: "Не вдалося експортувати .eml файл",
-    gmailSendFailedAlert: "Не вдалося надіслати лист через Gmail.",
-    shareFailedAlert: "Не вдалося скопіювати вміст листа.",
+    exportFailedAlert: "Не вдалося експортувати файл .eml",
+    htmlExportFailedAlert: "Не вдалося експортувати файл .html",
+    shareFailedAlert: "Не вдалося поділитися листом.",
+    plainCopyFailedAlert: "Не вдалося скопіювати plain text.",
     copyEmptyAlert: "Немає вмісту для копіювання.",
-    gmailConfigMissing:
-      "Google OAuth не налаштовано. Вкажіть window.PRETTY_MAILS_GOOGLE_CLIENT_ID у index.html.",
-    gmailComposeFallbackTitle: "Відкрити чернетку Gmail",
-    gmailComposePopupBlocked: "Браузер заблокував вікно Gmail. Дозвольте pop-up і спробуйте ще раз.",
-    googleAuthModalTitle: "🔐 Увійти через Google",
-    googleAuthModalTextOauth: "Щоб надіслати лист безпосередньо із застосунку, увійдіть у Google-акаунт.",
-    googleAuthModalTextFallback:
-      "Google OAuth не налаштовано. Ми відкриємо Gmail, де ви увійдете й надішлете лист.",
-    googleAuthModalConfirmOauth: "Увійти через Google",
-    googleAuthModalConfirmFallback: "Відкрити Gmail",
-    googleAuthModalCancel: "Скасувати",
-    googleAuthModalCloseAria: "Закрити вікно входу Google",
-    gmailAuthFailed: "Вхід через Google не вдався.",
-    gmailAuthPopupBlocked:
-      "Вхід через Google заблоковано браузером. Дозвольте pop-up або відкрийте сторінку безпосередньо в Safari.",
-    gmailAccessDenied:
-      "Google відхилив вхід (403 access_denied). Додайте акаунт у Test users на OAuth consent screen або опублікуйте застосунок.",
-    gmailIosStandaloneUnsupported:
-      "На iOS режим «Додати на екран Додому» може блокувати вхід через Google. Відкрийте сторінку напряму в Safari і спробуйте ще раз.",
-    gmailWrongAccount: "Цей Google-акаунт не дозволено для цього застосунку.",
 
     fileKindFile: "ФАЙЛ",
     fileKindImage: "IMG",
@@ -747,12 +688,6 @@ const state = {
   socials: [],
   logoAttachment: null,
   attachments: [],
-  googleAuth: {
-    tokenClient: null,
-    accessToken: "",
-    email: "",
-    expiresAt: 0,
-  },
   isExporting: false,
   exportAction: "save",
   mobilePreviewOpen: false,
@@ -776,8 +711,9 @@ const ui = {
   mobileTemplateSelect: document.querySelector("#mobileTemplateSelect"),
 
   mobilePreviewToggleBtn: document.querySelector("#mobilePreviewToggleBtn"),
+  htmlExportBtn: document.querySelector("#htmlExportBtn"),
+  plainCopyBtn: document.querySelector("#plainCopyBtn"),
   exportBtn: document.querySelector("#exportBtn"),
-  gmailSendBtn: document.querySelector("#gmailSendBtn"),
   shareBtn: document.querySelector("#shareBtn"),
 
   infoBtn: document.querySelector("#infoBtn"),
@@ -785,12 +721,6 @@ const ui = {
   infoModalClose: document.querySelector("#infoModalClose"),
   infoModalTitle: document.querySelector("#infoModalTitle"),
   infoModalList: document.querySelector("#infoModalList"),
-  googleAuthModal: document.querySelector("#googleAuthModal"),
-  googleAuthModalClose: document.querySelector("#googleAuthModalClose"),
-  googleAuthModalTitle: document.querySelector("#googleAuthModalTitle"),
-  googleAuthModalText: document.querySelector("#googleAuthModalText"),
-  googleAuthModalConfirm: document.querySelector("#googleAuthModalConfirm"),
-  googleAuthModalCancel: document.querySelector("#googleAuthModalCancel"),
 
   editorTitle: document.querySelector("#editorTitle"),
   sectionEnvelopeTitle: document.querySelector("#sectionEnvelopeTitle"),
@@ -998,7 +928,6 @@ async function boot() {
   await loadTemplates();
   await initTinyEditors();
   renderPreview();
-  warmupGoogleIdentity();
   registerServiceWorker();
 }
 
@@ -1034,7 +963,6 @@ function bindEvents() {
     closeLanguageMenu();
     closeAllCustomSelects();
     closeInfoModal();
-    closeGoogleAuthModal();
     if (state.mobilePreviewOpen) {
       state.mobilePreviewOpen = false;
       syncMobilePreviewMode();
@@ -1170,7 +1098,7 @@ function bindEvents() {
   });
 
   ui.fileInput.addEventListener("change", () => {
-    addAttachments(ui.fileInput.files);
+    void addAttachments(ui.fileInput.files);
     ui.fileInput.value = "";
   });
 
@@ -1186,7 +1114,7 @@ function bindEvents() {
   ui.dropZone.addEventListener("drop", (event) => {
     event.preventDefault();
     ui.dropZone.classList.remove("drag-over");
-    addAttachments(event.dataTransfer?.files || []);
+    void addAttachments(event.dataTransfer?.files || []);
   });
 
   ui.dropZone.addEventListener("keydown", (event) => {
@@ -1222,28 +1150,52 @@ function bindEvents() {
     }
   });
 
-  ui.gmailSendBtn.addEventListener("click", async () => {
+  ui.htmlExportBtn.addEventListener("click", async () => {
     if (!validateAddressFields()) return;
-    if (!hasAnyRecipient()) {
-      await runGmailSendAction();
-      return;
+
+    try {
+      state.isExporting = true;
+      state.exportAction = "html";
+      updateActionButtons();
+      await saveHtmlWithAssets();
+    } catch (error) {
+      console.error(error);
+      alert(error?.message || t("htmlExportFailedAlert"));
+    } finally {
+      state.isExporting = false;
+      state.exportAction = "save";
+      updateActionButtons();
     }
-    if (shouldPromptGoogleAuthModal()) {
-      openGoogleAuthModal();
-      return;
-    }
-    await runGmailSendAction();
   });
 
   ui.shareBtn.addEventListener("click", async () => {
+    if (!validateAddressFields()) return;
+
     try {
       state.isExporting = true;
       state.exportAction = "share";
       updateActionButtons();
-      await copyMessageContent();
+      await shareMessage();
     } catch (error) {
+      if (error?.name === "AbortError") return;
       console.error(error);
       alert(error?.message || t("shareFailedAlert"));
+    } finally {
+      state.isExporting = false;
+      state.exportAction = "save";
+      updateActionButtons();
+    }
+  });
+
+  ui.plainCopyBtn.addEventListener("click", async () => {
+    try {
+      state.isExporting = true;
+      state.exportAction = "plain";
+      updateActionButtons();
+      await copyPlainTextFallback();
+    } catch (error) {
+      console.error(error);
+      alert(error?.message || t("plainCopyFailedAlert"));
     } finally {
       state.isExporting = false;
       state.exportAction = "save";
@@ -1264,27 +1216,6 @@ function bindEvents() {
     if (event.target.closest("[data-modal-close]")) {
       closeInfoModal();
     }
-  });
-
-  ui.googleAuthModalClose.addEventListener("click", () => {
-    closeGoogleAuthModal();
-  });
-
-  ui.googleAuthModalCancel.addEventListener("click", () => {
-    closeGoogleAuthModal();
-  });
-
-  ui.googleAuthModal.addEventListener("click", (event) => {
-    if (!(event.target instanceof HTMLElement)) return;
-    if (event.target.closest("[data-google-auth-close]")) {
-      closeGoogleAuthModal();
-    }
-  });
-
-  ui.googleAuthModalConfirm.addEventListener("click", async () => {
-    closeGoogleAuthModal();
-    if (!validateAddressFields()) return;
-    await runGmailSendAction();
   });
 }
 
@@ -1832,12 +1763,14 @@ function applyLanguage(language) {
   ui.dropZone.setAttribute("aria-label", t("dropZoneAria"));
 
   ui.mobilePreviewToggleBtn.textContent = t("openPreviewButton");
+  ui.htmlExportBtn.setAttribute("aria-label", t("htmlExportButtonAria"));
+  ui.plainCopyBtn.setAttribute("aria-label", t("plainCopyButtonAria"));
   ui.exportBtn.setAttribute("aria-label", t("exportButtonAria"));
-  ui.gmailSendBtn.setAttribute("aria-label", t("gmailSendButtonAria"));
-  ui.shareBtn.setAttribute("aria-label", t("shareButtonAria"));
+  ui.shareBtn.setAttribute("aria-label", t("shareSendButtonAria"));
+  ui.htmlExportBtn.title = t("htmlExportButtonAria");
+  ui.plainCopyBtn.title = t("plainCopyButtonAria");
   ui.exportBtn.title = t("exportButtonAria");
-  ui.gmailSendBtn.title = t("gmailSendButtonAria");
-  ui.shareBtn.title = t("shareButtonAria");
+  ui.shareBtn.title = t("shareSendButtonAria");
 
   ui.infoBtn.setAttribute("aria-label", t("infoButtonAria"));
   ui.infoModalTitle.textContent = t("infoModalTitle");
@@ -1848,7 +1781,6 @@ function applyLanguage(language) {
     item.textContent = t(key);
     ui.infoModalList.append(item);
   });
-  updateGoogleAuthModalCopy();
 
   buildPresetOptions();
   renderTemplateSelectOptions();
@@ -2457,6 +2389,24 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
       text-decoration: none;
       word-break: break-word;
     }
+    .mail-attachment-button{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid currentColor;
+      color: inherit;
+      font-size: 0.87em;
+      font-weight: 600;
+      text-decoration: none;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .mail-attachment-button:hover{
+      opacity: .86;
+    }
     .mail-attachment-name[href]{
       text-decoration: underline;
       text-underline-offset: 2px;
@@ -2579,14 +2529,17 @@ function buildAttachmentsBlockHtml(options = {}) {
       const kind = fileKindLabel(item.kind);
       const name = escapeHtml(item.file.name);
       const size = escapeHtml(formatBytes(item.file.size));
+      const previewHref = item.dataUrl || item.previewUrl;
       const href =
         linkMode === "preview"
-          ? item.previewUrl
+          ? previewHref
           : linkMode === "cid"
             ? `cid:${buildAttachmentContentId(item, index)}`
             : "";
       const nameNode = href
-        ? `<a class="mail-attachment-name" href="${escapeHtml(href)}"${
+        ? `<a class="${linkMode === "preview" ? "mail-attachment-button" : "mail-attachment-name"}" href="${escapeHtml(
+            href
+          )}"${
             linkMode === "preview"
               ? ` download="${name}" target="_blank" rel="noopener noreferrer"`
               : ""
@@ -2947,59 +2900,30 @@ function hasAnyExportData() {
 function updateActionButtons() {
   ui.exportBtn.textContent =
     state.isExporting && state.exportAction === "save" ? t("exportBusy") : t("exportButton");
-  ui.gmailSendBtn.textContent =
-    state.isExporting && state.exportAction === "gmail" ? t("gmailSendBusy") : t("gmailSendButton");
+  ui.htmlExportBtn.textContent =
+    state.isExporting && state.exportAction === "html" ? t("htmlExportBusy") : t("htmlExportButton");
   ui.shareBtn.textContent =
-    state.isExporting && state.exportAction === "share" ? t("shareBusy") : t("shareButton");
+    state.isExporting && state.exportAction === "share" ? t("shareSendBusy") : t("shareSendButton");
+  ui.plainCopyBtn.textContent =
+    state.isExporting && state.exportAction === "plain" ? t("plainCopyBusy") : t("plainCopyButton");
 
   if (state.isExporting) {
     ui.exportBtn.disabled = true;
-    ui.gmailSendBtn.disabled = true;
+    ui.htmlExportBtn.disabled = true;
     ui.shareBtn.disabled = true;
+    ui.plainCopyBtn.disabled = true;
     return;
   }
 
   const hasValidationErrors = collectValidationState().issues.length > 0;
   const canExport = !hasValidationErrors && hasAnyExportData();
-  const canGmailSend = !hasValidationErrors && hasAnyExportData() && hasAnyRecipient();
-  const canCopy = hasCopyContentData();
-  ui.gmailSendBtn.title = isGoogleAuthConfigured() ? t("gmailSendButtonAria") : t("gmailComposeFallbackTitle");
+  const canHtmlExport = !hasValidationErrors && hasAnyExportData();
+  const canShareSend = !hasValidationErrors && hasAnyExportData();
+  const canPlainCopy = Boolean(normalizeMultilineText(buildPlainTextBody()));
   ui.exportBtn.disabled = !canExport;
-  ui.gmailSendBtn.disabled = !canGmailSend;
-  ui.shareBtn.disabled = !canCopy;
-}
-
-function hasCopyContentData() {
-  if (normalizeMultilineText(buildPlainTextBody())) return true;
-  if (state.enabled.content && normalizeInlineText(normalizeEditorHtml(state.fields.content))) return true;
-  if (state.enabled.quote && normalizeInlineText(normalizeEditorHtml(state.fields.quote))) return true;
-  if (state.enabled.contactLogo && state.logoAttachment?.dataUrl) return true;
-  return false;
-}
-
-function hasActiveGoogleAccessToken() {
-  return Boolean(state.googleAuth.accessToken) && Date.now() < state.googleAuth.expiresAt - 30_000;
-}
-
-function shouldPromptGoogleAuthModal() {
-  if (!isGoogleAuthConfigured()) return true;
-  return !hasActiveGoogleAccessToken();
-}
-
-async function runGmailSendAction() {
-  try {
-    state.isExporting = true;
-    state.exportAction = "gmail";
-    updateActionButtons();
-    await sendViaGmail();
-  } catch (error) {
-    console.error(error);
-    alert(error?.message || t("gmailSendFailedAlert"));
-  } finally {
-    state.isExporting = false;
-    state.exportAction = "save";
-    updateActionButtons();
-  }
+  ui.htmlExportBtn.disabled = !canHtmlExport;
+  ui.shareBtn.disabled = !canShareSend;
+  ui.plainCopyBtn.disabled = !canPlainCopy;
 }
 
 function hasAnyRecipient() {
@@ -3172,22 +3096,30 @@ async function setLogoAttachment(file) {
   maybeSaveDraft();
 }
 
-function addAttachments(fileList) {
+async function addAttachments(fileList) {
   const files = Array.from(fileList || []);
   if (!files.length) return;
 
-  files.forEach((file) => {
-    const isImage = file.type.startsWith("image/");
-    state.attachments.push({
-      id: crypto.randomUUID(),
-      file,
-      previewUrl: isImage ? URL.createObjectURL(file) : "",
-      kind: detectFileKind(file),
-    });
+  const nextAttachments = await Promise.all(
+    files.map(async (file) => {
+      const dataUrl = await readFileAsDataUrl(file);
+      return {
+        id: crypto.randomUUID(),
+        file,
+        dataUrl,
+        previewUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : "",
+        kind: detectFileKind(file),
+      };
+    })
+  );
+
+  nextAttachments.forEach((attachment) => {
+    state.attachments.push(attachment);
   });
 
   renderAttachments();
   renderPreview();
+  maybeSaveDraft();
 }
 
 function detectFileKind(file) {
@@ -3403,31 +3335,9 @@ function closeInfoModal() {
   syncModalBodyState();
 }
 
-function openGoogleAuthModal() {
-  updateGoogleAuthModalCopy();
-  ui.googleAuthModal.hidden = false;
-  syncModalBodyState();
-}
-
-function closeGoogleAuthModal() {
-  ui.googleAuthModal.hidden = true;
-  syncModalBodyState();
-}
-
 function syncModalBodyState() {
-  const anyModalOpen = !ui.infoModal.hidden || !ui.googleAuthModal.hidden;
+  const anyModalOpen = !ui.infoModal.hidden;
   document.body.classList.toggle("modal-open", anyModalOpen);
-}
-
-function updateGoogleAuthModalCopy() {
-  const oauthConfigured = isGoogleAuthConfigured();
-  ui.googleAuthModalTitle.textContent = t("googleAuthModalTitle");
-  ui.googleAuthModalText.textContent = oauthConfigured ? t("googleAuthModalTextOauth") : t("googleAuthModalTextFallback");
-  ui.googleAuthModalConfirm.textContent = oauthConfigured
-    ? t("googleAuthModalConfirmOauth")
-    : t("googleAuthModalConfirmFallback");
-  ui.googleAuthModalCancel.textContent = t("googleAuthModalCancel");
-  ui.googleAuthModalClose.setAttribute("aria-label", t("googleAuthModalCloseAria"));
 }
 
 function buildPlainTextBody() {
@@ -3540,34 +3450,94 @@ async function saveEmlFile() {
   triggerDownload(blob, filename);
 }
 
-async function copyMessageContent() {
-  const htmlDocument = await buildExportBodyHtml({ showPlaceholders: false, attachmentLinkMode: "preview" });
-  const html = buildClipboardHtml(htmlDocument);
-  const plain = buildPlainTextBody();
-
-  if (!normalizeMultilineText(plain) && !normalizeInlineText(html)) {
-    throw new Error(t("copyEmptyAlert"));
+async function saveHtmlWithAssets() {
+  const htmlDocument = await buildExportBodyHtml({
+    forceMode: null,
+    showPlaceholders: false,
+    attachmentLinkMode: "preview",
+  });
+  const html = String(htmlDocument || "").trim();
+  if (!html) {
+    throw new Error(t("htmlExportFailedAlert"));
   }
 
-  if (navigator.clipboard && window.ClipboardItem) {
+  const baseName = buildExportFilename().replace(/\.eml$/i, "");
+  const htmlBlob = new Blob([html], { type: "text/html;charset=utf-8" });
+  triggerDownload(htmlBlob, `${baseName}.html`);
+
+  // Optional assets export: download source files next to HTML.
+  const assets = getAllExportAttachments();
+  assets.forEach((asset) => {
+    triggerDownload(asset.file, asset.file.name);
+  });
+}
+
+async function shareMessage() {
+  const plainText = normalizeMultilineText(buildPlainTextBody());
+  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
+  const to = normalizeInlineText(state.fields.to);
+
+  if (navigator.share) {
     try {
-      const clipboardItem = new ClipboardItem({
-        "text/plain": new Blob([plain || ""], { type: "text/plain" }),
-        "text/html": new Blob([html || `<p>${escapeHtml(plain || "")}</p>`], { type: "text/html" }),
+      await navigator.share({
+        title: subject || "Pretty-Mails",
+        text: plainText || subject || undefined,
       });
-      await navigator.clipboard.write([clipboardItem]);
       return;
     } catch (error) {
-      console.warn("ClipboardItem write failed, using legacy fallback.", error);
+      if (error?.name === "AbortError") {
+        throw error;
+      }
     }
   }
 
-  if (copyHtmlWithExecCommand(html, plain)) {
+  if (isLikelyIosDevice() && openMailtoDraft({ to, subject, body: plainText })) {
+    return;
+  }
+
+  const { blob, filename } = await buildEmlFile();
+  triggerDownload(blob, filename);
+}
+
+function isLikelyIosDevice() {
+  const ua = navigator.userAgent.toLowerCase();
+  const isTouchMac = ua.includes("macintosh") && "ontouchend" in document;
+  return ua.includes("iphone") || ua.includes("ipad") || isTouchMac;
+}
+
+function openMailtoDraft(options = {}) {
+  const recipients = parseAddressList(options.to).map((email) => encodeURIComponent(email)).join(",");
+  const subject = normalizeInlineText(options.subject);
+  const body = normalizeMultilineText(options.body);
+  const params = new URLSearchParams();
+
+  if (subject) params.set("subject", subject);
+  if (body) params.set("body", body);
+
+  const query = params.toString();
+  const url = `mailto:${recipients}${query ? `?${query}` : ""}`;
+
+  try {
+    window.location.href = url;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function copyPlainTextFallback() {
+  const plain = normalizeMultilineText(buildPlainTextBody());
+  if (!plain) {
+    throw new Error(t("copyEmptyAlert"));
+  }
+
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(plain);
     return;
   }
 
   const fallback = document.createElement("textarea");
-  fallback.value = plain || "";
+  fallback.value = plain;
   fallback.setAttribute("readonly", "readonly");
   fallback.style.position = "fixed";
   fallback.style.left = "-9999px";
@@ -3577,27 +3547,8 @@ async function copyMessageContent() {
   fallback.remove();
 
   if (!copied) {
-    throw new Error("Copy command failed");
+    throw new Error(t("plainCopyFailedAlert"));
   }
-}
-
-async function sendViaGmail() {
-  if (!hasAnyRecipient()) {
-    throw new Error(t("requiredRecipientMissing"));
-  }
-
-  if (!isGoogleAuthConfigured()) {
-    openGmailComposeWindow();
-    return;
-  }
-
-  if (isIosStandaloneMode() && !hasActiveGoogleAccessToken()) {
-    throw new Error(t("gmailIosStandaloneUnsupported"));
-  }
-
-  const accessToken = await ensureGoogleAccessToken();
-  const rawMessage = await buildMimeMessage({ draftMode: false });
-  await sendGmailRawMessage(rawMessage, accessToken);
 }
 
 async function buildEmlFile() {
@@ -3615,12 +3566,8 @@ async function buildMimeMessage(options = {}) {
     throw new Error(t("noTemplateSelected"));
   }
 
-  const htmlBody = await buildExportBodyHtml({ forceMode: null, showPlaceholders: false, attachmentLinkMode: "cid" });
+  const htmlBody = await buildExportBodyHtml({ forceMode: null, showPlaceholders: false, attachmentLinkMode: "preview" });
   const plainTextBody = buildPlainTextBody();
-
-  const mixedBoundary = `----=_PrettyMailsMixed_${Date.now().toString(16)}_${Math.random()
-    .toString(16)
-    .slice(2)}`;
   const alternativeBoundary = `----=_PrettyMailsAlt_${Date.now().toString(16)}_${Math.random()
     .toString(16)
     .slice(2)}`;
@@ -3654,10 +3601,6 @@ async function buildMimeMessage(options = {}) {
   }
   lines.push(`Date: ${new Date().toUTCString()}`);
   lines.push("MIME-Version: 1.0");
-  lines.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`);
-  lines.push("");
-
-  lines.push(`--${mixedBoundary}`);
   lines.push(`Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`);
   lines.push("");
 
@@ -3678,73 +3621,7 @@ async function buildMimeMessage(options = {}) {
   lines.push(`--${alternativeBoundary}--`);
   lines.push("");
 
-  const exportAttachments = getAllExportAttachments();
-  for (const [index, attachment] of exportAttachments.entries()) {
-    const base64 = await fileToBase64(attachment.file);
-    const mimeType = attachment.file.type || "application/octet-stream";
-    const safeName = sanitizeFilenameForHeader(attachment.file.name);
-    const encodedName = encodeURIComponent(attachment.file.name).replace(/'/g, "%27");
-    const contentId = buildAttachmentContentId(attachment, index);
-
-    lines.push(`--${mixedBoundary}`);
-    lines.push(`Content-Type: ${mimeType}; name=\"${safeName}\"; name*=UTF-8''${encodedName}`);
-    lines.push("Content-Transfer-Encoding: base64");
-    lines.push(`Content-ID: <${contentId}>`);
-    lines.push(`Content-Disposition: inline; filename=\"${safeName}\"; filename*=UTF-8''${encodedName}`);
-    lines.push("");
-    lines.push(foldBase64(base64));
-    lines.push("");
-  }
-
-  lines.push(`--${mixedBoundary}--`);
-  lines.push("");
-
   return lines.join("\r\n");
-}
-
-function buildClipboardHtml(htmlDocument) {
-  const source = String(htmlDocument || "").trim();
-  if (!source) return "";
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(source, "text/html");
-  const styleMarkup = Array.from(doc.querySelectorAll("style"))
-    .map((node) => node.outerHTML)
-    .join("");
-  const bodyMarkup = doc.body?.innerHTML || "";
-
-  return `${styleMarkup}${bodyMarkup}`.trim();
-}
-
-function copyHtmlWithExecCommand(html, plainText) {
-  const selection = window.getSelection();
-  if (!selection) return false;
-
-  const container = document.createElement("div");
-  container.setAttribute("contenteditable", "true");
-  container.setAttribute("aria-hidden", "true");
-  container.style.position = "fixed";
-  container.style.left = "-9999px";
-  container.style.top = "0";
-  container.style.opacity = "0";
-  container.style.pointerEvents = "none";
-  container.innerHTML = html || `<p>${escapeHtml(plainText || "")}</p>`;
-  document.body.append(container);
-
-  const range = document.createRange();
-  range.selectNodeContents(container);
-  selection.removeAllRanges();
-  selection.addRange(range);
-
-  let copied = false;
-  try {
-    copied = document.execCommand("copy");
-  } finally {
-    selection.removeAllRanges();
-    container.remove();
-  }
-
-  return copied;
 }
 
 function buildExportFilename() {
@@ -3768,212 +3645,6 @@ function buildAttachmentContentId(attachment, index) {
   return `pm-${normalized || fallback}@pretty-mails.local`;
 }
 
-function isGoogleAuthConfigured() {
-  return Boolean(GOOGLE_AUTH_CONFIG.clientId);
-}
-
-function isIosStandaloneMode() {
-  const ua = String(navigator.userAgent || "").toLowerCase();
-  const ios = /iphone|ipad|ipod/.test(ua);
-  const standaloneDisplayMode = window.matchMedia?.("(display-mode: standalone)")?.matches;
-  const standaloneNavigatorFlag = window.navigator.standalone === true;
-  return ios && Boolean(standaloneDisplayMode || standaloneNavigatorFlag);
-}
-
-function warmupGoogleIdentity() {
-  if (!isGoogleAuthConfigured()) return;
-  void ensureGoogleIdentityLoaded().catch(() => {
-    // If GIS script is late/blocked we keep lazy loading on first auth attempt.
-  });
-}
-
-async function ensureGoogleIdentityLoaded() {
-  if (window.google?.accounts?.oauth2) return;
-
-  await new Promise((resolve, reject) => {
-    let attempts = 0;
-    const intervalId = window.setInterval(() => {
-      if (window.google?.accounts?.oauth2) {
-        window.clearInterval(intervalId);
-        resolve();
-        return;
-      }
-
-      attempts += 1;
-      if (attempts > 80) {
-        window.clearInterval(intervalId);
-        reject(new Error(t("gmailAuthFailed")));
-      }
-    }, 125);
-  });
-}
-
-function ensureGoogleTokenClient() {
-  if (state.googleAuth.tokenClient) return state.googleAuth.tokenClient;
-
-  state.googleAuth.tokenClient = window.google.accounts.oauth2.initTokenClient({
-    client_id: GOOGLE_AUTH_CONFIG.clientId,
-    scope: GOOGLE_AUTH_CONFIG.scopes,
-    callback: () => {},
-  });
-
-  return state.googleAuth.tokenClient;
-}
-
-async function ensureGoogleAccessToken() {
-  if (state.googleAuth.accessToken && Date.now() < state.googleAuth.expiresAt - 30_000) {
-    return state.googleAuth.accessToken;
-  }
-
-  return requestGoogleAccessToken();
-}
-
-async function requestGoogleAccessToken() {
-  if (!isGoogleAuthConfigured()) {
-    throw new Error(t("gmailConfigMissing"));
-  }
-
-  await ensureGoogleIdentityLoaded();
-  const tokenClient = ensureGoogleTokenClient();
-
-  return new Promise((resolve, reject) => {
-    tokenClient.callback = async (response) => {
-      if (response?.error) {
-        if (response.error === "access_denied") {
-          reject(new Error(t("gmailAccessDenied")));
-          return;
-        }
-        reject(new Error(t("gmailAuthFailed")));
-        return;
-      }
-
-      if (!response?.access_token) {
-        reject(new Error(t("gmailAuthFailed")));
-        return;
-      }
-
-      state.googleAuth.accessToken = response.access_token;
-      state.googleAuth.expiresAt = Date.now() + Math.max(0, Number(response.expires_in || 0)) * 1000;
-
-      try {
-        const email = await fetchGoogleUserEmail(response.access_token);
-        if (GOOGLE_AUTH_CONFIG.allowedEmail && email !== GOOGLE_AUTH_CONFIG.allowedEmail) {
-          state.googleAuth.accessToken = "";
-          state.googleAuth.expiresAt = 0;
-          state.googleAuth.email = "";
-          reject(new Error(t("gmailWrongAccount")));
-          return;
-        }
-        state.googleAuth.email = email;
-        resolve(response.access_token);
-      } catch (error) {
-        reject(error instanceof Error ? error : new Error(t("gmailAuthFailed")));
-      }
-    };
-
-    tokenClient.error_callback = (errorResponse) => {
-      const errorType = normalizeInlineText(errorResponse?.type).toLowerCase();
-      if (errorType === "popup_failed_to_open" || errorType === "popup_closed") {
-        reject(new Error(t("gmailAuthPopupBlocked")));
-        return;
-      }
-      reject(new Error(t("gmailAuthFailed")));
-    };
-
-    const requestOptions = {
-      prompt: state.googleAuth.accessToken ? "" : "consent",
-      scope: GOOGLE_AUTH_CONFIG.scopes,
-    };
-
-    if (GOOGLE_AUTH_CONFIG.allowedEmail) {
-      requestOptions.login_hint = GOOGLE_AUTH_CONFIG.allowedEmail;
-    }
-
-    tokenClient.requestAccessToken(requestOptions);
-  });
-}
-
-async function fetchGoogleUserEmail(accessToken) {
-  const response = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(t("gmailAuthFailed"));
-  }
-
-  const payload = await response.json();
-  const email = normalizeInlineText(payload?.email).toLowerCase();
-  if (!email) {
-    throw new Error(t("gmailAuthFailed"));
-  }
-  return email;
-}
-
-function openGmailComposeWindow() {
-  const to = parseAddressList(state.fields.to).join(",");
-  const cc = state.enabled.cc ? parseAddressList(state.fields.cc).join(",") : "";
-  const bcc = state.enabled.bcc ? parseAddressList(state.fields.bcc).join(",") : "";
-  const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
-  const body = buildPlainTextBody();
-
-  const params = new URLSearchParams({
-    view: "cm",
-    fs: "1",
-    tf: "1",
-  });
-  if (to) params.set("to", to);
-  if (cc) params.set("cc", cc);
-  if (bcc) params.set("bcc", bcc);
-  if (subject) params.set("su", subject);
-  if (body) params.set("body", body);
-
-  const popup = window.open(`https://mail.google.com/mail/?${params.toString()}`, "_blank", "noopener,noreferrer");
-  if (!popup) {
-    throw new Error(t("gmailComposePopupBlocked"));
-  }
-}
-
-async function sendGmailRawMessage(rawMessage, accessToken, allowRetry = true) {
-  const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      raw: base64UrlFromUtf8(rawMessage),
-    }),
-  });
-
-  if (response.status === 401 && allowRetry) {
-    state.googleAuth.accessToken = "";
-    state.googleAuth.expiresAt = 0;
-    const refreshedToken = await ensureGoogleAccessToken();
-    return sendGmailRawMessage(rawMessage, refreshedToken, false);
-  }
-
-  if (!response.ok) {
-    let details = "";
-    try {
-      const payload = await response.json();
-      details = normalizeInlineText(payload?.error?.message);
-    } catch {
-      details = normalizeInlineText(await response.text());
-    }
-
-    throw new Error(
-      details ? `${t("gmailSendFailedAlert")} (${response.status}): ${details}` : t("gmailSendFailedAlert")
-    );
-  }
-}
-
-function sanitizeFilenameForHeader(filename) {
-  return String(filename || "file").replace(/["\\\r\n]/g, "_");
-}
-
 function encodeMimeHeader(value) {
   if (/^[\x20-\x7e]*$/.test(value)) {
     return value;
@@ -3993,27 +3664,8 @@ function base64FromUtf8(value) {
   return btoa(binary);
 }
 
-function base64UrlFromUtf8(value) {
-  return base64FromUtf8(value).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-}
-
 function foldBase64(base64) {
   return String(base64 || "").replace(/.{1,76}/g, "$&\r\n").trim();
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onerror = () => reject(reader.error || new Error("FileReader failed"));
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      const [, base64 = ""] = result.split(",");
-      resolve(base64);
-    };
-
-    reader.readAsDataURL(file);
-  });
 }
 
 function readFileAsDataUrl(file) {
