@@ -8,6 +8,10 @@ Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML i wysyłki
 - obsługa załączników jako lokalnych przycisków pobierania (base64/data URL),
 - jeden przycisk wysyłki: `Wyślij (Apple Mail)`,
 - flow wysyłki: kopiowanie HTML do schowka -> uruchomienie skrótu Apple,
+- przed wysyłką HTML jest inline-owany (style z `<style>` są przenoszone do `style=""` gdzie to możliwe),
+- wszystkie szablony `templates/*.html` są zapisane bez `<style>` (inline `style=""`),
+- wybór 2 głównych kolorów + szybkie presety palety,
+- dodatkowe szablony: `Brief`, `Ribbon`,
 - tryb Apple-only (iPhone/iPad/Mac), bez OAuth i bez backendu,
 - wielojęzyczny interfejs (`pl`, `en`, `uk`),
 - tryby motywu (`auto`, `light`, `dark`).
@@ -22,17 +26,49 @@ const SHORTCUT_INSTALL_URL = "https://www.icloud.com/shortcuts/REPLACE_WITH_REAL
 const SHORTCUT_RUN_BASE = "shortcuts://run-shortcut";
 ```
 
-`SHORTCUT_INSTALL_URL`:
-1. Utwórz skrót w aplikacji Shortcuts.
-2. Wybierz Share -> Copy iCloud Link.
-3. Wklej link do `SHORTCUT_INSTALL_URL`.
+Uwaga: webapp nie tworzy skrótu automatycznie. Skrót trzeba utworzyć i opublikować ręcznie.
 
-Uwaga: webapp nie tworzy skrótu automatycznie. Skrót trzeba utworzyć i opublikować raz ręcznie.
+### Krok po kroku: jak zbudować skrót PrettyMail
 
-Wymagane akcje skrótu:
-1. `Get Clipboard`
-2. `Make Rich Text from HTML`
-3. `Email` (`Show Compose Sheet` = ON)
+1. Otwórz aplikację **Shortcuts** i utwórz nowy skrót.
+2. Ustaw nazwę skrótu dokładnie taką jak `SHORTCUT_NAME` (domyślnie `PrettyMail`).
+3. Dodaj akcję `Get Shortcut Input`.
+4. Dodaj akcję `Text` i wstaw wartość `Shortcut Input` (to będzie JSON z webapp: `{ "to": "...", "subject": "..." }`).
+5. Dodaj akcję `Get Dictionary from Input` (parsowanie JSON do słownika).
+6. Dodaj akcję `Get Dictionary Value` dla klucza `to`.
+7. Dodaj akcję `Get Dictionary Value` dla klucza `subject`.
+8. Dodaj akcję `Get Clipboard`.
+9. Dodaj akcję `Make Rich Text from HTML` (na danych z clipboard).
+10. Dodaj akcję `Email`:
+    - `Message`: wynik `Make Rich Text from HTML`,
+    - `Recipients`: wartość `to` (jeśli pusta, pole zostaw puste),
+    - `Subject`: wartość `subject` (jeśli pusta, pole zostaw puste),
+    - `Show Compose Sheet`: `ON` (koniecznie).
+11. Zapisz skrót i uruchom go raz ręcznie, potwierdzając wszystkie uprawnienia.
+
+### Publikacja skrótu i podpięcie do aplikacji
+
+1. W Shortcuts kliknij `Share`.
+2. Wybierz `Copy iCloud Link`.
+3. Wklej ten link jako `SHORTCUT_INSTALL_URL` w `app.js`.
+
+### Test flow
+
+1. Otwórz appkę w **Safari** na iPhone/iPad/Mac.
+2. Kliknij `Wyślij (Apple Mail)`.
+3. Powinno nastąpić: kopiowanie HTML -> uruchomienie skrótu -> ekran compose w Apple Mail.
+
+### Najczęstsze problemy
+
+- Brak reakcji po kliknięciu:
+  - sprawdź, czy skrót ma identyczną nazwę jak `SHORTCUT_NAME`,
+  - sprawdź, czy pierwszy run skrótu był wykonany ręcznie (uprawnienia),
+  - sprawdź, czy testujesz w Safari (inne przeglądarki na iOS bywają bardziej restrykcyjne).
+- Skrót odpala się, ale mail bez stylu:
+  - upewnij się, że akcja to `Make Rich Text from HTML`, a nie zwykły `Text`.
+- Brak dostępu do schowka:
+  - uruchamiaj przez `https` lub `http://localhost`,
+  - zaakceptuj prompt Safari dotyczący clipboard.
 
 ## Uruchomienie lokalne
 

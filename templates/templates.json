@@ -428,5 +428,91 @@
       "{{attachments_block}}",
       "{{signature_block}}"
     ]
+  },
+  {
+    "id": "brief",
+    "name": "Brief",
+    "description": "Kompaktowy układ inline z lekką kartą.",
+    "i18n": {
+      "pl": {
+        "name": "Brief",
+        "description": "Kompaktowy układ inline z lekką kartą."
+      },
+      "en": {
+        "name": "Brief",
+        "description": "Compact inline layout with a light card."
+      },
+      "uk": {
+        "name": "Brief",
+        "description": "Компактний inline-макет зі світлою карткою."
+      }
+    },
+    "templateUrl": "./brief.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#2e7dff"
+    },
+    "paletteDefaults": {
+      "accent": "#2e7dff",
+      "accent2": "#59a3ff",
+      "accent3": "#1d4fb8"
+    },
+    "editorFonts": {
+      "body": "\"Inter\", \"Segoe UI\", sans-serif",
+      "headings": "\"Inter\", \"Segoe UI\", sans-serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{attachments_block}}",
+      "{{signature_block}}"
+    ]
+  },
+  {
+    "id": "ribbon",
+    "name": "Ribbon",
+    "description": "Inline layout z paskiem akcentu.",
+    "i18n": {
+      "pl": {
+        "name": "Ribbon",
+        "description": "Inline layout z paskiem akcentu."
+      },
+      "en": {
+        "name": "Ribbon",
+        "description": "Inline layout with an accent ribbon."
+      },
+      "uk": {
+        "name": "Ribbon",
+        "description": "Inline-макет із акцентною смугою."
+      }
+    },
+    "templateUrl": "./ribbon.html",
+    "theme": {
+      "defaultMode": "auto",
+      "accent": "#0f766e"
+    },
+    "paletteDefaults": {
+      "accent": "#0f766e",
+      "accent2": "#56b8ae",
+      "accent3": "#0c4f4a"
+    },
+    "editorFonts": {
+      "body": "\"Manrope\", \"Segoe UI\", sans-serif",
+      "headings": "\"Manrope\", \"Segoe UI\", sans-serif"
+    },
+    "fields": {
+      "allOptionalBodyFields": true
+    },
+    "placeholders": [
+      "{{greeting_block}}",
+      "{{content_block}}",
+      "{{quote_block}}",
+      "{{attachments_block}}",
+      "{{signature_block}}"
+    ]
   }
 ]

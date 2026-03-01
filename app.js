@@ -24,6 +24,15 @@ const LANGUAGE_FLAGS = {
   uk: "🇺🇦",
 };
 
+const ACCENT_PRESETS = [
+  { id: "ocean", accent: "#2e7dff", accent2: "#59a3ff" },
+  { id: "mint", accent: "#0f766e", accent2: "#56b8ae" },
+  { id: "amber", accent: "#9a6a40", accent2: "#d0a175" },
+  { id: "violet", accent: "#5d57d9", accent2: "#8f89ea" },
+  { id: "graphite", accent: "#334155", accent2: "#64748b" },
+  { id: "berry", accent: "#a83b6c", accent2: "#d46a99" },
+];
+
 const OPTIONAL_DEFAULTS = {
   cc: false,
   bcc: false,
@@ -162,6 +171,8 @@ const I18N = {
     accentColor1Label: "Akcent 1",
     accentColor2Label: "Akcent 2",
     accentColor3Label: "Akcent 3",
+    accentPaletteLabel: "Paleta",
+    accentPresetAria: "Paleta {index}",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -375,6 +386,8 @@ const I18N = {
     accentColor1Label: "Accent 1",
     accentColor2Label: "Accent 2",
     accentColor3Label: "Accent 3",
+    accentPaletteLabel: "Palette",
+    accentPresetAria: "Palette {index}",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -586,6 +599,8 @@ const I18N = {
     accentColor1Label: "Акцент 1",
     accentColor2Label: "Акцент 2",
     accentColor3Label: "Акцент 3",
+    accentPaletteLabel: "Палітра",
+    accentPresetAria: "Палітра {index}",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -910,9 +925,11 @@ const ui = {
   accentColor1Label: document.querySelector("#accentColor1Label"),
   accentColor2Label: document.querySelector("#accentColor2Label"),
   accentColor3Label: document.querySelector("#accentColor3Label"),
+  accentPaletteLabel: document.querySelector("#accentPaletteLabel"),
   accentColor1: document.querySelector("#accentColor1"),
   accentColor2: document.querySelector("#accentColor2"),
   accentColor3: document.querySelector("#accentColor3"),
+  accentPresetList: document.querySelector("#accentPresetList"),
   previewEnvelopeTitle: document.querySelector("#previewEnvelopeTitle"),
   previewContentTitle: document.querySelector("#previewContentTitle"),
   previewFields: document.querySelector("#previewFields"),
@@ -1065,17 +1082,41 @@ function bindEvents() {
     maybeSaveDraft();
   });
 
-  [ui.accentColor1, ui.accentColor2, ui.accentColor3].forEach((input, index) => {
+  [ui.accentColor1, ui.accentColor2].forEach((input, index) => {
     input.addEventListener("input", () => {
       const template = getTemplateById(state.selectedTemplateId);
       if (!template) return;
       const palette = ensureTemplatePalette(template);
-      const key = index === 0 ? "accent" : index === 1 ? "accent2" : "accent3";
+      const key = index === 0 ? "accent" : "accent2";
       palette[key] = normalizeHexColor(input.value, palette[key]);
+      palette.accent3 = deriveAccent3(palette.accent, palette.accent2);
+      updateAccentPresetActiveState();
       maybeSaveDraft();
       renderPreview();
     });
   });
+
+  if (ui.accentPresetList) {
+    ui.accentPresetList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-accent-preset]");
+      if (!button) return;
+
+      const preset = ACCENT_PRESETS.find((item) => item.id === button.dataset.accentPreset);
+      if (!preset) return;
+
+      const template = getTemplateById(state.selectedTemplateId);
+      if (!template) return;
+
+      const palette = ensureTemplatePalette(template);
+      palette.accent = normalizeHexColor(preset.accent, palette.accent);
+      palette.accent2 = normalizeHexColor(preset.accent2, palette.accent2);
+      palette.accent3 = deriveAccent3(palette.accent, palette.accent2);
+      syncPaletteInputs(template);
+      updateAccentPresetActiveState();
+      maybeSaveDraft();
+      renderPreview();
+    });
+  }
 
   ui.mobilePreviewToggleBtn.addEventListener("click", () => {
     if (!mobileMedia.matches) return;
@@ -1578,24 +1619,57 @@ function normalizeHexColor(value, fallback = "#2e7dff") {
   return String(fallback || "#2e7dff");
 }
 
+function hexToRgb(hex) {
+  const normalized = normalizeHexColor(hex, "#2e7dff");
+  return {
+    r: Number.parseInt(normalized.slice(1, 3), 16),
+    g: Number.parseInt(normalized.slice(3, 5), 16),
+    b: Number.parseInt(normalized.slice(5, 7), 16),
+  };
+}
+
+function rgbToHex({ r, g, b }) {
+  const clamp = (value) => Math.max(0, Math.min(255, Math.round(value)));
+  const toHex = (value) => clamp(value).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function mixHexColors(left, right, weight = 0.5) {
+  const a = hexToRgb(left);
+  const b = hexToRgb(right);
+  const alpha = Math.max(0, Math.min(1, Number(weight)));
+  return rgbToHex({
+    r: a.r * (1 - alpha) + b.r * alpha,
+    g: a.g * (1 - alpha) + b.g * alpha,
+    b: a.b * (1 - alpha) + b.b * alpha,
+  });
+}
+
+function deriveAccent3(accent, accent2) {
+  const blended = mixHexColors(accent, accent2, 0.35);
+  return mixHexColors(blended, "#101522", 0.28);
+}
+
 function getTemplateDefaultPalette(template) {
   const defaults = template?.paletteDefaults || {};
   const accent = normalizeHexColor(defaults.accent || template?.theme?.accent || "#2e7dff", "#2e7dff");
   const accent2 = normalizeHexColor(defaults.accent2 || accent, accent);
-  const accent3 = normalizeHexColor(defaults.accent3 || accent2, accent2);
+  const accent3 = normalizeHexColor(defaults.accent3 || deriveAccent3(accent, accent2), deriveAccent3(accent, accent2));
   return { accent, accent2, accent3 };
 }
 
 function ensureTemplatePalette(template) {
   if (!template) {
-    return { accent: "#2e7dff", accent2: "#2e7dff", accent3: "#2e7dff" };
+    const accent = "#2e7dff";
+    const accent2 = "#59a3ff";
+    return { accent, accent2, accent3: deriveAccent3(accent, accent2) };
   }
 
   const existing = state.templatePalettes[template.id];
   if (existing) {
     existing.accent = normalizeHexColor(existing.accent, "#2e7dff");
     existing.accent2 = normalizeHexColor(existing.accent2, existing.accent);
-    existing.accent3 = normalizeHexColor(existing.accent3, existing.accent2);
+    existing.accent3 = deriveAccent3(existing.accent, existing.accent2);
     return existing;
   }
 
@@ -1763,7 +1837,13 @@ function applyLanguage(language) {
   ui.previewFrameDark.title = t("previewFrameDarkTitle");
   ui.accentColor1Label.textContent = t("accentColor1Label");
   ui.accentColor2Label.textContent = t("accentColor2Label");
-  ui.accentColor3Label.textContent = t("accentColor3Label");
+  if (ui.accentColor3Label) {
+    ui.accentColor3Label.textContent = t("accentColor3Label");
+  }
+  if (ui.accentPaletteLabel) {
+    ui.accentPaletteLabel.textContent = t("accentPaletteLabel");
+  }
+  renderAccentPresetButtons();
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
   ui.addFilesBtn.textContent = t("addFilesButton");
@@ -2056,10 +2136,12 @@ function restoreDraft() {
     if (saved.templatePalettes && typeof saved.templatePalettes === "object") {
       Object.entries(saved.templatePalettes).forEach(([templateId, palette]) => {
         if (!palette || typeof palette !== "object") return;
+        const accent = normalizeHexColor(palette.accent, "#2e7dff");
+        const accent2 = normalizeHexColor(palette.accent2, accent);
         state.templatePalettes[templateId] = {
-          accent: normalizeHexColor(palette.accent, "#2e7dff"),
-          accent2: normalizeHexColor(palette.accent2, palette.accent || "#2e7dff"),
-          accent3: normalizeHexColor(palette.accent3, palette.accent2 || palette.accent || "#2e7dff"),
+          accent,
+          accent2,
+          accent3: deriveAccent3(accent, accent2),
         };
       });
     }
@@ -2113,9 +2195,12 @@ async function loadTemplates() {
         template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
         template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff"
       ),
-      accent3: normalizeHexColor(
-        template?.paletteDefaults?.accent3 || template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
-        template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff"
+      accent3: deriveAccent3(
+        normalizeHexColor(template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff", "#2e7dff"),
+        normalizeHexColor(
+          template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
+          template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
+        ),
       ),
     },
     templateResolvedUrl: new URL(template.templateUrl, TEMPLATE_INDEX_URL).toString(),
@@ -2171,7 +2256,46 @@ function syncPaletteInputs(template) {
   const palette = getTemplatePalette(template);
   ui.accentColor1.value = palette.accent;
   ui.accentColor2.value = palette.accent2;
-  ui.accentColor3.value = palette.accent3;
+  if (ui.accentColor3) {
+    ui.accentColor3.value = palette.accent3;
+  }
+  updateAccentPresetActiveState();
+}
+
+function renderAccentPresetButtons() {
+  if (!ui.accentPresetList) return;
+
+  ui.accentPresetList.innerHTML = "";
+  ACCENT_PRESETS.forEach((preset, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "accent-preset-btn";
+    button.dataset.accentPreset = preset.id;
+    button.setAttribute("role", "listitem");
+    button.setAttribute("aria-label", t("accentPresetAria", { index: index + 1 }));
+    button.title = t("accentPresetAria", { index: index + 1 });
+    button.style.background = `linear-gradient(135deg, ${preset.accent}, ${preset.accent2})`;
+    ui.accentPresetList.append(button);
+  });
+
+  updateAccentPresetActiveState();
+}
+
+function updateAccentPresetActiveState() {
+  if (!ui.accentPresetList) return;
+  const template = getTemplateById(state.selectedTemplateId);
+  if (!template) return;
+
+  const palette = getTemplatePalette(template);
+  ui.accentPresetList.querySelectorAll("[data-accent-preset]").forEach((node) => {
+    const preset = ACCENT_PRESETS.find((item) => item.id === node.dataset.accentPreset);
+    const isActive = Boolean(
+      preset &&
+        normalizeHexColor(preset.accent, "") === normalizeHexColor(palette.accent, "") &&
+        normalizeHexColor(preset.accent2, "") === normalizeHexColor(palette.accent2, ""),
+    );
+    node.classList.toggle("is-active", isActive);
+  });
 }
 
 function localizedTemplateName(template) {
@@ -3410,7 +3534,8 @@ async function sendAppleMail() {
     return;
   }
 
-  if (!isSafari()) {
+  const safariBrowser = isSafari();
+  if (!safariBrowser) {
     showToast(t("shortcutSafariHint"), "info");
   }
 
@@ -3419,18 +3544,40 @@ async function sendAppleMail() {
 
   setTopbarSendLoading(true);
   try {
-    const html = await buildExportBodyHtml({
+    let html = buildExportBodyHtmlSync({
       forceMode: null,
       showPlaceholders: false,
       attachmentLinkMode: "preview",
     });
 
     if (!normalizeInlineText(html)) {
+      html = await buildExportBodyHtml({
+        forceMode: null,
+        showPlaceholders: false,
+        attachmentLinkMode: "preview",
+      });
+    }
+
+    if (!normalizeInlineText(html)) {
       throw new Error("empty html");
     }
 
+    const inlinedHtml = inlineCssForEmail(html, { mode: state.resolvedTheme });
+    if (normalizeInlineText(inlinedHtml)) {
+      html = inlinedHtml;
+    }
+
     showToast(t("shortcutToastCopying"), "info", 1200);
-    await copyHtmlToClipboard(html);
+    if (safariBrowser) {
+      // Safari may block shortcuts:// launch after awaited async operations.
+      // Prefer sync copy first so launch stays tightly tied to the click.
+      const copiedSync = copyHtmlToClipboardExecCommand(html);
+      if (!copiedSync) {
+        await copyHtmlToClipboard(html);
+      }
+    } else {
+      await copyHtmlToClipboard(html);
+    }
 
     showToast(t("shortcutToastCopiedOpening"), "success");
     runShortcut({ to, subject });
@@ -3504,6 +3651,17 @@ async function copyHtmlToClipboard(html) {
     }
   }
 
+  const copied = copyHtmlToClipboardExecCommand(html);
+  if (!copied) {
+    throw new Error("execCommand copy failed");
+  }
+
+  return { method: "execCommand" };
+}
+
+function copyHtmlToClipboardExecCommand(html) {
+  if (typeof document.execCommand !== "function") return false;
+
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
   tmp.style.position = "fixed";
@@ -3518,15 +3676,17 @@ async function copyHtmlToClipboard(html) {
   const selection = window.getSelection();
   selection?.removeAllRanges();
   selection?.addRange(range);
-  const copied = document.execCommand("copy");
-  selection?.removeAllRanges();
-  tmp.remove();
 
-  if (!copied) {
-    throw new Error("execCommand copy failed");
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (error) {
+    copied = false;
   }
 
-  return { method: "execCommand" };
+  selection?.removeAllRanges();
+  tmp.remove();
+  return Boolean(copied);
 }
 
 function stripHtml(html) {
@@ -3546,12 +3706,31 @@ function runShortcut({ to, subject }) {
   const withInputUrl = `${SHORTCUT_RUN_BASE}?name=${name}&input=text&text=${payload}`;
 
   if (withInputUrl.length > 1900) {
-    window.location.href = `${SHORTCUT_RUN_BASE}?name=${name}`;
+    launchShortcutUrl(`${SHORTCUT_RUN_BASE}?name=${name}`);
     return { withInput: false };
   }
 
-  window.location.href = withInputUrl;
+  launchShortcutUrl(withInputUrl);
   return { withInput: true };
+}
+
+function launchShortcutUrl(url) {
+  const targetUrl = String(url || "").trim();
+  if (!targetUrl) return;
+
+  if (isSafari()) {
+    const link = document.createElement("a");
+    link.href = targetUrl;
+    link.style.position = "fixed";
+    link.style.left = "-9999px";
+    link.style.top = "0";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    return;
+  }
+
+  window.location.href = targetUrl;
 }
 
 function showToast(message, type = "info", duration = 2200) {
@@ -3572,6 +3751,139 @@ function showToast(message, type = "info", duration = 2200) {
       toast.remove();
     }, 160);
   }, Math.max(1000, duration));
+}
+
+function inlineCssForEmail(html, options = {}) {
+  const source = String(html || "").trim();
+  if (!source) return "";
+
+  const doc = new DOMParser().parseFromString(source, "text/html");
+  const styleNodes = [...doc.querySelectorAll("style")];
+  if (!styleNodes.length) {
+    return source;
+  }
+
+  const mode = options.mode === "dark" ? "dark" : "light";
+  const cssText = styleNodes.map((node) => node.textContent || "").join("\n");
+  const sandbox = document.implementation.createHTMLDocument("");
+  const styleElement = sandbox.createElement("style");
+  styleElement.textContent = cssText;
+  sandbox.head.append(styleElement);
+  const parsedRules = styleElement.sheet?.cssRules;
+  if (!parsedRules) {
+    return source;
+  }
+
+  const root = doc.documentElement;
+  const varMap = {};
+
+  const applyDeclarations = (element, declaration) => {
+    for (let i = 0; i < declaration.length; i += 1) {
+      const property = declaration[i];
+      if (!property) continue;
+      const priority = declaration.getPropertyPriority(property);
+      const rawValue = declaration.getPropertyValue(property).trim();
+      if (!rawValue) continue;
+      const value = resolveCssVars(rawValue, varMap);
+      element.style.setProperty(property, value, priority);
+      if (property.startsWith("--")) {
+        varMap[property] = value;
+      }
+    }
+  };
+
+  const applyStyleRule = (rule) => {
+    const selectors = String(rule.selectorText || "")
+      .split(",")
+      .map((selector) => selector.trim())
+      .filter(Boolean);
+    if (!selectors.length) return;
+
+    selectors.forEach((selector) => {
+      if (isRootStyleSelector(selector, mode)) {
+        applyDeclarations(root, rule.style);
+        return;
+      }
+
+      if (selector.includes(":")) return;
+      if (selector.includes("::")) return;
+
+      let elements = [];
+      try {
+        elements = [...doc.querySelectorAll(selector)];
+      } catch (error) {
+        elements = [];
+      }
+      elements.forEach((element) => {
+        applyDeclarations(element, rule.style);
+      });
+    });
+  };
+
+  const walkCssRules = (rules) => {
+    if (!rules) return;
+    for (const rule of rules) {
+      if (!rule) continue;
+      if (rule.type === CSSRule.STYLE_RULE) {
+        applyStyleRule(rule);
+        continue;
+      }
+
+      if (rule.type === CSSRule.MEDIA_RULE && mediaRuleMatchesMode(rule.media?.mediaText, mode)) {
+        walkCssRules(rule.cssRules);
+      }
+    }
+  };
+
+  walkCssRules(parsedRules);
+
+  doc.querySelectorAll("[style]").forEach((element) => {
+    const inlineStyle = element.getAttribute("style");
+    if (!inlineStyle) return;
+    const resolvedStyle = resolveCssVars(inlineStyle, varMap);
+    if (resolvedStyle) {
+      element.setAttribute("style", resolvedStyle);
+    }
+  });
+
+  styleNodes.forEach((node) => node.remove());
+
+  return `<!doctype html>\n${doc.documentElement.outerHTML}`;
+}
+
+function resolveCssVars(value, vars) {
+  let output = String(value || "");
+  const maxPasses = 6;
+
+  for (let pass = 0; pass < maxPasses; pass += 1) {
+    if (!output.includes("var(")) break;
+    output = output.replace(/var\(\s*(--[a-zA-Z0-9-_]+)\s*(?:,\s*([^)]+))?\)/g, (_, token, fallback) => {
+      if (Object.prototype.hasOwnProperty.call(vars, token)) {
+        return vars[token];
+      }
+      return String(fallback || "").trim();
+    });
+  }
+
+  return output.trim();
+}
+
+function isRootStyleSelector(selector, mode) {
+  const normalized = String(selector || "").trim().toLowerCase();
+  if (!normalized) return false;
+  if (normalized === ":root" || normalized === "html") return true;
+  if (normalized === "html.forced-dark") return mode === "dark";
+  if (normalized === "html.forced-light") return mode === "light";
+  return false;
+}
+
+function mediaRuleMatchesMode(mediaText, mode) {
+  const media = String(mediaText || "").toLowerCase();
+  if (!media) return true;
+  if (!media.includes("prefers-color-scheme")) return false;
+  if (media.includes("dark")) return mode === "dark";
+  if (media.includes("light")) return mode === "light";
+  return false;
 }
 
 function buildPlainTextBody() {
@@ -4021,6 +4333,10 @@ async function initSingleTinyEditor(config) {
   const bodyFont = template?.editorFonts?.body || '"Helvetica Neue", Arial, sans-serif';
   const headingFont = template?.editorFonts?.headings || bodyFont;
   const isDark = state.resolvedTheme === "dark";
+  const editorTextColor = isDark ? "#e8f0f7" : "#12202a";
+  const editorBackground = isDark ? "#15232d" : "#ffffff";
+  const placeholderColor = isDark ? "#97adbf" : "#6f8190";
+  const editorPlaceholder = config?.target?.getAttribute("placeholder") || "";
 
   const editors = await window.tinymce.init({
     target: config.target,
@@ -4031,14 +4347,15 @@ async function initSingleTinyEditor(config) {
     promotion: false,
     height: config.height,
     resize: true,
+    placeholder: editorPlaceholder,
     toolbar_mode: "wrap",
     skin: isDark ? "oxide-dark" : "oxide",
     content_css: isDark ? "dark" : "default",
     content_style: `
       body {
         font-family: ${bodyFont};
-        color: ${isDark ? "#e7eef5" : "#12202a"};
-        background-color: ${isDark ? "#16232d" : "#ffffff"};
+        color: ${editorTextColor};
+        background-color: ${editorBackground};
       }
       h1,h2,h3,h4 {
         font-family: ${headingFont};
@@ -4047,6 +4364,10 @@ async function initSingleTinyEditor(config) {
         border-left: 3px solid #8ca7be;
         margin-left: 0;
         padding-left: 10px;
+      }
+      body.mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before{
+        color: ${placeholderColor};
+        opacity: 1;
       }
     `,
     plugins:
@@ -4071,6 +4392,20 @@ async function initSingleTinyEditor(config) {
   if (!instance) return;
 
   tinyEditors[config.key] = instance;
+}
+
+function buildExportBodyHtmlSync(options = {}) {
+  const template = getTemplateById(state.selectedTemplateId);
+  if (!template) return "";
+
+  const rawMarkup = state.templateMarkup.get(template.id);
+  if (!rawMarkup) return "";
+
+  return buildTemplateHtml(rawMarkup, template, {
+    forceMode: options.forceMode ?? null,
+    showPlaceholders: Boolean(options.showPlaceholders),
+    attachmentLinkMode: options.attachmentLinkMode,
+  });
 }
 
 async function buildExportBodyHtml(options = {}) {
