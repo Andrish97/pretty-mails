@@ -692,6 +692,30 @@ textarea[aria-invalid="true"] {
   margin-bottom: 0.75rem;
 }
 
+.shortcut-attachments-toggle {
+  margin-bottom: 0.72rem;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 0.78rem;
+  background: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+  padding: 0.62rem 0.68rem;
+}
+
+.shortcut-files-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+
+.shortcut-files-toggle input {
+  width: auto;
+}
+
+.shortcut-attachments-toggle .auto-field-note {
+  margin-top: 0.34rem;
+}
+
 .preview-template-name {
   color: var(--text-muted);
   font-size: 0.86rem;

@@ -8,6 +8,10 @@ Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML i wysyłki
 - obsługa załączników jako lokalnych przycisków pobierania (base64/data URL),
 - jeden przycisk wysyłki: `Wyślij (Apple Mail)`,
 - flow wysyłki: kopiowanie HTML do schowka -> uruchomienie skrótu Apple,
+- opcjonalne pola odbiorców `Do` / `DW` / `UDW` przekazywane do skrótu,
+- tryb załączników dla skrótu:
+  - checkbox zaznaczony: skrót pyta o wybór plików,
+  - checkbox odznaczony: załączniki lecą z appki jako base64 (bez pytania o wybór plików),
 - przed wysyłką HTML jest inline-owany (style z `<style>` są przenoszone do `style=""` gdzie to możliwe),
 - wszystkie szablony `templates/*.html` są zapisane bez `<style>` (inline `style=""`),
 - wybór 2 głównych kolorów + szybkie presety palety,
@@ -28,23 +32,64 @@ const SHORTCUT_RUN_BASE = "shortcuts://run-shortcut";
 
 Uwaga: webapp nie tworzy skrótu automatycznie. Skrót trzeba utworzyć i opublikować ręcznie.
 
-### Krok po kroku: jak zbudować skrót PrettyMail
+### Payload wejściowy do skrótu (JSON)
+
+Webapp przekazuje do skrótu JSON:
+
+```json
+{
+  "to": "user@example.com",
+  "cc": "",
+  "bcc": "",
+  "subject": "Temat",
+  "pickFilesInShortcut": false,
+  "attachments": [
+    {
+      "name": "plik.pdf",
+      "mimeType": "application/pdf",
+      "base64": "JVBERi0xLjcKJc..."
+    }
+  ]
+}
+```
+
+- `cc` i `bcc` są opcjonalne (mogą być puste).
+- Gdy `pickFilesInShortcut = true`, traktuj `attachments` jako pomocnicze i użyj wyboru plików w skrócie.
+- Gdy `pickFilesInShortcut = false`, nie pytaj o pliki - użyj `attachments` z payloadu.
+
+### Krok po kroku: jak zbudować skrót PrettyMail (aktualny flow)
 
 1. Otwórz aplikację **Shortcuts** i utwórz nowy skrót.
 2. Ustaw nazwę skrótu dokładnie taką jak `SHORTCUT_NAME` (domyślnie `PrettyMail`).
 3. Dodaj akcję `Get Shortcut Input`.
-4. Dodaj akcję `Text` i wstaw wartość `Shortcut Input` (to będzie JSON z webapp: `{ "to": "...", "subject": "..." }`).
-5. Dodaj akcję `Get Dictionary from Input` (parsowanie JSON do słownika).
-6. Dodaj akcję `Get Dictionary Value` dla klucza `to`.
-7. Dodaj akcję `Get Dictionary Value` dla klucza `subject`.
-8. Dodaj akcję `Get Clipboard`.
-9. Dodaj akcję `Make Rich Text from HTML` (na danych z clipboard).
-10. Dodaj akcję `Email`:
-    - `Message`: wynik `Make Rich Text from HTML`,
-    - `Recipients`: wartość `to` (jeśli pusta, pole zostaw puste),
-    - `Subject`: wartość `subject` (jeśli pusta, pole zostaw puste),
-    - `Show Compose Sheet`: `ON` (koniecznie).
-11. Zapisz skrót i uruchom go raz ręcznie, potwierdzając wszystkie uprawnienia.
+4. Dodaj akcję `Get Dictionary from Input` (parsowanie JSON do słownika).
+5. Pobierz wartości kluczy:
+   - `to`,
+   - `cc`,
+   - `bcc`,
+   - `subject`,
+   - `pickFilesInShortcut`,
+   - `attachments`.
+6. Dodaj akcję `Get Clipboard`.
+7. Dodaj akcję `Make Rich Text from HTML` (na danych z clipboard) i zapisz wynik jako `RichBody`.
+8. Dodaj warunek `If pickFilesInShortcut is true`:
+   - **TRUE**: użyj `Select Files` (Allow Multiple: ON) i zapisz jako `FilesForEmail`.
+   - **FALSE**:
+     1. Utwórz pustą listę `FilesForEmail`.
+     2. `Repeat with each item in attachments`:
+        - pobierz `name`, `mimeType`, `base64`,
+        - zdekoduj base64 do pliku (akcja `Base64 Encode` w trybie decode),
+        - ustaw nazwę pliku na `name`,
+        - dodaj plik do `FilesForEmail`.
+9. Dodaj akcję `Email`:
+   - `Message`: `RichBody`,
+   - `Recipients`: `to`,
+   - `Cc`: `cc` (opcjonalne),
+   - `Bcc`: `bcc` (opcjonalne),
+   - `Subject`: `subject`,
+   - `Attachments`: `FilesForEmail` (gdy pusta lista, nic nie doda),
+   - `Show Compose Sheet`: `ON` (koniecznie).
+10. Zapisz skrót i uruchom go raz ręcznie, potwierdzając uprawnienia.
 
 ### Publikacja skrótu i podpięcie do aplikacji
 
@@ -64,11 +109,16 @@ Uwaga: webapp nie tworzy skrótu automatycznie. Skrót trzeba utworzyć i opubli
   - sprawdź, czy skrót ma identyczną nazwę jak `SHORTCUT_NAME`,
   - sprawdź, czy pierwszy run skrótu był wykonany ręcznie (uprawnienia),
   - sprawdź, czy testujesz w Safari (inne przeglądarki na iOS bywają bardziej restrykcyjne).
+- Skrót pyta o wybór plików, mimo że nie chcesz:
+  - sprawdź warunek `pickFilesInShortcut`,
+  - gałąź `FALSE` musi iść po `attachments` z payloadu (bez `Select Files`).
 - Skrót odpala się, ale mail bez stylu:
   - upewnij się, że akcja to `Make Rich Text from HTML`, a nie zwykły `Text`.
 - Brak dostępu do schowka:
   - uruchamiaj przez `https` lub `http://localhost`,
   - zaakceptuj prompt Safari dotyczący clipboard.
+- Za duży payload:
+  - ogranicz rozmiar/ilość załączników albo zaznacz checkbox `Załączniki wybiorę w Skrótach`.
 
 ## Uruchomienie lokalne
 

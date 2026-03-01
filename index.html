@@ -288,23 +288,33 @@
         </section>
 
         <section class="card attachments-panel">
-          <div class="attachments-head">
-            <h2 id="attachmentsTitle">Załączniki</h2>
-            <button id="addFilesBtn" class="button" type="button">Dodaj pliki</button>
-            <input id="fileInput" type="file" multiple hidden>
+          <div class="field-block shortcut-attachments-toggle">
+            <label class="field-toggle-inline shortcut-files-toggle">
+              <input id="shortcutPickFiles" type="checkbox">
+              <span id="shortcutPickFilesLabel">Załączniki wybiorę w Skrótach</span>
+            </label>
+            <p id="shortcutPickFilesHint" class="auto-field-note">Włącz, aby wybrać pliki bezpośrednio w Skrótach.</p>
           </div>
 
-          <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Przeciągnij i upuść pliki">
-            Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.
-          </div>
+          <div id="attachmentsContent">
+            <div class="attachments-head">
+              <h2 id="attachmentsTitle">Załączniki</h2>
+              <button id="addFilesBtn" class="button" type="button">Dodaj pliki</button>
+              <input id="fileInput" type="file" multiple hidden>
+            </div>
 
-          <ul id="attachmentList" class="attachment-grid" aria-live="polite"></ul>
+            <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Przeciągnij i upuść pliki">
+              Przeciągnij i upuść pliki tutaj lub użyj przycisku „Dodaj pliki”.
+            </div>
 
-          <div class="attachment-summary">
-            <span id="attachmentCount">0 plików</span>
-            <span id="attachmentTotal">Suma plików: 0 B</span>
-            <span id="attachmentEstimated">Szacowany rozmiar wiadomości: 0 B</span>
-            <span id="attachmentWarning" class="warning-text"></span>
+            <ul id="attachmentList" class="attachment-grid" aria-live="polite"></ul>
+
+            <div class="attachment-summary">
+              <span id="attachmentCount">0 plików</span>
+              <span id="attachmentTotal">Suma plików: 0 B</span>
+              <span id="attachmentEstimated">Szacowany rozmiar wiadomości: 0 B</span>
+              <span id="attachmentWarning" class="warning-text"></span>
+            </div>
           </div>
         </section>
       </div>

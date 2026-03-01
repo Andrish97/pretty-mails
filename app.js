@@ -21,6 +21,7 @@ const DEFAULT_MAIN_PALETTE = Object.freeze({
   accent: "#2e7dff",
   accent2: "#59a3ff",
 });
+const SHORTCUT_MAX_URL_LENGTH = 7000;
 
 const LANGUAGE_FLAGS = {
   pl: "🇵🇱",
@@ -188,6 +189,7 @@ const I18N = {
     shortcutReasonUnsupported: "Ten tryb działa tylko na iPhone/iPad/Mac.",
     shortcutReasonMaybeNotInstalled: "Jeśli nic się nie otworzyło, zainstaluj skrót i spróbuj ponownie.",
     shortcutReasonClipboard: "Nie udało się skopiować HTML do schowka.",
+    shortcutReasonPayload: "Dane do skrótu są za duże.",
     shortcutStep1: "Zainstaluj skrót PrettyMail.",
     shortcutStep2: "Wróć tutaj i kliknij Wyślij ponownie.",
     shortcutStep3: "W Skrótach zezwól na uruchamianie skrótu.",
@@ -195,6 +197,10 @@ const I18N = {
     shortcutClose: "Zamknij",
     shortcutAppleOnly: "Działa tylko na iPhone/iPad/Mac z Apple Mail.",
     shortcutSafariHint: "Dla najlepszego efektu użyj Safari.",
+    shortcutPayloadTooLarge: "Za dużo danych do skrótu. Włącz wybór plików w Skrótach albo zmniejsz załączniki.",
+    shortcutPickFilesLabel: "Załączniki wybiorę w Skrótach",
+    shortcutPickFilesHint: "Włącz, aby pominąć lokalne załączniki i wybrać pliki bezpośrednio w Skrótach.",
+    shortcutPickFilesEnvelope: "Załączniki zostaną wybrane w Skrótach.",
     shortcutProviderNote: "Konto nadawcy wybierasz w Apple Mail.",
     shortcutSetupSummary: "Jak skonfigurować skrót",
     shortcutSetup1: "Zainstaluj skrót z linku iCloud poniżej.",
@@ -206,7 +212,7 @@ const I18N = {
     infoModalTitle: "ℹ️ Jak to działa",
     infoModalCloseAria: "Zamknij",
     infoLine1: "✉️ Wyślij kopiuje HTML wiadomości do schowka i uruchamia skrót Apple.",
-    infoLine2: "📋 Treść HTML jest w schowku, a odbiorca i temat mogą być przekazane jako krótki tekst.",
+    infoLine2: "📋 HTML jest w schowku, a Do/DW/UDW/Temat są przekazywane do skrótu jako tekst.",
     infoLine3: " Skrót powinien mieć akcje: Get Clipboard -> Make Rich Text from HTML -> Email.",
     infoLine4: "⚙️ Konto nadawcy wybierasz już bezpośrednio w Apple Mail.",
 
@@ -405,6 +411,7 @@ const I18N = {
     shortcutReasonUnsupported: "This mode works only on iPhone/iPad/Mac.",
     shortcutReasonMaybeNotInstalled: "If nothing opened, install the Shortcut and try again.",
     shortcutReasonClipboard: "Could not copy HTML to clipboard.",
+    shortcutReasonPayload: "Shortcut input is too large.",
     shortcutStep1: "Install the PrettyMail Shortcut.",
     shortcutStep2: "Return here and tap Send again.",
     shortcutStep3: "In Shortcuts, allow the shortcut to run.",
@@ -412,6 +419,10 @@ const I18N = {
     shortcutClose: "Close",
     shortcutAppleOnly: "This works only on iPhone/iPad/Mac with Apple Mail.",
     shortcutSafariHint: "For best results use Safari.",
+    shortcutPayloadTooLarge: "Too much shortcut data. Enable file picking in Shortcuts or reduce attachments.",
+    shortcutPickFilesLabel: "Pick attachments in Shortcuts",
+    shortcutPickFilesHint: "Enable this to skip local attachments and choose files directly in Shortcuts.",
+    shortcutPickFilesEnvelope: "Attachments will be selected in Shortcuts.",
     shortcutProviderNote: "Sender account is chosen in Apple Mail.",
     shortcutSetupSummary: "How to set up the Shortcut",
     shortcutSetup1: "Install the shortcut via the iCloud link below.",
@@ -423,7 +434,7 @@ const I18N = {
     infoModalTitle: "ℹ️ How it works",
     infoModalCloseAria: "Close",
     infoLine1: "✉️ Send copies the email HTML to clipboard and runs the Apple Shortcut.",
-    infoLine2: "📋 Email HTML goes via clipboard; To and Subject can be passed as short input.",
+    infoLine2: "📋 HTML goes via clipboard; To/CC/BCC/Subject are passed to the shortcut as text.",
     infoLine3: " Shortcut actions: Get Clipboard -> Make Rich Text from HTML -> Email.",
     infoLine4: "⚙️ Sender account is selected in Apple Mail.",
 
@@ -620,6 +631,7 @@ const I18N = {
     shortcutReasonUnsupported: "Цей режим працює лише на iPhone/iPad/Mac.",
     shortcutReasonMaybeNotInstalled: "Якщо нічого не відкрилося, встановіть ярлик і спробуйте ще раз.",
     shortcutReasonClipboard: "Не вдалося скопіювати HTML у буфер обміну.",
+    shortcutReasonPayload: "Дані для ярлика занадто великі.",
     shortcutStep1: "Встановіть ярлик PrettyMail.",
     shortcutStep2: "Поверніться сюди й натисніть Надіслати ще раз.",
     shortcutStep3: "У Shortcuts дозвольте запуск ярлика.",
@@ -627,6 +639,10 @@ const I18N = {
     shortcutClose: "Закрити",
     shortcutAppleOnly: "Працює лише на iPhone/iPad/Mac з Apple Mail.",
     shortcutSafariHint: "Для кращого результату використовуйте Safari.",
+    shortcutPayloadTooLarge: "Забагато даних для ярлика. Увімкніть вибір файлів у Shortcuts або зменште вкладення.",
+    shortcutPickFilesLabel: "Вибирати вкладення в Shortcuts",
+    shortcutPickFilesHint: "Увімкніть, щоб пропустити локальні вкладення і вибирати файли прямо в Shortcuts.",
+    shortcutPickFilesEnvelope: "Вкладення буде вибрано в Shortcuts.",
     shortcutProviderNote: "Акаунт відправника обирається в Apple Mail.",
     shortcutSetupSummary: "Як налаштувати ярлик",
     shortcutSetup1: "Встановіть ярлик за iCloud-посиланням нижче.",
@@ -638,7 +654,7 @@ const I18N = {
     infoModalTitle: "ℹ️ Як це працює",
     infoModalCloseAria: "Закрити",
     infoLine1: "✉️ Надіслати копіює HTML листа в буфер обміну і запускає ярлик Apple.",
-    infoLine2: "📋 HTML листа передається через буфер; To і Subject можна передати коротким текстом.",
+    infoLine2: "📋 HTML у буфері обміну; Кому/Копія/Прих. копія/Тема передаються в ярлик як текст.",
     infoLine3: " Дії ярлика: Get Clipboard -> Make Rich Text from HTML -> Email.",
     infoLine4: "⚙️ Акаунт відправника обирається в Apple Mail.",
 
@@ -752,6 +768,7 @@ const state = {
   socials: [],
   logoAttachment: null,
   attachments: [],
+  shortcutPickFiles: false,
   isExporting: false,
   mobilePreviewOpen: false,
 };
@@ -923,6 +940,10 @@ const ui = {
   mutedNote: document.querySelector("#mutedNote"),
 
   attachmentsTitle: document.querySelector("#attachmentsTitle"),
+  attachmentsContent: document.querySelector("#attachmentsContent"),
+  shortcutPickFiles: document.querySelector("#shortcutPickFiles"),
+  shortcutPickFilesLabel: document.querySelector("#shortcutPickFilesLabel"),
+  shortcutPickFilesHint: document.querySelector("#shortcutPickFilesHint"),
   addFilesBtn: document.querySelector("#addFilesBtn"),
   fileInput: document.querySelector("#fileInput"),
   dropZone: document.querySelector("#dropZone"),
@@ -1001,6 +1022,7 @@ async function boot() {
   applyLanguage(state.language);
   applyThemeMode(state.themeMode, { persist: false, refreshEditors: false });
   syncInputsFromState();
+  syncShortcutAttachmentModeUi();
   renderSocialRows();
   initCustomSelects(document);
   refreshAllCustomSelects();
@@ -1215,6 +1237,18 @@ function bindEvents() {
       clearLogoAttachment();
     }
   });
+
+  if (ui.shortcutPickFiles) {
+    ui.shortcutPickFiles.addEventListener("change", () => {
+      state.shortcutPickFiles = Boolean(ui.shortcutPickFiles.checked);
+      syncShortcutAttachmentModeUi();
+      validateAddressFields();
+      updateActionButtons();
+      renderAttachments();
+      renderPreview();
+      maybeSaveDraft();
+    });
+  }
 
   ui.addFilesBtn.addEventListener("click", () => {
     ui.fileInput.click();
@@ -1673,6 +1707,185 @@ function deriveAccent3(accent, accent2) {
   return mixHexColors(blended, "#101522", 0.28);
 }
 
+function buildTemplateColorTheme(palette, mode) {
+  if (mode === "dark") {
+    const bg = mixHexColors(palette.accent3, "#0f1422", 0.76);
+    const surface = mixHexColors(palette.accent3, "#1a2436", 0.66);
+    const surfaceSoft = mixHexColors(palette.accent2, "#25354a", 0.8);
+    const border = mixHexColors(palette.accent2, "#4b6079", 0.52);
+    const text = mixHexColors(palette.accent2, "#edf3ff", 0.86);
+    const muted = mixHexColors(text, "#9fb0c6", 0.52);
+    const surfaceGradient = `linear-gradient(140deg, ${mixHexColors(surface, bg, 0.22)}, ${mixHexColors(
+      surfaceSoft,
+      bg,
+      0.45,
+    )})`;
+    return { bg, surface, surfaceSoft, border, text, muted, surfaceGradient };
+  }
+
+  const bg = mixHexColors(palette.accent, "#f4f8ff", 0.88);
+  const surface = mixHexColors(palette.accent, "#ffffff", 0.95);
+  const surfaceSoft = mixHexColors(palette.accent2, "#ffffff", 0.86);
+  const border = mixHexColors(palette.accent, "#cad9ec", 0.62);
+  const text = mixHexColors(palette.accent3, "#1a2a3e", 0.8);
+  const muted = mixHexColors(text, "#6f8197", 0.56);
+  const surfaceGradient = `linear-gradient(140deg, ${mixHexColors(surfaceSoft, "#ffffff", 0.24)}, ${mixHexColors(
+    surface,
+    "#ffffff",
+    0.16,
+  )})`;
+  return { bg, surface, surfaceSoft, border, text, muted, surfaceGradient };
+}
+
+function parseCssColor(value) {
+  const raw = String(value || "").trim();
+  const hexMatch = raw.match(/#([0-9a-f]{3}|[0-9a-f]{6})\b/i);
+  if (hexMatch) {
+    const token = hexMatch[1];
+    if (token.length === 3) {
+      return {
+        r: Number.parseInt(`${token[0]}${token[0]}`, 16),
+        g: Number.parseInt(`${token[1]}${token[1]}`, 16),
+        b: Number.parseInt(`${token[2]}${token[2]}`, 16),
+      };
+    }
+    return {
+      r: Number.parseInt(token.slice(0, 2), 16),
+      g: Number.parseInt(token.slice(2, 4), 16),
+      b: Number.parseInt(token.slice(4, 6), 16),
+    };
+  }
+
+  const rgbMatch = raw.match(
+    /rgba?\(\s*([0-9]{1,3})(?:\s*,\s*|\s+)([0-9]{1,3})(?:\s*,\s*|\s+)([0-9]{1,3})/i,
+  );
+  if (rgbMatch) {
+    return {
+      r: Number.parseInt(rgbMatch[1], 10),
+      g: Number.parseInt(rgbMatch[2], 10),
+      b: Number.parseInt(rgbMatch[3], 10),
+    };
+  }
+
+  return null;
+}
+
+function relativeLuminance(rgb) {
+  if (!rgb) return null;
+  const normalize = (channel) => {
+    const value = Math.max(0, Math.min(255, Number(channel))) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  const r = normalize(rgb.r);
+  const g = normalize(rgb.g);
+  const b = normalize(rgb.b);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function colorLuminance(value) {
+  return relativeLuminance(parseCssColor(value));
+}
+
+function containsTemplateAccentToken(value) {
+  return /var\(--template-accent/i.test(String(value || ""));
+}
+
+function isTransparentCssValue(value) {
+  return /transparent|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*0(?:\.0+)?\s*\)/i.test(String(value || ""));
+}
+
+function pickRetintBackground(value, theme, mode) {
+  const source = String(value || "");
+  if (/url\(/i.test(source)) return source;
+  if (/gradient/i.test(source)) return theme.surfaceGradient;
+  if (isTransparentCssValue(source)) return source;
+
+  const luminance = colorLuminance(source);
+  if (luminance === null) return theme.surface;
+
+  if (mode === "dark") {
+    if (luminance > 0.85) return theme.surface;
+    if (luminance > 0.55) return theme.surfaceSoft;
+    return mixHexColors(theme.surfaceSoft, theme.bg, 0.28);
+  }
+
+  if (luminance > 0.9) return theme.surface;
+  if (luminance > 0.7) return theme.surfaceSoft;
+  if (luminance > 0.45) return mixHexColors(theme.surfaceSoft, theme.surface, 0.38);
+  return mixHexColors(theme.surface, theme.bg, 0.24);
+}
+
+function retintTemplateInlineStyles(doc, theme, mode) {
+  if (!doc?.body) return;
+
+  doc.body.style.background = theme.bg;
+  doc.body.style.color = theme.text;
+
+  const styledElements = doc.querySelectorAll("[style]");
+  styledElements.forEach((element) => {
+    if (!(element instanceof HTMLElement)) return;
+    if (element.closest(".mail-content, .mail-quote-body")) return;
+
+    const style = element.style;
+
+    const background = style.getPropertyValue("background");
+    if (background && !containsTemplateAccentToken(background)) {
+      style.setProperty("background", pickRetintBackground(background, theme, mode));
+    }
+
+    const backgroundColor = style.getPropertyValue("background-color");
+    if (backgroundColor && !containsTemplateAccentToken(backgroundColor) && !isTransparentCssValue(backgroundColor)) {
+      style.setProperty("background-color", pickRetintBackground(backgroundColor, theme, mode));
+    }
+
+    const hasAccentBackground =
+      containsTemplateAccentToken(style.getPropertyValue("background")) ||
+      containsTemplateAccentToken(style.getPropertyValue("background-color"));
+
+    ["border-color", "border-top-color", "border-right-color", "border-bottom-color", "border-left-color"].forEach(
+      (property) => {
+        const value = style.getPropertyValue(property);
+        if (!value || containsTemplateAccentToken(value) || isTransparentCssValue(value)) return;
+        style.setProperty(property, theme.border);
+      },
+    );
+
+    ["border", "border-top", "border-right", "border-bottom", "border-left"].forEach((property) => {
+      const value = style.getPropertyValue(property);
+      if (!value || containsTemplateAccentToken(value) || isTransparentCssValue(value)) return;
+      if (!/(solid|dashed|dotted|double)/i.test(value)) return;
+
+      const parts = value.trim().split(/\s+/);
+      if (parts.length < 2) return;
+      style.setProperty(property, `${parts[0]} ${parts[1]} ${theme.border}`);
+    });
+
+    const color = style.getPropertyValue("color");
+    if (color && !containsTemplateAccentToken(color)) {
+      const colorLum = colorLuminance(color);
+      const keepLightOnAccent = hasAccentBackground && colorLum !== null && colorLum > 0.8;
+      style.setProperty("color", keepLightOnAccent ? "#ffffff" : theme.text);
+    }
+
+    const shadow = style.getPropertyValue("box-shadow");
+    if (shadow && !containsTemplateAccentToken(shadow)) {
+      style.setProperty(
+        "box-shadow",
+        mode === "dark" ? "0 16px 34px rgba(0, 0, 0, 0.4)" : "0 12px 28px rgba(12, 30, 50, 0.1)",
+      );
+    }
+  });
+
+  doc.querySelectorAll('table[role="presentation"]').forEach((table) => {
+    if (!(table instanceof HTMLElement)) return;
+    if (!containsTemplateAccentToken(table.style.background) && !containsTemplateAccentToken(table.style.backgroundColor)) {
+      table.style.background = theme.surface;
+    }
+    table.style.borderColor = table.style.borderColor || theme.border;
+    table.style.color = table.style.color || theme.text;
+  });
+}
+
 function getTemplateDefaultPalette() {
   const accent = normalizeHexColor(state.mainPalette?.accent, DEFAULT_MAIN_PALETTE.accent);
   const accent2 = normalizeHexColor(state.mainPalette?.accent2, DEFAULT_MAIN_PALETTE.accent2);
@@ -1854,6 +2067,8 @@ function applyLanguage(language) {
   if (ui.colorModalClose) ui.colorModalClose.textContent = t("colorModalClose");
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
+  if (ui.shortcutPickFilesLabel) ui.shortcutPickFilesLabel.textContent = t("shortcutPickFilesLabel");
+  if (ui.shortcutPickFilesHint) ui.shortcutPickFilesHint.textContent = t("shortcutPickFilesHint");
   ui.addFilesBtn.textContent = t("addFilesButton");
   ui.dropZone.textContent = t("dropZoneText");
   ui.dropZone.setAttribute("aria-label", t("dropZoneAria"));
@@ -2029,11 +2244,24 @@ function syncMobilePreviewMode() {
   }
 }
 
+function syncShortcutAttachmentModeUi() {
+  const pickFilesInShortcut = Boolean(state.shortcutPickFiles);
+  if (ui.shortcutPickFiles) {
+    ui.shortcutPickFiles.checked = pickFilesInShortcut;
+  }
+  if (ui.attachmentsContent) {
+    ui.attachmentsContent.hidden = pickFilesInShortcut;
+  }
+}
+
 function syncInputsFromState() {
   ui.themeMode.value = normalizeThemeMode(state.themeMode);
   ui.previewMode.value = normalizePreviewMode(state.previewMode);
 
   ui.rememberDraft.checked = state.rememberDraft;
+  if (ui.shortcutPickFiles) {
+    ui.shortcutPickFiles.checked = Boolean(state.shortcutPickFiles);
+  }
 
   ui.fieldTo.value = state.fields.to;
   ui.fieldCc.value = state.fields.cc;
@@ -2129,6 +2357,7 @@ function restoreDraft() {
       ...state.fields,
       ...(saved.fields || {}),
     };
+    state.shortcutPickFiles = Boolean(saved.shortcutPickFiles);
 
     state.socials = Array.isArray(saved.socials)
       ? saved.socials
@@ -2173,6 +2402,7 @@ function saveDraft() {
     themeMode: state.themeMode,
     previewMode: state.previewMode,
     selectedTemplateId: state.selectedTemplateId,
+    shortcutPickFiles: state.shortcutPickFiles,
     enabled: { ...state.enabled },
     fields: { ...state.fields },
     socials: state.socials.map((item) => ({ ...item })),
@@ -2441,7 +2671,11 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   if (options.forceMode === "light") root.classList.add("forced-light");
   if (options.forceMode === "dark") root.classList.add("forced-dark");
 
-  const palette = getTemplatePalette(template);
+  const palette = getTemplatePalette();
+  const renderMode = options.forceMode === "dark" ? "dark" : options.forceMode === "light" ? "light" : state.resolvedTheme;
+  const theme = buildTemplateColorTheme(palette, renderMode);
+  retintTemplateInlineStyles(doc, theme, renderMode);
+
   const themeStyle = doc.createElement("style");
   themeStyle.textContent = `
     :root{
@@ -2449,6 +2683,23 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
       --template-accent-1:${palette.accent};
       --template-accent-2:${palette.accent2};
       --template-accent-3:${palette.accent3};
+      --template-bg:${theme.bg};
+      --template-surface:${theme.surface};
+      --template-surface-soft:${theme.surfaceSoft};
+      --template-border:${theme.border};
+      --template-text:${theme.text};
+      --template-muted:${theme.muted};
+    }
+    html,
+    body{
+      background: var(--template-bg) !important;
+      color: var(--template-text) !important;
+    }
+    .forced-light{
+      color-scheme: light;
+    }
+    .forced-dark{
+      color-scheme: dark;
     }
     .mail-content > :first-child,
     .mail-quote-body > :first-child{
@@ -2564,6 +2815,7 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     }
     .app-placeholder{
       opacity: .9;
+      color: var(--template-muted) !important;
     }
   `;
   doc.head.append(themeStyle);
@@ -3022,8 +3274,9 @@ function hasAnyExportData() {
   const bodyFilled = Boolean(normalizeMultilineText(buildPlainTextBody()));
   const attachmentFilled = getAllExportAttachments().length > 0;
   const logoFilled = state.enabled.contactLogo && Boolean(state.logoAttachment?.dataUrl);
+  const shortcutPickFilesMode = Boolean(state.shortcutPickFiles);
 
-  return envelopeFilled || bodyFilled || attachmentFilled || logoFilled;
+  return envelopeFilled || bodyFilled || attachmentFilled || logoFilled || shortcutPickFilesMode;
 }
 
 function updateActionButtons() {
@@ -3033,10 +3286,7 @@ function updateActionButtons() {
     ui.exportBtn.disabled = true;
     return;
   }
-
-  const hasValidationErrors = collectValidationState().issues.length > 0;
-  const canExport = !hasValidationErrors && hasAnyExportData();
-  ui.exportBtn.disabled = !canExport;
+  ui.exportBtn.disabled = false;
 }
 
 function hasAnyRecipient() {
@@ -3269,10 +3519,15 @@ function clearLogoAttachment() {
 }
 
 function getAllExportAttachments() {
+  if (state.shortcutPickFiles) return [];
   return [...state.attachments];
 }
 
 function buildAttachmentEnvelopeValue() {
+  if (state.shortcutPickFiles) {
+    return t("shortcutPickFilesEnvelope");
+  }
+
   const attachments = getAllExportAttachments();
   if (!attachments.length) return "";
 
@@ -3485,6 +3740,8 @@ function shortcutReasonKey(reason) {
       return "shortcutReasonUnsupported";
     case "clipboard":
       return "shortcutReasonClipboard";
+    case "payload":
+      return "shortcutReasonPayload";
     default:
       return "shortcutReasonMaybeNotInstalled";
   }
@@ -3532,7 +3789,9 @@ async function sendAppleMail() {
     showToast(t("shortcutSafariHint"), "info");
   }
 
-  const to = normalizeInlineText(state.fields.to);
+  const to = parseAddressList(state.fields.to).join(", ");
+  const cc = state.enabled.cc ? parseAddressList(state.fields.cc).join(", ") : "";
+  const bcc = state.enabled.bcc ? parseAddressList(state.fields.bcc).join(", ") : "";
   const subject = state.enabled.subject ? normalizeInlineText(state.fields.subject) : "";
 
   setTopbarSendLoading(true);
@@ -3572,8 +3831,13 @@ async function sendAppleMail() {
       await copyHtmlToClipboard(html);
     }
 
+    const payloadText = buildShortcutInputPayload({ to, cc, bcc, subject });
+    const shortcutResult = runShortcut({ payloadText });
+    if (shortcutResult.tooLong) {
+      throw new Error("shortcut_payload_too_large");
+    }
+
     showToast(t("shortcutToastCopiedOpening"), "success");
-    runShortcut({ to, subject });
 
     let switchedAway = false;
     shortcutVisibilityHandler = () => {
@@ -3597,8 +3861,13 @@ async function sendAppleMail() {
   } catch (error) {
     console.error(error);
     setTopbarSendLoading(false);
-    showToast(t("shortcutToastClipboardError"), "error");
-    showShortcutModal({ reason: "clipboard" });
+    if (error?.message === "shortcut_payload_too_large") {
+      showToast(t("shortcutPayloadTooLarge"), "error", 3200);
+      showShortcutModal({ reason: "payload" });
+    } else {
+      showToast(t("shortcutToastClipboardError"), "error");
+      showShortcutModal({ reason: "clipboard" });
+    }
   }
 }
 
@@ -3688,23 +3957,58 @@ function stripHtml(html) {
   return normalizeMultilineText(div.textContent || div.innerText || "");
 }
 
-function runShortcut({ to, subject }) {
-  const name = encodeURIComponent(SHORTCUT_NAME);
-  const payload = encodeURIComponent(
-    JSON.stringify({
-      to: to || "",
-      subject: subject || "",
-    }),
-  );
-  const withInputUrl = `${SHORTCUT_RUN_BASE}?name=${name}&input=text&text=${payload}`;
+function buildShortcutInputPayload({ to, cc, bcc, subject }) {
+  const payload = {
+    to: to || "",
+    cc: cc || "",
+    bcc: bcc || "",
+    subject: subject || "",
+    pickFilesInShortcut: Boolean(state.shortcutPickFiles),
+    attachments: [],
+  };
 
-  if (withInputUrl.length > 1900) {
-    launchShortcutUrl(`${SHORTCUT_RUN_BASE}?name=${name}`);
-    return { withInput: false };
+  if (!state.shortcutPickFiles) {
+    payload.attachments = buildShortcutAttachmentPayload();
+  }
+
+  return JSON.stringify(payload);
+}
+
+function buildShortcutAttachmentPayload() {
+  return getAllExportAttachments()
+    .map((attachment) => {
+      const parsed = parseBase64DataUrl(attachment.dataUrl);
+      if (!parsed) return null;
+      return {
+        name: attachment.file.name,
+        mimeType: parsed.mimeType,
+        base64: parsed.base64,
+      };
+    })
+    .filter(Boolean);
+}
+
+function parseBase64DataUrl(dataUrl) {
+  const raw = String(dataUrl || "");
+  const match = raw.match(/^data:([^;,]+)?(?:;charset=[^;,]+)?;base64,(.+)$/i);
+  if (!match) return null;
+  return {
+    mimeType: normalizeInlineText(match[1]) || "application/octet-stream",
+    base64: match[2] || "",
+  };
+}
+
+function runShortcut({ payloadText }) {
+  const name = encodeURIComponent(SHORTCUT_NAME);
+  const encodedPayload = encodeURIComponent(String(payloadText || ""));
+  const withInputUrl = `${SHORTCUT_RUN_BASE}?name=${name}&input=text&text=${encodedPayload}`;
+
+  if (withInputUrl.length > SHORTCUT_MAX_URL_LENGTH) {
+    return { withInput: false, tooLong: true };
   }
 
   launchShortcutUrl(withInputUrl);
-  return { withInput: true };
+  return { withInput: true, tooLong: false };
 }
 
 function launchShortcutUrl(url) {
