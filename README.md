@@ -45,6 +45,40 @@ const SHORTCUT_INSTALL_URL = "https://www.icloud.com/shortcuts/REPLACE_WITH_REAL
 
 Przycisk `Zainstaluj skrót` w modalu korzysta z tego linku.
 
+### Tworzenie skrótu (tylko dla dewelopera)
+
+Ta sekcja jest tylko dla osoby utrzymującej projekt. Końcowy użytkownik ma tylko dodać gotowy skrót z linku iCloud.
+
+Minimalny flow skrótu `PrettyMail`:
+
+1. `Get Shortcut Input`
+2. `Get Dictionary from Input`
+3. Pobierz klucze: `to`, `cc`, `bcc`, `subject`, `pickFilesInShortcut`, `attachments`.
+4. `Get Clipboard`
+5. `Make Rich Text from HTML` -> zapisz jako `RichBody`.
+6. `If pickFilesInShortcut is true`:
+   - `Select Files` (Allow Multiple: ON) -> `FilesForEmail`
+7. `Otherwise`:
+   - utwórz pustą listę `FilesForEmail`
+   - `Repeat with each item in attachments`:
+     - pobierz `name`, `mimeType`, `base64`
+     - zdekoduj base64 do pliku (`Base64 Encode` w trybie decode)
+     - ustaw nazwę pliku na `name`
+     - dodaj plik do `FilesForEmail`
+8. `Email`:
+   - `Message`: `RichBody`
+   - `Recipients`: `to`
+   - `Cc`: `cc` (opcjonalne)
+   - `Bcc`: `bcc` (opcjonalne)
+   - `Subject`: `subject`
+   - `Attachments`: `FilesForEmail`
+   - `Show Compose Sheet`: `ON`
+
+Publikacja:
+
+1. `Share` -> `Copy iCloud Link`
+2. Podmień `SHORTCUT_INSTALL_URL` w `app.js`
+
 ### Najczęstsze problemy
 
 - Brak reakcji po kliknięciu:
