@@ -17,21 +17,16 @@ const SHORTCUT_NAME = "PrettyMail";
 // Note: the web app cannot generate or publish the shortcut automatically.
 const SHORTCUT_INSTALL_URL = "https://www.icloud.com/shortcuts/REPLACE_WITH_REAL_ID";
 const SHORTCUT_RUN_BASE = "shortcuts://run-shortcut";
+const DEFAULT_MAIN_PALETTE = Object.freeze({
+  accent: "#2e7dff",
+  accent2: "#59a3ff",
+});
 
 const LANGUAGE_FLAGS = {
   pl: "🇵🇱",
   en: "🇬🇧",
   uk: "🇺🇦",
 };
-
-const ACCENT_PRESETS = [
-  { id: "ocean", accent: "#2e7dff", accent2: "#59a3ff" },
-  { id: "mint", accent: "#0f766e", accent2: "#56b8ae" },
-  { id: "amber", accent: "#9a6a40", accent2: "#d0a175" },
-  { id: "violet", accent: "#5d57d9", accent2: "#8f89ea" },
-  { id: "graphite", accent: "#334155", accent2: "#64748b" },
-  { id: "berry", accent: "#a83b6c", accent2: "#d46a99" },
-];
 
 const OPTIONAL_DEFAULTS = {
   cc: false,
@@ -168,11 +163,13 @@ const I18N = {
     previewContentTitle: "Treść maila",
     previewFrameTitle: "Podgląd wiadomości",
     previewFrameDarkTitle: "Podgląd wiadomości - ciemny",
-    accentColor1Label: "Akcent 1",
-    accentColor2Label: "Akcent 2",
-    accentColor3Label: "Akcent 3",
-    accentPaletteLabel: "Paleta",
-    accentPresetAria: "Paleta {index}",
+    accentColor1Label: "Kolor główny 1",
+    accentColor2Label: "Kolor główny 2",
+    colorPickerButton: "Kolory maila",
+    colorModalTitle: "Kolory maila",
+    huePaletteLabel: "Paleta hue",
+    customColorLabel: "Własny kolor",
+    colorModalClose: "Zamknij",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -383,11 +380,13 @@ const I18N = {
     previewContentTitle: "Mail body",
     previewFrameTitle: "Message preview",
     previewFrameDarkTitle: "Message preview - dark",
-    accentColor1Label: "Accent 1",
-    accentColor2Label: "Accent 2",
-    accentColor3Label: "Accent 3",
-    accentPaletteLabel: "Palette",
-    accentPresetAria: "Palette {index}",
+    accentColor1Label: "Main color 1",
+    accentColor2Label: "Main color 2",
+    colorPickerButton: "Mail colors",
+    colorModalTitle: "Mail colors",
+    huePaletteLabel: "Hue palette",
+    customColorLabel: "Custom color",
+    colorModalClose: "Close",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -596,11 +595,13 @@ const I18N = {
     previewContentTitle: "Тіло листа",
     previewFrameTitle: "Перегляд листа",
     previewFrameDarkTitle: "Перегляд листа - темний",
-    accentColor1Label: "Акцент 1",
-    accentColor2Label: "Акцент 2",
-    accentColor3Label: "Акцент 3",
-    accentPaletteLabel: "Палітра",
-    accentPresetAria: "Палітра {index}",
+    accentColor1Label: "Основний колір 1",
+    accentColor2Label: "Основний колір 2",
+    colorPickerButton: "Кольори листа",
+    colorModalTitle: "Кольори листа",
+    huePaletteLabel: "Палітра hue",
+    customColorLabel: "Власний колір",
+    colorModalClose: "Закрити",
 
     openPreviewButton: "👁️",
     closePreviewButton: "✕",
@@ -715,7 +716,11 @@ const I18N = {
 const state = {
   templates: [],
   templateMarkup: new Map(),
-  templatePalettes: {},
+  mainPalette: {
+    accent: DEFAULT_MAIN_PALETTE.accent,
+    accent2: DEFAULT_MAIN_PALETTE.accent2,
+    accent3: deriveAccent3(DEFAULT_MAIN_PALETTE.accent, DEFAULT_MAIN_PALETTE.accent2),
+  },
   selectedTemplateId: null,
   language: detectInitialLanguage(),
   themeMode: localStorage.getItem(STORAGE_KEYS.themeMode) || "auto",
@@ -791,6 +796,16 @@ const ui = {
   shortcutSetup3: document.querySelector("#shortcutSetup3"),
   shortcutSetup4: document.querySelector("#shortcutSetup4"),
   shortcutInstallBtn: document.querySelector("#shortcutInstallBtn"),
+  colorModal: document.querySelector("#colorModal"),
+  colorModalClose: document.querySelector("#colorModalClose"),
+  colorModalTitle: document.querySelector("#colorModalTitle"),
+  openColorModalBtn: document.querySelector("#openColorModalBtn"),
+  mainColor1Label: document.querySelector("#mainColor1Label"),
+  mainColor2Label: document.querySelector("#mainColor2Label"),
+  huePalette1Label: document.querySelector("#huePalette1Label"),
+  huePalette2Label: document.querySelector("#huePalette2Label"),
+  customColor1Label: document.querySelector("#customColor1Label"),
+  customColor2Label: document.querySelector("#customColor2Label"),
   toastHost: document.querySelector("#toastHost"),
 
   editorTitle: document.querySelector("#editorTitle"),
@@ -922,14 +937,8 @@ const ui = {
   previewControlsTitle: document.querySelector("#previewControlsTitle"),
   previewModeLabel: document.querySelector("#previewModeLabel"),
   previewMode: document.querySelector("#previewMode"),
-  accentColor1Label: document.querySelector("#accentColor1Label"),
-  accentColor2Label: document.querySelector("#accentColor2Label"),
-  accentColor3Label: document.querySelector("#accentColor3Label"),
-  accentPaletteLabel: document.querySelector("#accentPaletteLabel"),
   accentColor1: document.querySelector("#accentColor1"),
   accentColor2: document.querySelector("#accentColor2"),
-  accentColor3: document.querySelector("#accentColor3"),
-  accentPresetList: document.querySelector("#accentPresetList"),
   previewEnvelopeTitle: document.querySelector("#previewEnvelopeTitle"),
   previewContentTitle: document.querySelector("#previewContentTitle"),
   previewFields: document.querySelector("#previewFields"),
@@ -1039,6 +1048,7 @@ function bindEvents() {
     closeAllCustomSelects();
     closeInfoModal();
     closeShortcutModal();
+    closeColorModal();
     if (state.mobilePreviewOpen) {
       state.mobilePreviewOpen = false;
       syncMobilePreviewMode();
@@ -1084,35 +1094,48 @@ function bindEvents() {
 
   [ui.accentColor1, ui.accentColor2].forEach((input, index) => {
     input.addEventListener("input", () => {
-      const template = getTemplateById(state.selectedTemplateId);
-      if (!template) return;
-      const palette = ensureTemplatePalette(template);
+      const palette = ensureTemplatePalette();
       const key = index === 0 ? "accent" : "accent2";
       palette[key] = normalizeHexColor(input.value, palette[key]);
       palette.accent3 = deriveAccent3(palette.accent, palette.accent2);
-      updateAccentPresetActiveState();
+      syncHuePaletteSelection();
       maybeSaveDraft();
       renderPreview();
     });
   });
 
-  if (ui.accentPresetList) {
-    ui.accentPresetList.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-accent-preset]");
-      if (!button) return;
+  if (ui.openColorModalBtn) {
+    ui.openColorModalBtn.addEventListener("click", () => {
+      openColorModal();
+    });
+  }
 
-      const preset = ACCENT_PRESETS.find((item) => item.id === button.dataset.accentPreset);
-      if (!preset) return;
+  if (ui.colorModalClose) {
+    ui.colorModalClose.addEventListener("click", () => {
+      closeColorModal();
+    });
+  }
 
-      const template = getTemplateById(state.selectedTemplateId);
-      if (!template) return;
+  if (ui.colorModal) {
+    ui.colorModal.addEventListener("click", (event) => {
+      if (!(event.target instanceof HTMLElement)) return;
 
-      const palette = ensureTemplatePalette(template);
-      palette.accent = normalizeHexColor(preset.accent, palette.accent);
-      palette.accent2 = normalizeHexColor(preset.accent2, palette.accent2);
+      if (event.target.closest("[data-color-close]")) {
+        closeColorModal();
+        return;
+      }
+
+      const swatch = event.target.closest(".hue-swatch[data-color-target][data-color-value]");
+      if (!swatch) return;
+
+      const target = swatch.dataset.colorTarget;
+      const value = swatch.dataset.colorValue;
+      if (target !== "accent" && target !== "accent2") return;
+
+      const palette = ensureTemplatePalette();
+      palette[target] = normalizeHexColor(value, palette[target]);
       palette.accent3 = deriveAccent3(palette.accent, palette.accent2);
-      syncPaletteInputs(template);
-      updateAccentPresetActiveState();
+      syncPaletteInputs();
       maybeSaveDraft();
       renderPreview();
     });
@@ -1650,36 +1673,21 @@ function deriveAccent3(accent, accent2) {
   return mixHexColors(blended, "#101522", 0.28);
 }
 
-function getTemplateDefaultPalette(template) {
-  const defaults = template?.paletteDefaults || {};
-  const accent = normalizeHexColor(defaults.accent || template?.theme?.accent || "#2e7dff", "#2e7dff");
-  const accent2 = normalizeHexColor(defaults.accent2 || accent, accent);
-  const accent3 = normalizeHexColor(defaults.accent3 || deriveAccent3(accent, accent2), deriveAccent3(accent, accent2));
+function getTemplateDefaultPalette() {
+  const accent = normalizeHexColor(state.mainPalette?.accent, DEFAULT_MAIN_PALETTE.accent);
+  const accent2 = normalizeHexColor(state.mainPalette?.accent2, DEFAULT_MAIN_PALETTE.accent2);
+  const accent3 = deriveAccent3(accent, accent2);
   return { accent, accent2, accent3 };
 }
 
-function ensureTemplatePalette(template) {
-  if (!template) {
-    const accent = "#2e7dff";
-    const accent2 = "#59a3ff";
-    return { accent, accent2, accent3: deriveAccent3(accent, accent2) };
-  }
-
-  const existing = state.templatePalettes[template.id];
-  if (existing) {
-    existing.accent = normalizeHexColor(existing.accent, "#2e7dff");
-    existing.accent2 = normalizeHexColor(existing.accent2, existing.accent);
-    existing.accent3 = deriveAccent3(existing.accent, existing.accent2);
-    return existing;
-  }
-
-  const palette = getTemplateDefaultPalette(template);
-  state.templatePalettes[template.id] = { ...palette };
-  return state.templatePalettes[template.id];
+function ensureTemplatePalette() {
+  const palette = getTemplateDefaultPalette();
+  state.mainPalette = { ...palette };
+  return state.mainPalette;
 }
 
-function getTemplatePalette(template) {
-  return ensureTemplatePalette(template);
+function getTemplatePalette() {
+  return ensureTemplatePalette();
 }
 
 function applyLanguage(language) {
@@ -1835,15 +1843,15 @@ function applyLanguage(language) {
   ui.previewContentTitle.textContent = t("previewContentTitle");
   ui.previewFrame.title = t("previewFrameTitle");
   ui.previewFrameDark.title = t("previewFrameDarkTitle");
-  ui.accentColor1Label.textContent = t("accentColor1Label");
-  ui.accentColor2Label.textContent = t("accentColor2Label");
-  if (ui.accentColor3Label) {
-    ui.accentColor3Label.textContent = t("accentColor3Label");
-  }
-  if (ui.accentPaletteLabel) {
-    ui.accentPaletteLabel.textContent = t("accentPaletteLabel");
-  }
-  renderAccentPresetButtons();
+  if (ui.openColorModalBtn) ui.openColorModalBtn.textContent = t("colorPickerButton");
+  if (ui.colorModalTitle) ui.colorModalTitle.textContent = t("colorModalTitle");
+  if (ui.mainColor1Label) ui.mainColor1Label.textContent = t("accentColor1Label");
+  if (ui.mainColor2Label) ui.mainColor2Label.textContent = t("accentColor2Label");
+  if (ui.huePalette1Label) ui.huePalette1Label.textContent = t("huePaletteLabel");
+  if (ui.huePalette2Label) ui.huePalette2Label.textContent = t("huePaletteLabel");
+  if (ui.customColor1Label) ui.customColor1Label.textContent = t("customColorLabel");
+  if (ui.customColor2Label) ui.customColor2Label.textContent = t("customColorLabel");
+  if (ui.colorModalClose) ui.colorModalClose.textContent = t("colorModalClose");
 
   ui.attachmentsTitle.textContent = t("attachmentsTitle");
   ui.addFilesBtn.textContent = t("addFilesButton");
@@ -2132,18 +2140,21 @@ function restoreDraft() {
           .filter((item) => Boolean(item.network))
       : [];
 
-    state.templatePalettes = {};
-    if (saved.templatePalettes && typeof saved.templatePalettes === "object") {
-      Object.entries(saved.templatePalettes).forEach(([templateId, palette]) => {
-        if (!palette || typeof palette !== "object") return;
-        const accent = normalizeHexColor(palette.accent, "#2e7dff");
-        const accent2 = normalizeHexColor(palette.accent2, accent);
-        state.templatePalettes[templateId] = {
-          accent,
-          accent2,
-          accent3: deriveAccent3(accent, accent2),
-        };
-      });
+    const legacyPalette =
+      saved.templatePalettes &&
+      typeof saved.templatePalettes === "object" &&
+      (saved.templatePalettes[saved.selectedTemplateId] || Object.values(saved.templatePalettes)[0]);
+
+    const draftPaletteSource =
+      saved.mainPalette && typeof saved.mainPalette === "object" ? saved.mainPalette : legacyPalette;
+    if (draftPaletteSource && typeof draftPaletteSource === "object") {
+      const accent = normalizeHexColor(draftPaletteSource.accent, DEFAULT_MAIN_PALETTE.accent);
+      const accent2 = normalizeHexColor(draftPaletteSource.accent2, DEFAULT_MAIN_PALETTE.accent2);
+      state.mainPalette = {
+        accent,
+        accent2,
+        accent3: deriveAccent3(accent, accent2),
+      };
     }
 
     if (saved.selectedTemplateId) {
@@ -2165,7 +2176,10 @@ function saveDraft() {
     enabled: { ...state.enabled },
     fields: { ...state.fields },
     socials: state.socials.map((item) => ({ ...item })),
-    templatePalettes: { ...state.templatePalettes },
+    mainPalette: {
+      accent: state.mainPalette.accent,
+      accent2: state.mainPalette.accent2,
+    },
   };
 
   localStorage.setItem(STORAGE_KEYS.draft, JSON.stringify(draft));
@@ -2189,20 +2203,6 @@ async function loadTemplates() {
 
   state.templates = templates.map((template) => ({
     ...template,
-    paletteDefaults: {
-      accent: normalizeHexColor(template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff", "#2e7dff"),
-      accent2: normalizeHexColor(
-        template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
-        template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff"
-      ),
-      accent3: deriveAccent3(
-        normalizeHexColor(template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff", "#2e7dff"),
-        normalizeHexColor(
-          template?.paletteDefaults?.accent2 || template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
-          template?.paletteDefaults?.accent || template?.theme?.accent || "#2e7dff",
-        ),
-      ),
-    },
     templateResolvedUrl: new URL(template.templateUrl, TEMPLATE_INDEX_URL).toString(),
   }));
 
@@ -2243,8 +2243,7 @@ async function selectTemplate(templateId) {
   ui.mobileTemplateSelect.value = template.id;
   refreshCustomSelect(ui.mobileTemplateSelect);
   ui.previewTemplateName.textContent = localizedTemplateName(template);
-  ensureTemplatePalette(template);
-  syncPaletteInputs(template);
+  syncPaletteInputs();
 
   await ensureTemplateMarkup(template);
   renderPreview();
@@ -2252,49 +2251,27 @@ async function selectTemplate(templateId) {
   void refreshTinyEditors();
 }
 
-function syncPaletteInputs(template) {
-  const palette = getTemplatePalette(template);
+function syncPaletteInputs() {
+  const palette = getTemplatePalette();
   ui.accentColor1.value = palette.accent;
   ui.accentColor2.value = palette.accent2;
-  if (ui.accentColor3) {
-    ui.accentColor3.value = palette.accent3;
-  }
-  updateAccentPresetActiveState();
+  syncHuePaletteSelection();
 }
 
-function renderAccentPresetButtons() {
-  if (!ui.accentPresetList) return;
+function syncHuePaletteSelection() {
+  if (!ui.colorModal) return;
+  const palette = ensureTemplatePalette();
+  const current = {
+    accent: normalizeHexColor(palette.accent, ""),
+    accent2: normalizeHexColor(palette.accent2, ""),
+  };
 
-  ui.accentPresetList.innerHTML = "";
-  ACCENT_PRESETS.forEach((preset, index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "accent-preset-btn";
-    button.dataset.accentPreset = preset.id;
-    button.setAttribute("role", "listitem");
-    button.setAttribute("aria-label", t("accentPresetAria", { index: index + 1 }));
-    button.title = t("accentPresetAria", { index: index + 1 });
-    button.style.background = `linear-gradient(135deg, ${preset.accent}, ${preset.accent2})`;
-    ui.accentPresetList.append(button);
-  });
-
-  updateAccentPresetActiveState();
-}
-
-function updateAccentPresetActiveState() {
-  if (!ui.accentPresetList) return;
-  const template = getTemplateById(state.selectedTemplateId);
-  if (!template) return;
-
-  const palette = getTemplatePalette(template);
-  ui.accentPresetList.querySelectorAll("[data-accent-preset]").forEach((node) => {
-    const preset = ACCENT_PRESETS.find((item) => item.id === node.dataset.accentPreset);
-    const isActive = Boolean(
-      preset &&
-        normalizeHexColor(preset.accent, "") === normalizeHexColor(palette.accent, "") &&
-        normalizeHexColor(preset.accent2, "") === normalizeHexColor(palette.accent2, ""),
-    );
-    node.classList.toggle("is-active", isActive);
+  ui.colorModal.querySelectorAll(".hue-swatch[data-color-target][data-color-value]").forEach((button) => {
+    const target = button.dataset.colorTarget;
+    const value = normalizeHexColor(button.dataset.colorValue, "");
+    const isActive = (target === "accent" || target === "accent2") && current[target] === value;
+    button.classList.toggle("is-active", Boolean(isActive));
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
   });
 }
 
@@ -3489,6 +3466,19 @@ function closeShortcutModal() {
   syncModalBodyState();
 }
 
+function openColorModal() {
+  if (!ui.colorModal) return;
+  syncPaletteInputs();
+  ui.colorModal.hidden = false;
+  syncModalBodyState();
+}
+
+function closeColorModal() {
+  if (!ui.colorModal) return;
+  ui.colorModal.hidden = true;
+  syncModalBodyState();
+}
+
 function shortcutReasonKey(reason) {
   switch (reason) {
     case "unsupported":
@@ -3512,7 +3502,10 @@ function clearShortcutFallbackTimer() {
 }
 
 function syncModalBodyState() {
-  const anyModalOpen = (ui.infoModal && !ui.infoModal.hidden) || (ui.shortcutModal && !ui.shortcutModal.hidden);
+  const anyModalOpen =
+    (ui.infoModal && !ui.infoModal.hidden) ||
+    (ui.shortcutModal && !ui.shortcutModal.hidden) ||
+    (ui.colorModal && !ui.colorModal.hidden);
   document.body.classList.toggle("modal-open", anyModalOpen);
 }
 

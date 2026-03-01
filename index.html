@@ -338,18 +338,7 @@
             </div>
           </div>
           <div class="preview-colors">
-            <div class="preview-color">
-              <label id="accentColor1Label" for="accentColor1">Akcent 1</label>
-              <input id="accentColor1" type="color" value="#2e7dff">
-            </div>
-            <div class="preview-color">
-              <label id="accentColor2Label" for="accentColor2">Akcent 2</label>
-              <input id="accentColor2" type="color" value="#59a3ff">
-            </div>
-          </div>
-          <div class="preview-palettes">
-            <p id="accentPaletteLabel">Paleta</p>
-            <div id="accentPresetList" class="accent-preset-list" role="list"></div>
+            <button id="openColorModalBtn" class="button" type="button" aria-haspopup="dialog" aria-controls="colorModal">Kolory maila</button>
           </div>
         </div>
 
@@ -420,6 +409,52 @@
           rel="noopener noreferrer"
         >Zainstaluj skrót</a>
         <button id="shortcutModalClose" class="button" type="button" data-shortcut-close>Zamknij</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="colorModal" class="modal" hidden>
+    <div class="modal-backdrop" data-color-close></div>
+    <section class="modal-card modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="colorModalTitle">
+      <div class="modal-head">
+        <h2 id="colorModalTitle">Kolory maila</h2>
+        <button class="button" type="button" data-color-close aria-label="Zamknij">✕</button>
+      </div>
+
+      <div class="color-picker-block">
+        <p id="mainColor1Label">Kolor główny 1</p>
+        <p id="huePalette1Label" class="modal-text modal-provider-note">Paleta hue</p>
+        <div id="huePalette1" class="hue-grid" role="list">
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#2e7dff" style="background:#2e7dff" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#0f766e" style="background:#0f766e" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#e11d48" style="background:#e11d48" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#d97706" style="background:#d97706" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#7c3aed" style="background:#7c3aed" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#0891b2" style="background:#0891b2" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent" data-color-value="#334155" style="background:#334155" role="listitem"></button>
+        </div>
+        <label id="customColor1Label" class="field-main-label" for="accentColor1">Własny kolor</label>
+        <input id="accentColor1" type="color" value="#2e7dff">
+      </div>
+
+      <div class="color-picker-block">
+        <p id="mainColor2Label">Kolor główny 2</p>
+        <p id="huePalette2Label" class="modal-text modal-provider-note">Paleta hue</p>
+        <div id="huePalette2" class="hue-grid" role="list">
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#59a3ff" style="background:#59a3ff" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#56b8ae" style="background:#56b8ae" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#fb7185" style="background:#fb7185" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#f59e0b" style="background:#f59e0b" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#a78bfa" style="background:#a78bfa" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#22d3ee" style="background:#22d3ee" role="listitem"></button>
+          <button class="hue-swatch" type="button" data-color-target="accent2" data-color-value="#64748b" style="background:#64748b" role="listitem"></button>
+        </div>
+        <label id="customColor2Label" class="field-main-label" for="accentColor2">Własny kolor</label>
+        <input id="accentColor2" type="color" value="#59a3ff">
+      </div>
+
+      <div class="modal-actions">
+        <button id="colorModalClose" class="button" type="button" data-color-close>Zamknij</button>
       </div>
     </section>
   </div>
