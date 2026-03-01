@@ -1,16 +1,38 @@
 # Pretty-Mails
 
-Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML i eksportu roboczych wiadomości `.eml`.
+Pretty-Mails to webowa aplikacja do tworzenia wiadomości e-mail HTML i wysyłki przez Apple Shortcuts -> Apple Mail.
 
 ## Funkcje
 
 - edytor treści wiadomości z podglądem,
 - obsługa załączników jako lokalnych przycisków pobierania (base64/data URL),
-- jeden tryb eksportu: `Pobierz szkic .eml` (Apple Mail draft template),
-- nagłówki draftu: `X-Unsent: 1` i `X-Uniform-Type-Identifier: com.apple.mail-draft`,
-- MIME `multipart/alternative` (`text/plain` + `text/html`),
+- jeden przycisk wysyłki: `Wyślij (Apple Mail)`,
+- flow wysyłki: kopiowanie HTML do schowka -> uruchomienie skrótu Apple,
+- tryb Apple-only (iPhone/iPad/Mac), bez OAuth i bez backendu,
 - wielojęzyczny interfejs (`pl`, `en`, `uk`),
 - tryby motywu (`auto`, `light`, `dark`).
+
+## Konfiguracja skrótu Apple (deweloper)
+
+W pliku `app.js` ustaw stałe:
+
+```js
+const SHORTCUT_NAME = "PrettyMail";
+const SHORTCUT_INSTALL_URL = "https://www.icloud.com/shortcuts/REPLACE_WITH_REAL_ID";
+const SHORTCUT_RUN_BASE = "shortcuts://run-shortcut";
+```
+
+`SHORTCUT_INSTALL_URL`:
+1. Utwórz skrót w aplikacji Shortcuts.
+2. Wybierz Share -> Copy iCloud Link.
+3. Wklej link do `SHORTCUT_INSTALL_URL`.
+
+Uwaga: webapp nie tworzy skrótu automatycznie. Skrót trzeba utworzyć i opublikować raz ręcznie.
+
+Wymagane akcje skrótu:
+1. `Get Clipboard`
+2. `Make Rich Text from HTML`
+3. `Email` (`Show Compose Sheet` = ON)
 
 ## Uruchomienie lokalne
 

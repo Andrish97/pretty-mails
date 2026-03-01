@@ -448,6 +448,26 @@ button:focus-visible,
   border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
 }
 
+.button.is-loading {
+  position: relative;
+  padding-right: 2rem;
+  pointer-events: none;
+}
+
+.button.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  width: 0.82rem;
+  height: 0.82rem;
+  margin-top: -0.41rem;
+  border: 2px solid color-mix(in srgb, var(--accent-contrast) 85%, transparent);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: button-spin 640ms linear infinite;
+}
+
 .button-primary {
   border-color: transparent;
   background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 88%, #ffffff 12%), var(--accent));
@@ -951,12 +971,91 @@ textarea[aria-invalid="true"] {
   line-height: 1.5;
 }
 
+.modal-reason {
+  margin-top: 0.55rem;
+  color: var(--text-muted);
+}
+
+.modal-provider-note {
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.modal-list-steps {
+  margin-top: 0.72rem;
+}
+
+.shortcut-setup {
+  margin-top: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 0.72rem;
+  padding: 0.65rem 0.72rem;
+  background: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+}
+
+.shortcut-setup summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.shortcut-setup[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+.modal-list-setup {
+  margin-top: 0;
+}
+
 .modal-actions {
   margin-top: 0.9rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.55rem;
+}
+
+.toast-host {
+  position: fixed;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 0.48rem;
+  width: min(500px, calc(100vw - 1.4rem));
+  z-index: 72;
+  pointer-events: none;
+}
+
+.toast {
+  border-radius: 0.78rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  color: var(--text-main);
+  box-shadow: var(--shadow);
+  padding: 0.58rem 0.72rem;
+  font-size: 0.89rem;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: toast-in 170ms ease forwards;
+}
+
+.toast.toast-success {
+  border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
+}
+
+.toast.toast-error {
+  border-color: color-mix(in srgb, var(--danger) 52%, var(--border));
+}
+
+.toast.toast-info {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+}
+
+.toast.is-leaving {
+  animation: toast-out 140ms ease forwards;
 }
 
 .app-footer {
@@ -1150,6 +1249,10 @@ body.legal-page {
     white-space: nowrap !important;
   }
 
+  .toast-host {
+    bottom: 0.72rem;
+  }
+
   .workspace {
     grid-template-columns: 1fr;
     gap: 0.7rem;
@@ -1242,5 +1345,25 @@ body.legal-page {
 
   .button-back-home #backHomeText {
     display: none;
+  }
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes toast-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
   }
 }

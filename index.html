@@ -19,7 +19,7 @@
 
     <div class="topbar-section topbar-send">
       <button id="mobilePreviewToggleBtn" class="button preview-topbar-btn" type="button" aria-pressed="false">👁️</button>
-      <button id="exportBtn" class="button button-primary" type="button" aria-label="Pobierz szkic .eml (Apple Mail)">Pobierz szkic .eml</button>
+      <button id="exportBtn" class="button button-primary" type="button" aria-label="Wyślij przez Skróty do Apple Mail">Wyślij (Apple Mail)</button>
     </div>
 
     <div class="topbar-section topbar-theme">
@@ -379,13 +379,52 @@
         <button id="infoModalClose" class="button" type="button" aria-label="Zamknij">✕</button>
       </div>
       <ul id="infoModalList" class="modal-list">
-        <li>✉️ Aplikacja generuje tylko szkic <code>.eml</code> (Apple Mail draft template).</li>
-        <li>💾 Plik zawiera nagłówki draftu: <code>X-Unsent: 1</code> oraz <code>X-Uniform-Type-Identifier</code>.</li>
-        <li>🧩 Treść to <code>multipart/alternative</code>: <code>text/plain</code> + <code>text/html</code>.</li>
-        <li>📮 Wysyłka odbywa się po otwarciu pliku w Twojej aplikacji pocztowej.</li>
+        <li>✉️ Wyślij kopiuje HTML wiadomości do schowka i uruchamia skrót Apple.</li>
+        <li>📋 Treść HTML jest w schowku, a odbiorca i temat mogą być przekazane jako krótki tekst.</li>
+        <li> Skrót powinien mieć akcje: Get Clipboard -> Make Rich Text from HTML -> Email.</li>
+        <li>⚙️ Konto nadawcy wybierasz już bezpośrednio w Apple Mail.</li>
       </ul>
     </section>
   </div>
+
+  <div id="shortcutModal" class="modal" hidden>
+    <div class="modal-backdrop" data-shortcut-close></div>
+    <section class="modal-card modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="shortcutModalTitle">
+      <div class="modal-head">
+        <h2 id="shortcutModalTitle">Wymagany skrót Apple Mail</h2>
+        <button class="button" type="button" data-shortcut-close aria-label="Zamknij">✕</button>
+      </div>
+      <p id="shortcutModalBody" class="modal-text">Aby wstawić wiadomość do Apple Mail, zainstaluj skrót.</p>
+      <p id="shortcutModalReason" class="modal-text modal-reason">Jeśli nic się nie otworzyło, zainstaluj skrót i spróbuj ponownie.</p>
+      <ol class="modal-list modal-list-steps">
+        <li id="shortcutStep1">Zainstaluj skrót PrettyMail.</li>
+        <li id="shortcutStep2">Wróć tutaj i kliknij Wyślij ponownie.</li>
+        <li id="shortcutStep3">W Skrótach zezwól na uruchamianie skrótu.</li>
+      </ol>
+      <p id="shortcutProviderNote" class="modal-text modal-provider-note">Konto nadawcy wybierasz w Apple Mail.</p>
+      <details class="shortcut-setup">
+        <summary id="shortcutSetupSummary">Jak skonfigurować skrót</summary>
+        <ol class="modal-list modal-list-steps modal-list-setup">
+          <li id="shortcutSetup1">Zainstaluj skrót z linku iCloud poniżej.</li>
+          <li id="shortcutSetup2">Otwórz aplikację Skróty i potwierdź uprawnienia.</li>
+          <li id="shortcutSetup3">W skrócie użyj: Get Clipboard -> Make Rich Text from HTML -> Email (Show Compose Sheet ON).</li>
+          <li id="shortcutSetup4">Deweloper: aplikacja nie tworzy skrótu automatycznie; utwórz go i wklej link do SHORTCUT_INSTALL_URL.</li>
+        </ol>
+      </details>
+      <div class="modal-actions">
+        <a
+          id="shortcutInstallBtn"
+          class="button button-primary"
+          href="https://www.icloud.com/shortcuts/REPLACE_WITH_REAL_ID"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Zainstaluj skrót</a>
+        <button id="shortcutModalClose" class="button" type="button" data-shortcut-close>Zamknij</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module" src="./app.js"></script>
 </body>
