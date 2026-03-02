@@ -79,6 +79,17 @@ Publikacja:
 1. `Share` -> `Copy iCloud Link`
 2. Podmień `SHORTCUT_INSTALL_URL` w `app.js`
 
+### Czy trzeba zmieniać skrót?
+
+Jeśli masz starszą wersję skrótu, sprawdź ten checklist:
+
+1. W akcji `Email` pole `Message` musi brać wynik `Make Rich Text from HTML` (np. `RichBody`).
+2. Między `Make Rich Text from HTML` a `Email` nie używaj akcji `Text` / `Get Text` dla treści wiadomości.
+3. W akcji `Email` ustaw `Show Compose Sheet = ON`.
+4. Obsługa załączników:
+   - `pickFilesInShortcut = true` -> `Select Files`
+   - `pickFilesInShortcut = false` -> dekoduj `attachments` z payloadu i dodaj do `FilesForEmail`.
+
 ### Najczęstsze problemy
 
 - Brak reakcji po kliknięciu:
@@ -90,6 +101,7 @@ Publikacja:
   - gałąź `FALSE` musi dekodować `attachments` z payloadu.
 - Skrót odpala się, ale mail bez stylu:
   - zainstaluj ponownie skrót z linku iCloud (aktualna wersja),
+  - sprawdź checklistę z sekcji `Czy trzeba zmieniać skrót?`,
   - upewnij się, że używasz Safari.
 - Brak dostępu do schowka:
   - uruchamiaj przez `https` lub `http://localhost`,
