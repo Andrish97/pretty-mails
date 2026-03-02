@@ -21,7 +21,9 @@ const DEFAULT_MAIN_PALETTE = Object.freeze({
   accent: "#2e7dff",
   accent2: "#59a3ff",
 });
-const SHORTCUT_MAX_URL_LENGTH = 7000;
+// iOS custom URL schemes tolerate more than 7k in many cases; 7k was too aggressive for small attachments.
+const SHORTCUT_MAX_URL_LENGTH = 18000;
+const SHORTCUT_FALLBACK_DELAY_MS = 2200;
 const SHORTCUT_DIAGNOSTICS_ENABLED = true;
 const SHORTCUT_DIAGNOSTICS_PREFIX = "[PrettyMail]";
 const SHORTCUT_DIAGNOSTICS_SESSION = Math.random().toString(36).slice(2, 8);
@@ -988,6 +990,8 @@ const customSelectMap = new WeakMap();
 let customSelectGlobalsBound = false;
 let shortcutFallbackTimer = null;
 let shortcutVisibilityHandler = null;
+let shortcutBlurHandler = null;
+let shortcutPageHideHandler = null;
 
 const OPTIONAL_BINDINGS = {
   cc: { toggle: () => ui.toggleCc, controls: () => [ui.fieldCc] },
@@ -2762,10 +2766,13 @@ function renderPreviewFields() {
 function buildTemplateHtml(rawMarkup, template, options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
   const attachmentLinkMode = options.attachmentLinkMode || (showPlaceholders ? "preview" : "cid");
+  const messageBlock = buildMessageBlockHtml({ showPlaceholders });
 
   const replacements = {
-    greeting_block: buildGreetingBlockHtml({ showPlaceholders }),
-    content_block: buildContentBlockHtml({ showPlaceholders }),
+    // Keep backward compatibility with existing templates: content slot hosts the full message block.
+    message_block: messageBlock,
+    greeting_block: "",
+    content_block: messageBlock,
     quote_block: buildQuoteBlockHtml({ showPlaceholders }),
     attachments_block: buildAttachmentsBlockHtml({
       showPlaceholders,
@@ -2775,11 +2782,15 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   };
 
   const htmlWithTokens = rawMarkup.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
-    return Object.prototype.hasOwnProperty.call(replacements, key) ? replacements[key] : "";
+    if (!Object.prototype.hasOwnProperty.call(replacements, key)) return "";
+    const value = replacements[key];
+    if (normalizeInlineText(value)) return value;
+    return `<!--pm-empty:${key}-->`;
   });
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlWithTokens, "text/html");
+  pruneEmptyTokenContainers(doc);
   const root = doc.documentElement;
 
   root.classList.remove("forced-light", "forced-dark");
@@ -2834,6 +2845,7 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
       row-gap: 10px !important;
       column-gap: 10px !important;
     }
+    .mail-message-block,
     .mail-greeting,
     .mail-content,
     .mail-quote,
@@ -2841,27 +2853,42 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
     .mail-signature-block{
       margin: 0 !important;
     }
+    .mail-message-block{
+      display: block !important;
+    }
     .mail-signature-block{
       gap: 0 !important;
       row-gap: 0 !important;
     }
     .mail-greeting{
-      padding: 0 !important;
-      border: 0 !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      background: transparent !important;
+      margin: 0 0 10px !important;
       color: inherit !important;
-      font-size: 1em !important;
-      font-weight: inherit !important;
-      letter-spacing: normal !important;
-      text-transform: none !important;
-      line-height: inherit !important;
+      font-size: 1.06em !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.012em !important;
+      line-height: 1.35 !important;
     }
-    .mail-greeting::before,
-    .mail-greeting::after{
-      content: none !important;
-      display: none !important;
+    .mail-content{
+      margin: 0 !important;
+      line-height: 1.55 !important;
+    }
+    .mail-closing{
+      margin: 12px 0 0 !important;
+      color: inherit !important;
+      font-size: 0.94em !important;
+      font-style: italic !important;
+      letter-spacing: 0.01em !important;
+    }
+    .mail-quote{
+      margin: 2px 0 !important;
+    }
+    .mail-quote-body{
+      margin: 0 !important;
+      padding: 10px 12px !important;
+      border-left: 3px solid var(--template-accent-2) !important;
+      background: var(--template-surface-soft) !important;
+      font-style: italic !important;
+      line-height: 1.5 !important;
     }
     .mail-signature-block > *{
       margin-top: 0 !important;
@@ -2937,6 +2964,60 @@ function buildTemplateHtml(rawMarkup, template, options = {}) {
   resolveTemplateColorTokens(doc, palette, theme);
 
   return `<!doctype html>\n${doc.documentElement.outerHTML}`;
+}
+
+function pruneEmptyTokenContainers(doc) {
+  if (!doc?.body) return;
+
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_COMMENT);
+  const emptyMarkers = [];
+  while (walker.nextNode()) {
+    const comment = walker.currentNode;
+    if (comment?.nodeValue?.trim().startsWith("pm-empty:")) {
+      emptyMarkers.push(comment);
+    }
+  }
+
+  const emptyInnerHtml = (element) => {
+    if (!(element instanceof Element)) return "";
+    return String(element.innerHTML || "")
+      .replace(/<!--pm-empty:[\s\S]*?-->/g, "")
+      .replace(/&nbsp;/gi, "")
+      .replace(/\u00a0/g, "")
+      .trim();
+  };
+
+  emptyMarkers.forEach((commentNode) => {
+    let current = commentNode.parentElement;
+    while (current && current !== doc.body) {
+      if (emptyInnerHtml(current)) break;
+      const parent = current.parentElement;
+      current.remove();
+      current = parent;
+    }
+    if (commentNode.parentNode) {
+      commentNode.remove();
+    }
+  });
+}
+
+function buildMessageBlockHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  const greetingBlock = buildGreetingBlockHtml({ showPlaceholders });
+  const contentBlock = buildContentBlockHtml({ showPlaceholders });
+  const closingLine = buildClosingLineHtml({ showPlaceholders });
+
+  if (!greetingBlock && !contentBlock && !closingLine) {
+    return "";
+  }
+
+  return `
+    <section class="mail-message-block">
+      ${greetingBlock}
+      ${contentBlock}
+      ${closingLine}
+    </section>
+  `;
 }
 
 function buildGreetingBlockHtml(options = {}) {
@@ -3059,18 +3140,20 @@ function buildAttachmentsBlockHtml(options = {}) {
   `;
 }
 
+function buildClosingLineHtml(options = {}) {
+  const showPlaceholders = Boolean(options.showPlaceholders);
+  const closingText = resolveClosingText();
+  const hasClosing = state.enabled.closing && Boolean(closingText || showPlaceholders);
+  if (!hasClosing) return "";
+
+  const closingLineText = appendClosingComma(closingText || t("closingPresetRegards"));
+  return `<p class="mail-closing${closingText ? "" : " app-placeholder"}">${escapeHtml(closingLineText)}</p>`;
+}
+
 function buildSignatureBlockHtml(options = {}) {
   const showPlaceholders = Boolean(options.showPlaceholders);
-
-  const closingText = resolveClosingText();
   const senderName = normalizeInlineText(state.fields.senderName);
-  const hasClosing = state.enabled.closing && Boolean(closingText || showPlaceholders);
   const hasSender = state.enabled.senderName && Boolean(senderName || showPlaceholders);
-  const closingLineText = appendClosingComma(closingText || t("closingPresetRegards"));
-
-  const closingLine = hasClosing
-    ? `<p class="mail-closing${closingText ? "" : " app-placeholder"}">${escapeHtml(closingLineText)}</p>`
-    : "";
 
   const senderLine = hasSender
     ? `<p class="mail-sender${senderName ? "" : " app-placeholder"}">${escapeHtml(
@@ -3081,13 +3164,12 @@ function buildSignatureBlockHtml(options = {}) {
   const contactBlock = buildContactBlockHtml({ showPlaceholders });
   const sentBlock = buildSentBlockHtml({ showPlaceholders });
 
-  if (!closingLine && !senderLine && !contactBlock && !sentBlock) {
+  if (!senderLine && !contactBlock && !sentBlock) {
     return "";
   }
 
   return `
     <section class="mail-signature-block">
-      ${closingLine}
       ${senderLine}
       ${contactBlock}
       ${sentBlock}
@@ -3864,6 +3946,8 @@ function shortcutReasonKey(reason) {
 function clearShortcutFallbackTimer() {
   const hadTimer = Boolean(shortcutFallbackTimer);
   const hadVisibilityHandler = Boolean(shortcutVisibilityHandler);
+  const hadBlurHandler = Boolean(shortcutBlurHandler);
+  const hadPageHideHandler = Boolean(shortcutPageHideHandler);
   if (shortcutFallbackTimer) {
     window.clearTimeout(shortcutFallbackTimer);
     shortcutFallbackTimer = null;
@@ -3872,10 +3956,20 @@ function clearShortcutFallbackTimer() {
     document.removeEventListener("visibilitychange", shortcutVisibilityHandler);
     shortcutVisibilityHandler = null;
   }
-  if (hadTimer || hadVisibilityHandler) {
+  if (shortcutBlurHandler) {
+    window.removeEventListener("blur", shortcutBlurHandler);
+    shortcutBlurHandler = null;
+  }
+  if (shortcutPageHideHandler) {
+    window.removeEventListener("pagehide", shortcutPageHideHandler);
+    shortcutPageHideHandler = null;
+  }
+  if (hadTimer || hadVisibilityHandler || hadBlurHandler || hadPageHideHandler) {
     diagInfo("shortcut:fallback_cleared", {
       hadTimer,
       hadVisibilityHandler,
+      hadBlurHandler,
+      hadPageHideHandler,
     });
   }
 }
@@ -4020,26 +4114,34 @@ async function sendAppleMail() {
     showToast(t("shortcutToastCopiedOpening"), "success");
 
     let switchedAway = false;
+    const markSwitchedAway = (reason) => {
+      if (switchedAway) return;
+      switchedAway = true;
+      diagInfo("shortcut:page_switched", { reason });
+    };
     shortcutVisibilityHandler = () => {
       if (document.visibilityState === "hidden") {
-        diagInfo("shortcut:visibility_hidden", {});
-        switchedAway = true;
+        markSwitchedAway("visibility_hidden");
       }
     };
+    shortcutBlurHandler = () => {
+      markSwitchedAway("window_blur");
+    };
+    shortcutPageHideHandler = () => {
+      markSwitchedAway("pagehide");
+    };
     document.addEventListener("visibilitychange", shortcutVisibilityHandler);
+    window.addEventListener("blur", shortcutBlurHandler);
+    window.addEventListener("pagehide", shortcutPageHideHandler);
 
     shortcutFallbackTimer = window.setTimeout(() => {
-      if (shortcutVisibilityHandler) {
-        document.removeEventListener("visibilitychange", shortcutVisibilityHandler);
-        shortcutVisibilityHandler = null;
-      }
+      clearShortcutFallbackTimer();
       setTopbarSendLoading(false);
-      if (!switchedAway) {
+      if (!switchedAway && document.visibilityState === "visible" && document.hasFocus()) {
         diagWarn("shortcut:no_visibility_change_show_modal", {});
         showShortcutModal({ reason: "maybeNotInstalled" });
       }
-      shortcutFallbackTimer = null;
-    }, 1200);
+    }, SHORTCUT_FALLBACK_DELAY_MS);
   } catch (error) {
     diagError("send:failed", error);
     console.error(error);
@@ -4124,8 +4226,35 @@ function copyHtmlToClipboardExecCommand(html) {
     return false;
   }
 
+  const htmlText = String(html || "");
+  const plainText = stripHtml(htmlText);
+  let copied = false;
+  const onCopy = (event) => {
+    const clipboardData = event?.clipboardData;
+    if (!clipboardData) return;
+    event.preventDefault();
+    clipboardData.setData("text/html", htmlText);
+    clipboardData.setData("text/plain", plainText);
+  };
+
+  document.addEventListener("copy", onCopy, true);
+  try {
+    copied = document.execCommand("copy");
+  } catch (error) {
+    diagWarn("clipboard:execCommand_copy_event_failed", {
+      message: error?.message || String(error),
+    });
+    copied = false;
+  } finally {
+    document.removeEventListener("copy", onCopy, true);
+  }
+
+  if (copied) {
+    return true;
+  }
+
   const tmp = document.createElement("div");
-  tmp.innerHTML = html;
+  tmp.innerHTML = htmlText;
   tmp.style.position = "fixed";
   tmp.style.left = "-9999px";
   tmp.style.top = "0";
@@ -4139,19 +4268,19 @@ function copyHtmlToClipboardExecCommand(html) {
   selection?.removeAllRanges();
   selection?.addRange(range);
 
-  let copied = false;
+  let copiedSelection = false;
   try {
-    copied = document.execCommand("copy");
+    copiedSelection = document.execCommand("copy");
   } catch (error) {
     diagWarn("clipboard:execCommand_exception", {
       message: error?.message || String(error),
     });
-    copied = false;
+    copiedSelection = false;
   }
 
   selection?.removeAllRanges();
   tmp.remove();
-  return Boolean(copied);
+  return Boolean(copiedSelection);
 }
 
 function stripHtml(html) {
@@ -4259,21 +4388,17 @@ function launchShortcutUrl(url) {
     targetUrlLength: targetUrl.length,
   });
 
-  if (safari) {
-    const link = document.createElement("a");
-    link.href = targetUrl;
-    link.style.position = "fixed";
-    link.style.left = "-9999px";
-    link.style.top = "0";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    diagInfo("shortcut:launch_anchor_click", {});
-    return;
+  try {
+    window.location.assign(targetUrl);
+    diagInfo("shortcut:launch_location_assign", { safari });
+  } catch (error) {
+    diagWarn("shortcut:launch_assign_failed", {
+      safari,
+      message: error?.message || String(error),
+    });
+    window.location.href = targetUrl;
+    diagInfo("shortcut:launch_location_href", {});
   }
-
-  window.location.href = targetUrl;
-  diagInfo("shortcut:launch_location_href", {});
 }
 
 function showToast(message, type = "info", duration = 2200) {
