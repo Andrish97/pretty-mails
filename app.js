@@ -15,7 +15,7 @@ const SHORTCUT_NAME = "PrettyMail";
 // 2) Share -> Copy iCloud Link.
 // 3) Paste the link below.
 // Note: the web app cannot generate or publish the shortcut automatically.
-const SHORTCUT_INSTALL_URL = "https://www.icloud.com/shortcuts/aa52679fda8e4891a520592eacb61ca0";
+const SHORTCUT_INSTALL_URL = "https://www.icloud.com/shortcuts/b51c8c7558214f70bcff01441f433bb5";
 const SHORTCUT_RUN_BASE = "shortcuts://run-shortcut";
 const DEFAULT_MAIN_PALETTE = Object.freeze({
   accent: "#2e7dff",
