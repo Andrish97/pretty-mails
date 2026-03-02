@@ -3963,20 +3963,29 @@ async function sendAppleMail() {
       resolvedTheme: state.resolvedTheme,
     });
 
+    const shortcutHtml = toShortcutClipboardHtml(html);
+    if (!normalizeInlineText(shortcutHtml)) {
+      throw new Error("empty shortcut html");
+    }
+    diagInfo("send:shortcut_html_ready", {
+      shortcutHtmlLength: shortcutHtml.length,
+      shortcutHtmlPreview: shortcutHtml.slice(0, 180),
+    });
+
     showToast(t("shortcutToastCopying"), "info", 1200);
     let copyResult = null;
     if (safariBrowser) {
       // Safari may block shortcuts:// launch after awaited async operations.
       // Prefer sync copy first so launch stays tightly tied to the click.
-      const copiedSync = copyHtmlToClipboardExecCommand(html);
+      const copiedSync = copyHtmlToClipboardExecCommand(shortcutHtml);
       diagInfo("clipboard:execCommand_sync_attempt", { copiedSync });
       if (!copiedSync) {
-        copyResult = await copyHtmlToClipboard(html);
+        copyResult = await copyHtmlToClipboard(shortcutHtml);
       } else {
         copyResult = { method: "execCommand-sync" };
       }
     } else {
-      copyResult = await copyHtmlToClipboard(html);
+      copyResult = await copyHtmlToClipboard(shortcutHtml);
     }
     diagInfo("clipboard:copy_success", copyResult || { method: "unknown" });
 
@@ -4149,6 +4158,30 @@ function stripHtml(html) {
   const div = document.createElement("div");
   div.innerHTML = String(html || "");
   return normalizeMultilineText(div.textContent || div.innerText || "");
+}
+
+function toShortcutClipboardHtml(html) {
+  const source = String(html || "").trim();
+  if (!source) return "";
+
+  try {
+    const parsed = new DOMParser().parseFromString(source, "text/html");
+    const bodyFragment = String(parsed.body?.innerHTML || "").trim();
+    const base = bodyFragment || source;
+
+    const safeDoc = document.implementation.createHTMLDocument("");
+    const wrapper = safeDoc.createElement("div");
+    wrapper.innerHTML = base;
+    wrapper.querySelectorAll("script,style,meta,link,title,base").forEach((node) => node.remove());
+
+    const cleaned = wrapper.innerHTML.replace(/<!doctype[^>]*>/gi, "").trim();
+    return cleaned || base;
+  } catch (error) {
+    diagWarn("send:shortcut_html_parse_failed", {
+      message: error?.message || String(error),
+    });
+    return source;
+  }
 }
 
 function buildShortcutInputPayload({ to, cc, bcc, subject }) {
